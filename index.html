@@ -74,20 +74,39 @@
                 <h3>📜 遊び方ガイド</h3>
                 <div class="rule-content">
                     <h4>1. 4つのコマンド（勢力）を選ぼう！</h4>
-                    <p>右の掲示板からコメントと「コマンド」を選んで書き込みます。選んだコマンドのポイント（pt）で進化先が決まります。</p>
+                    <p>右の掲示板からコメントと「コマンド」を選んで書き込みます。全プレイヤーのポイント（pt）の割合で進化先が分岐します。</p>
                     <div class="rule-cmds">
                         <span class="cmd-badge">🛡️ HODL</span> <strong>ガチホ・防御。</strong> 堅実なキャラに育ちやすい。<br>
                         <span class="cmd-badge" style="background:#d32f2f;">🚀 FOMO</span> <strong>攻撃・買い煽り。</strong> イケイケなキャラに育ちやすい。<br>
                         <span class="cmd-badge" style="background:#1976d2;">🔧 BUIDL</span> <strong>開発・技術。</strong> 開発者系のキャラに育ちやすい。<br>
-                        <span class="cmd-badge" style="background:#555;">📉 SELL</span> <strong>弱気・恐怖。</strong> 詐欺師やバッドエンドの要因に。
+                        <span class="cmd-badge" style="background:#555;">📉 SELL</span> <strong>弱気・恐怖。</strong> バッドエンドや詐欺師の要因に。
                     </div>
 
                     <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
-                    <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として強力に反映されます！推しキャラへの進化を狙う時の切り札です。(例: 100 sats = 100 pt)</p>
+                    <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
 
-                    <h4>3. 🧬 進化条件とバッドエンド</h4>
-                    <p>全体ポイントの合計で「卵 → ベビー → キッズ → 大人 → 伝説」と世代が進行します。次の世代へ移行する瞬間に最もポイントが高いコマンドによって姿が変わります。</p>
-                    <p><span style="color:#ff5252; font-weight:bold;">⚠️ 警告：</span>合計5,000pt以上で <strong>📉 SELL が全体の60%を超える</strong>と、キャラはお墓（ゲームオーバー）へ直行します。悲観相場こそ HODL して命を守りましょう！</p>
+                    <h4>3. 🧬 進化条件と分岐ルート</h4>
+                    <p>合計ポイントで世代が進行し、その時点の各コマンドの勢力で姿が確定します。</p>
+                    
+                    <ul style="font-size: 13px; line-height: 1.6; color: #ddd; background: #1a1a1a; padding: 10px 10px 10px 30px; border-radius: 4px;">
+                        <li><strong>👶 ベビー期 (1,000 pt〜)</strong>
+                            <br>FOMO優勢で「アルトちゃん」、SELLがHODLを上回ると「シバいぬ」、基本は「ビットくん」
+                        </li>
+                        <li style="margin-top: 8px;"><strong>👦 キッズ期 (5,000 pt〜)</strong>
+                            <br>FOMO優勢で「フモートット」、SELLがBUIDLを上回ると「バグホルダー」、基本は「スマートコントラクト」
+                        </li>
+                        <li style="margin-top: 8px;"><strong>🧑 大人期 (20,000 pt〜)</strong>
+                            <br>一番多いポイントの属性へ進化。
+                            <br>🛡️HODL⇒「亀」 / 🚀FOMO⇒「ウサギ」 / 🔧BUIDL⇒「魔法使い」
+                            <br>※方針がブレたりSELLが多いと「詐欺師(👿)」になります。
+                            <br><span class="highlight">★超レア★ HODL単体で 50,000 pt を超えると「課金王クジラ 🐳」に！</span>
+                        </li>
+                        <li style="margin-top: 8px;"><strong>摸 伝説期 (100,000 pt〜)</strong>
+                            <br>暴落を乗り越えた最終形態「オリジナルHODLマスター」！
+                        </li>
+                    </ul>
+
+                    <p style="margin-top:10px;"><span style="color:#ff5252; font-weight:bold;">⚠️ バッドエンド：</span>合計5,000pt以上で <strong>📉 SELL が全体の60%を超える</strong>と、キャラはお墓（ゲームオーバー）へ直行します。悲観相場こそ HODL して命を守りましょう！</p>
                     
                     <!-- 進化ツリー表示ボタン -->
                     <button class="tree-btn" onclick="openTreeModal()">🗺️ 進化ツリー全体図を見る</button>
@@ -159,8 +178,7 @@
     <!-- 🗺️ 進化ツリー画像モーダル -->
     <div id="tree-modal" class="modal" style="display:none;" onclick="closeTreeModal()">
         <div class="image-modal-content" onclick="event.stopPropagation()">
-            <!-- ここで進化ツリー画像を読み込みます -->
-            <img src="images/evolution_tree.jpg" alt="進化ツリー">
+            <img src="images/evolution_tree.jpg" alt="進化ツリー" onerror="this.src='https://placehold.co/600x400/000/fff?text=Evolution+Tree+Image+Missing'">
             <button class="close-btn" onclick="closeTreeModal()">閉じる</button>
         </div>
     </div>
