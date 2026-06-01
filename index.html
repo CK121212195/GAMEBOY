@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <!-- ④ 世代や死亡情報などが初めての人にもひと目で伝わるUI構造 -->
+            <!-- ④ 世代や全滅回数が直感的に伝わる総合ステータスボード -->
             <div class="status-board">
                 <h3>現在の育成ステータス</h3>
                 <div class="status-header">
@@ -65,29 +65,29 @@
 
                 <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
 
-                <!-- ① 動的グラフメーター化した勢力図 -->
+                <!-- ①・② 同期カラー化されたコマンドメーター -->
                 <h3>現在のコマンド勢力図 (進化への影響比率)</h3>
                 <div class="vote-bars">
                     <div class="vote-bar-container">
-                        <span class="vote-label">🛡️ HODL (ガチホ・防御): <span id="score-HODL">0</span> pt</span>
+                        <span class="vote-label" style="color:#f7931a;">🛡️ HODL (ガチホ・防御): <span id="score-HODL">0</span> pt</span>
                         <div class="vote-progress">
                             <div id="bar-HODL" class="vote-fill hodl-fill"></div>
                         </div>
                     </div>
                     <div class="vote-bar-container">
-                        <span class="vote-label">🚀 FOMO (買い煽り): <span id="score-FOMO">0</span> pt</span>
+                        <span class="vote-label" style="color:#d32f2f;">🚀 FOMO (買い煽り): <span id="score-FOMO">0</span> pt</span>
                         <div class="vote-progress">
                             <div id="bar-FOMO" class="vote-fill fomo-fill"></div>
                         </div>
                     </div>
                     <div class="vote-bar-container">
-                        <span class="vote-label">🔧 BUIDL (開発・技術): <span id="score-BUIDL">0</span> pt</span>
+                        <span class="vote-label" style="color:#1976d2;">🔧 BUIDL (開発・技術): <span id="score-BUIDL">0</span> pt</span>
                         <div class="vote-progress">
                             <div id="bar-BUIDL" class="vote-fill buidl-fill"></div>
                         </div>
                     </div>
                     <div class="vote-bar-container">
-                        <span class="vote-label">📉 SELL (恐怖・弱気): <span id="score-SELL">0</span> pt</span>
+                        <span class="vote-label" style="color:#888888;">📉 SELL (恐怖・弱気): <span id="score-SELL">0</span> pt</span>
                         <div class="vote-progress">
                             <div id="bar-SELL" class="vote-fill sell-fill"></div>
                         </div>
@@ -109,23 +109,60 @@
                 </div>
             </div>
 
+            <!-- 🧪 ③ デバッグ・強制進化＆しきい値テスト制御パネル -->
+            <div class="debug-panel">
+                <h4>🧪 【開発・検証用】テスト・デバッグ進化パネル</h4>
+                <p style="font-size: 11px; color: #aaa; margin-top: -4px; margin-bottom: 12px;">※開発中のみ利用するシミュレーターです。本番デプロイ時には削除してご活用ください。</p>
+                
+                <div class="debug-row">
+                    <label for="debug-char-select" style="font-weight:bold;">① グラフィックバグ・画像表示テスト (全30キャラクター選択可能):</label>
+                    <div style="display:flex; gap:8px; margin-top:4px;">
+                        <select id="debug-char-select" style="flex:1; padding:6px; font-size:13px; background:#333; color:#fff; border:1px solid #555;">
+                            <!-- JS側で動的に30キャラクターが挿入されます -->
+                        </select>
+                        <button onclick="testForceEvolve()" style="background:#2196F3; font-size:13px; padding:6px 12px; border-radius:4px; height:36px;">強制表示 👁️</button>
+                    </div>
+                </div>
+
+                <div class="debug-row" style="margin-top:15px;">
+                    <label style="font-weight:bold;">② 進化段階・メーターのしきい値テスト (仮想ポイント追加):</label>
+                    <div class="debug-btn-grid">
+                        <button onclick="addMockPoints('HODL', 1000)" style="background:#e65100; color:#fff;">+1,000 pt (🛡️ HODL)</button>
+                        <button onclick="addMockPoints('FOMO', 1000)" style="background:#b71c1c; color:#fff;">+1,000 pt (🚀 FOMO)</button>
+                        <button onclick="addMockPoints('BUIDL', 1000)" style="background:#0d47a1; color:#fff;">+1,000 pt (🔧 BUIDL)</button>
+                        <button onclick="addMockPoints('SELL', 1000)" style="background:#37474f; color:#fff;">+1,000 pt (📉 SELL)</button>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                        <button onclick="addMockDeaths(1)" style="background:#5d4037; font-size:11px; padding:6px 12px; border-radius:4px;">全滅回数 +1 💀</button>
+                        <button onclick="resetMockPoints()" style="background:#c62828; font-size:11px; padding:6px 12px; border-radius:4px;">シミュレーション初期化 🔄</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- ▼ 遊び方・ルール説明エリア ▼ -->
             <div class="rule-board">
                 <h3>📜 遊び方ガイド</h3>
                 <div class="rule-content">
+                    <!-- ② コマンドをキャラの「DNA」としてわかりやすく解説再構築 -->
                     <h4>1. 4つのコマンド（勢力）を選ぼう！</h4>
-                    <p>右の掲示板からコメントと「コマンド」を選んで書き込みます。全プレイヤーのポイント（pt）の割合で進化先が分岐します。</p>
+                    <p>右の掲示板からメッセージと「コマンド」を選んで投稿します。あなたが選ぶコマンドは、<strong>キャラクターの「能力値（DNA）」</strong>となって蓄積されます。</p>
                     <div class="rule-cmds">
-                        <span class="cmd-badge">🛡️ HODL</span> <strong>ガチホ・防御。</strong> 堅実なキャラに育ちやすい。<br>
-                        <span class="cmd-badge" style="background:#d32f2f;">🚀 FOMO</span> <strong>攻撃・買い煽り。</strong> イケイケなキャラに育ちやすい。<br>
-                        <span class="cmd-badge" style="background:#1976d2;">🔧 BUIDL</span> <strong>開発・技術。</strong> 開発者系のキャラに育ちやすい。<br>
-                        <span class="cmd-badge" style="background:#555;">📉 SELL</span> <strong>弱気・恐怖。</strong> バッドエンドや詐欺師の要因に。
+                        <span class="cmd-badge" style="background:#f7931a;">🛡️ HODL (ガチホ・防御)</span> <br>
+                        キャラクターの<strong>生命力・防御力・セキュリティ</strong>が向上します。HODL比率が高いと、堅実な「亀 🐢」や、超レア形態の「王様クジラ 🐳」に育ちます。<br><br>
+                        
+                        <span class="cmd-badge" style="background:#d32f2f;">🚀 FOMO (買い煽り・攻撃)</span> <br>
+                        キャラクターの<strong>攻撃性・知名度・熱狂度</strong>が向上します。FOMO比率が高いと、アグレッシブな「ウサギ 🐰」や「ドージ騎士 🐕」に育ちます。<br><br>
+                        
+                        <span class="cmd-badge" style="background:#1976d2;">🔧 BUIDL (開発・技術)</span> <br>
+                        キャラクターの<strong>知性・インフラ技術力</strong>が向上します。BUIDL比率が高いと、開発者系の「DeFiウィザード 🧙‍♂️」や、勤勉な「モグラ 🦫」に育ちます。<br><br>
+                        
+                        <span class="cmd-badge" style="background:#555555;">📉 SELL (恐怖・弱気)</span> <br>
+                        キャラクターの<strong>不信感・流動性・システムリスク</strong>に影響します。SELL比率が高すぎるとゲームオーバー（お墓）になりますが、ほどよく混ざることで「サトシボット 🤖」などの特殊な合体進化を促します。
                     </div>
 
                     <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
                     <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
 
-                    <!-- ② 進化条件・ロジックと解説の一致化（全30種対応） -->
                     <h4>3. 🧬 進化条件と分岐ルート</h4>
                     <p>みんなの合計ポイント（合計pt）で世代が進行し、その世代に達した時点での<strong>「各コマンドのポイント比率」</strong>で全30種類の姿へ分岐します。</p>
                     
@@ -191,9 +228,9 @@
                     <option value="SELL">📉 SELL (売却・恐怖)</option>
                 </select>
 
-                <!-- ③ 最大500文字対応テキストエリア -->
+                <!-- ① 最大500文字対応＆伸縮可能なテキストエリア -->
                 <div class="textarea-container">
-                    <textarea id="user-msg" placeholder="コメントを入力（最大500文字）" maxlength="500" rows="3" style="resize:none;"></textarea>
+                    <textarea id="user-msg" placeholder="コメントを入力（最大500文字・枠を引き伸ばせます）" maxlength="500" rows="4"></textarea>
                     <div id="char-counter" class="char-counter">0 / 500</div>
                 </div>
 
