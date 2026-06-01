@@ -46,11 +46,11 @@
                 </div>
             </div>
 
-            <!-- ④ 世代や全滅回数が直感的に伝わる総合ステータスボード -->
+            <!-- ④ 世代や死亡情報などが初めての人にもひと目で伝わるUI構造 -->
             <div class="status-board">
                 <h3>現在の育成ステータス</h3>
                 <div class="status-header">
-                    <p id="evolution-status" class="status-title">🥚 ジェネシス・ブロック (卵)</p>
+                    <p id="evolution-status" class="status-title">🥚 GENESIS BLOCK EGG (卵)</p>
                     <div class="death-counter">💀 過去の全滅回数: <span id="death-count">0</span> 回</div>
                 </div>
                 
@@ -65,7 +65,7 @@
 
                 <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
 
-                <!-- ① 各勢力の優劣がひと目でわかる動的メーター -->
+                <!-- ① 動的グラフメーター化した勢力図 -->
                 <h3>現在のコマンド勢力図 (進化への影響比率)</h3>
                 <div class="vote-bars">
                     <div class="vote-bar-container">
@@ -125,39 +125,46 @@
                     <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
                     <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
 
-                    <!-- ② 進化条件・ロジックと解説の一致化 -->
+                    <!-- ② 進化条件・ロジックと解説の一致化（全30種対応） -->
                     <h4>3. 🧬 進化条件と分岐ルート</h4>
-                    <p>みんなの合計ポイント（合計pt）で世代が進行し、その世代に達した時点での<strong>「各コマンドのポイント比率」</strong>で姿が変化します。</p>
+                    <p>みんなの合計ポイント（合計pt）で世代が進行し、その世代に達した時点での<strong>「各コマンドのポイント比率」</strong>で全30種類の姿へ分岐します。</p>
                     
                     <ul style="font-size: 13px; line-height: 1.6; color: #ddd; background: #1a1a1a; padding: 10px 10px 10px 30px; border-radius: 4px; list-style-type: square;">
-                        <li><strong>🥚 卵期 (0 〜 999 pt)</strong>
+                        <li><strong>🥚 [Egg] 卵期 (0 〜 999 pt)</strong>
                             <br>合計1,000 pt未満はすべてこの状態です。
                         </li>
-                        <li style="margin-top: 8px;"><strong>👶 ベビー期 (1,000 〜 4,999 pt)</strong>
-                            <br>・<span class="highlight">アルトちゃん 👶</span> (FOMOがHODLとBUIDLを上回る)
-                            <br>・<span class="highlight">シバいぬベビー 🐶</span> (SELLがHODLを上回る)
-                            <br>・<span class="highlight">ビットくん 👶</span> (それ以外の標準状態)
+                        <li style="margin-top: 8px;"><strong>👶 [Baby] ベビー期 (1,000 〜 4,999 pt)</strong> <span style="color:#ffea00; font-size:11px;">(全3種)</span>
+                            <br>・<span class="highlight">ALT-CHAN (アルトちゃん) 👶</span> (FOMOが1位)
+                            <br>・<span class="highlight">SHIBA INU BABY (シバいぬベビー) 🐶</span> (SELLが1位)
+                            <br>・<span class="highlight">BITCOIN-KUN (ビットくん) 👶</span> (それ以外の標準状態)
                         </li>
-                        <li style="margin-top: 8px;"><strong>👦 キッズ期 (5,000 〜 19,999 pt)</strong>
-                            <br>・<span class="highlight">フモートット 🍼</span> (FOMOがHODLを上回る)
-                            <br>・<span class="highlight">バグホルダー・キッド 🎒</span> (SELLがBUIDLを上回る)
-                            <br>・<span class="highlight">スマートコントラクト・キッズ 👦</span> (それ以外の標準状態)
+                        <li style="margin-top: 8px;"><strong>👦 [Kids] キッズ期 (5,000 〜 19,999 pt)</strong> <span style="color:#ffea00; font-size:11px;">(全6種)</span>
+                            <br>開発・保全の関与度「Care」の比率（HODL＋BUIDLの割合）で完璧に分岐します。
+                            <br>・<strong>[High Care]</strong> (開発保全65%以上) ⇒ <span class="highlight">スマートコントラクト 👦</span>
+                            <br>・<strong>[Avg Care]</strong> (開発保全40〜65%) ⇒ <span class="highlight">DAOガイド 👦</span> / <span class="highlight">レジャー・バル 👦</span>
+                            <br>・<strong>[Low Care]</strong> (開発保全40%未満) ⇒ <span class="highlight">ノドリング 👦</span> / <span class="highlight">バグホルダー 🎒</span> / <span class="highlight">フモートット 🍼</span>
                         </li>
-                        <li style="margin-top: 8px;"><strong>🧑 大人期 (20,000 〜 99,999 pt)</strong>
-                            <br>基本は一番ポイントが多い属性に進化します。
-                            <br>・🛡️ HODL最多 ⇒ <span class="highlight">HODLer 亀 🐢</span>
-                            <br>・🚀 FOMO最多 ⇒ <span class="highlight">トレーダー・ウサギ 🐰</span>
-                            <br>・🔧 BUIDL最多 ⇒ <span class="highlight">DeFi ウィザード 🧙‍♂️</span>
-                            <br>・📉 SELL最多または同点多数 ⇒ <span class="highlight">ラグプル・スキャンプ 👿 (詐欺師)</span>
-                            <br><span class="highlight" style="color:#ffea00;">★超レア進化★ HODL単体で 50,000 pt を超えると、一気に「課金王 クジラ 🐳」になります！</span>
+                        <li style="margin-top: 8px;"><strong>🧑 [Adult] 大人期 (20,000 〜 99,999 pt)</strong> <span style="color:#ffea00; font-size:11px;">(全15種)</span>
+                            <br>1位と2位のコマンドの比率（組み合わせ）によって**15種類すべての大人**に進化します！
+                            <br>・🛡️ HODL最多＆🔧 BUIDL 2位 ⇒ <span class="highlight">モグラ 🦫</span>
+                            <br>・🛡️ HODL最多＆🚀 FOMO 2位 ⇒ <span class="highlight">ララマ 🦙</span>
+                            <br>・🛡️ HODL最多＆📉 SELL 2位 ⇒ <span class="highlight">サトシボット 🤖</span>
+                            <br>・🛡️ HODL単独圧倒 ⇒ <span class="highlight">HODLer 亀 🐢</span>
+                            <br>・🚀 FOMO最多＆🛡️ HODL 2位 ⇒ <span class="highlight">ドージ騎士 🐕</span> / 🚀 FOMO単独圧倒 ⇒ <span class="highlight">ウサギ 🐰</span>
+                            <br>・📉 SELL最多＆🔧 BUIDL 2位 ⇒ <span class="highlight">詐欺師(👿)</span> / 📉 SELL＆🚀 FOMO 2位 ⇒ <span class="highlight">パンプ魔 😈</span> など
+                            <br><span class="highlight" style="color:#ffea00;">★超レア最終★ 誰もが認めるガチホ勢：HODL単体で 50,000 pt を超えると、一気に「王様クジラ 🐳」になります！</span>
                         </li>
-                        <li style="margin-top: 8px;"><strong>摸 伝説期 (100,000 pt 〜)</strong>
-                            <br>すべての歴史を乗り越えた最終の姿：<span class="highlight">オリジナルHODLマスター 摸</span>
+                        <li style="margin-top: 8px;"><strong>摸 [Senior/Special] 伝説期 (100,000 pt 〜)</strong> <span style="color:#ffea00; font-size:11px;">(全4種)</span>
+                            <br>究極の4神仙形態に到達。
+                            <br>・HODL＋BUIDLが1位2位 ⇒ <span class="highlight">チィティ 😇 (BLOCKCHAIN DEITY)</span>
+                            <br>・BUIDL＋FOMOが1位2位 ⇒ <span class="highlight">デフィアクマジ 🧙‍♂️ (DEFI ARCHMAGE)</span>
+                            <br>・HODL＋FOMOが1位2位 ⇒ <span class="highlight">エチュアルワイベーン 🐉 (ETHEREAL WYVERN)</span>
+                            <br>・圧倒的なガチホ一筋 ⇒ <span class="highlight">オリジナル HODL マスター 摸</span>
                         </li>
                     </ul>
 
-                    <!-- ④ 死亡と自動復活（サバイブ）に関する解説 -->
-                    <p style="margin-top:12px;"><span style="color:#ff5252; font-weight:bold;">⚠️ 滅亡（全滅）条件：</span>合計 5,000 pt 以上の状態で、<strong>📉 SELL の獲得ポイントが全体の 60% 以上</strong>に達すると、どの世代からでも一発でお墓（ゲームオーバー）へ引きずり込まれます。</p>
+                    <!-- ④ 死亡条件と自動蘇生ルールの明記 -->
+                    <p style="margin-top:12px;"><span style="color:#ff5252; font-weight:bold;">⚠️ 滅亡（全滅）条件：</span>合計 5,000 pt 以上の状態で、<strong>📉 SELL の獲得ポイントが全体の 60% 以上</strong>に達すると、どの世代からでも一発でお墓（ゲームオーバー）へ引きずり込まれ、<span class="highlight" style="color:#ff5252;">ブロックチェーンの海 🪦 (昇天)</span>へと送られます。</p>
                     <p style="font-size:12px; color:#ff8a80; background:#331515; padding:8px; border-radius:4px; border-left:3px solid #ff5252;">
                         <strong>💡 復活の仕組み:</strong> 全滅してしまっても心配ありません。みんなで「HODL」などのコメントや投げ銭ブーストを重ねて、<strong>SELLの比率を全体の60%未満に引き下げれば、即座に本来の世代のキャラクターとして自動的に復活</strong>します！
                     </p>
