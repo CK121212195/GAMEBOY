@@ -3,266 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satoっち - Lightning育成ゲーム</title>
+    <title>Satoっち - Crypto Virtual Pet</title>
+    <!-- レトロなドットフォントを読み込み -->
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #d8f1f8; /* 画像の背景のような水色 */
+            --device-color: #f8f9fa;
+            --screen-bg: #9ea78b; /* レトロ液晶カラー */
+            --screen-border: #2c3e50;
+            --text-color: #1a1a1a;
+            --btn-color: #ff9900; /* ビットコインオレンジ */
+        }
+
         body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #2c3e50;
-            color: #ecf0f1;
+            font-family: 'DotGothic16', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(rgba(0,150,255,0.05) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0,150,255,0.05) 2px, transparent 2px);
+            background-size: 30px 30px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            flex-direction: column;
+            color: var(--text-color);
         }
+
+        /* 仮想デバイスの外観 */
         #device {
-            background-color: #f1c40f;
-            width: 300px;
-            height: 400px;
-            border-radius: 150px 150px 100px 100px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            background-color: var(--device-color);
+            width: 320px;
+            height: 480px;
+            border-radius: 160px 160px 120px 120px;
+            box-shadow: 
+                inset -10px -10px 20px rgba(0,0,0,0.1),
+                10px 20px 30px rgba(0,0,0,0.2),
+                0 0 0 4px #e0e0e0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 30px 20px;
             position: relative;
         }
+
+        .brand {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        /* 液晶画面 */
+        #screen-bezel {
+            background-color: var(--screen-border);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: inset 0 5px 10px rgba(0,0,0,0.5);
+        }
+
         #screen {
-            background-color: #95a5a6;
+            background-color: var(--screen-bg);
             width: 200px;
             height: 200px;
-            border-radius: 20px;
-            margin-top: 30px;
-            border: 4px solid #7f8c8d;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+            border-radius: 5px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
             position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
         }
-        #stats {
+
+        /* 液晶のピクセルグリッド線 */
+        #screen::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 4px 4px;
+            pointer-events: none;
+        }
+
+        /* ステータスバー */
+        #top-ui {
             display: flex;
             justify-content: space-between;
+            padding: 4px 6px;
             font-size: 12px;
-            padding: 5px 10px;
-            background: rgba(0,0,0,0.1);
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            z-index: 1;
         }
-        #character-area {
+
+        #sats-balance {
+            font-weight: bold;
+        }
+
+        /* キャラクター表示エリア */
+        #main-view {
             flex-grow: 1;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 60px;
-            transition: all 0.3s ease;
+            z-index: 1;
         }
-        .bounce { animation: bounce 0.5s infinite alternate; }
-        .happy { animation: spin 1s; }
-        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-20px); } }
-        @keyframes spin { 100% { transform: rotate(360deg) scale(1.5); } }
-        
-        #buttons {
+
+        #character {
+            font-size: 64px; /* ここを後で<img>タグやドット絵CSSに置き換えます */
+            line-height: 1;
+            transition: transform 0.2s;
+            /* ドット絵を使う場合は下記を有効化 */
+            /* image-rendering: pixelated; */ 
+        }
+
+        #char-name {
+            font-size: 12px;
+            margin-top: 10px;
+            background: rgba(255,255,255,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* アニメーション */
+        .idle { animation: bounce 1s infinite alternate steps(2); }
+        .happy { animation: jump 0.5s 2 alternate; }
+        .eat { animation: shake 0.3s 2 alternate; }
+
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+        @keyframes jump { from { transform: translateY(0); } to { transform: translateY(-20px) scale(1.1); } }
+        @keyframes shake { 0% { transform: translateX(-5px); } 100% { transform: translateX(5px); } }
+
+        /* ハードウェアボタン */
+        #hardware-buttons {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin-top: 30px;
+            justify-content: space-between;
+            width: 180px;
+            margin-top: 40px;
         }
-        .btn {
-            background-color: #e74c3c;
-            width: 50px;
-            height: 50px;
+
+        .hw-btn {
+            background-color: var(--btn-color);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 3px solid #c0392b;
+            border: none;
+            box-shadow: 0 6px 0 #cc7a00, inset 0 -2px 5px rgba(0,0,0,0.2);
             cursor: pointer;
-            box-shadow: 0 5px 0 #c0392b;
-            font-size: 14px;
-            color: white;
-            font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-        .btn:active {
-            transform: translateY(5px);
-            box-shadow: none;
-        }
-        #logs { margin-top: 20px; font-size: 14px; text-align: center; height: 40px; }
-        
-        /* Lightning課金ボタン */
-        #lightning-btn {
-            margin-top: 20px;
-            background-color: #f39c12;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
             font-size: 16px;
+            transition: all 0.1s;
         }
-        #lightning-btn:hover { background-color: #e67e22; }
+
+        .hw-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #cc7a00, inset 0 -2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 下部の情報＆課金UI */
+        #bottom-panel {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #message-box {
+            background: white;
+            border: 3px solid #2c3e50;
+            padding: 10px 15px;
+            border-radius: 8px;
+            width: 280px;
+            text-align: center;
+            font-size: 14px;
+            min-height: 20px;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+
+        .lightning-btn {
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lightning-btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
 
+    <!-- デバイス本体 -->
     <div id="device">
-        <div id="screen">
-            <div id="stats">
-                <span>満腹: <span id="hunger-val">10</span></span>
-                <span>機嫌: <span id="happy-val">10</span></span>
-            </div>
-            <div id="character-area" class="bounce">🥚</div>
-        </div>
+        <div class="brand">BitGotchi</div>
         
-        <div id="buttons">
-            <div class="btn" onclick="feed()">🍚</div>
-            <div class="btn" onclick="play()">🎾</div>
-            <div class="btn" onclick="clean()">🧹</div>
+        <div id="screen-bezel">
+            <div id="screen">
+                <!-- ステータスUI -->
+                <div id="top-ui">
+                    <span id="stats-display">🍚<span id="hunger">4</span> 💖<span id="happy">4</span></span>
+                    <span id="sats-balance">⚡ <span id="sats">0</span></span>
+                </div>
+                
+                <!-- キャラクターUI -->
+                <div id="main-view">
+                    <div id="character" class="idle">🧊</div>
+                    <div id="char-name">ジェネシス・ブロック</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ボタンUI -->
+        <div id="hardware-buttons">
+            <button class="hw-btn" onclick="feed()" title="ごはん">🍚</button>
+            <button class="hw-btn" onclick="play()" title="あそぶ">🎮</button>
+            <button class="hw-btn" onclick="clean()" title="そうじ">🧹</button>
         </div>
     </div>
 
-    <button id="lightning-btn" onclick="tipSats()">⚡ 10 sats 投げ銭して進化！</button>
-    
-    <div id="logs">Satoっちが生まれそう...</div>
+    <!-- アプリUI（スマホ等でのゲーム外の表示） -->
+    <div id="bottom-panel">
+        <div id="message-box">ジェネシス・ブロックが誕生した！</div>
+        <button class="lightning-btn" onclick="tipSats()">
+            <span>⚡ 100 sats 投げ銭する</span>
+        </button>
+    </div>
 
     <script>
-        // キャラクターの進化ツリー（簡易版）
-        const characters = [
-            { stage: 0, emoji: '🥚', name: 'タマゴ' },
-            { stage: 1, emoji: '🐥', name: 'ベビー' },
-            { stage: 2, emoji: '🐧', name: 'キッズ' },
-            { stage: 3, emoji: '🐉', name: 'ドラゴン（大人）' },
-            { stage: -1, emoji: '🪦', name: 'お墓' }
-        ];
+        // --- 1. キャラクターデータベース（全30体） ---
+        // ※プロトタイプのため、絵文字を割り当てています。
+        // ※本番環境では 'emoji' の部分を 'image: "img/adult/whale.png"' のように画像パスに変更します。
+        const EVOLUTION_TREE = {
+            egg: [{ id: 'genesis', name: 'ジェネシス・ブロック', emoji: '🧊' }],
+            baby: [
+                { id: 'btc_kun', name: 'ビットくん', emoji: '👦' },
+                { id: 'alt_chan', name: 'アルトちゃん', emoji: '🎀' },
+                { id: 'shiba_baby', name: 'シバいぬベビー', emoji: '🐶' }
+            ],
+            kids: {
+                high: [{ id: 'smart_contract', name: 'スマートコントラクト', emoji: '👶' }, { id: 'dao_child', name: 'DAOカイド', emoji: '👼' }],
+                avg: [{ id: 'ledger_pal', name: 'レデジーパル', emoji: '📟' }, { id: 'nodeling', name: 'ノロデリング', emoji: '🦠' }],
+                low: [{ id: 'bagholder', name: 'バグホルダー', emoji: '🎒' }, { id: 'fomo_tot', name: 'フモートット', emoji: '👾' }]
+            },
+            adult: {
+                good: [
+                    { id: 'hodler', name: 'HODLER, 亀', emoji: '🐢' },
+                    { id: 'trader', name: 'TRADER, ウサギ', emoji: '🐰' },
+                    { id: 'miner', name: 'MINER, モグラ', emoji: '🐹' },
+                    { id: 'whale', name: 'WHALE, 王様', emoji: '🐳' }, // 投げ銭が多いと進化しやすい
+                    { id: 'doge', name: 'DOGE, 騎士', emoji: '🐕' }
+                ],
+                neutral: [
+                    { id: 'satoshi_bot', name: 'SATOSHI-BOT', emoji: '🤖' },
+                    { id: 'defi_wizard', name: 'DEFI-WIZARD', emoji: '🧙‍♂️' },
+                    { id: 'nf_pet', name: 'NF-PET', emoji: '🐸' },
+                    { id: 'staking_llama', name: 'STAKING-LLAMA', emoji: '🦙' },
+                    { id: 'memecoin_cat', name: 'MEMECOIN-CAT', emoji: '🐱' }
+                ],
+                bad: [
+                    { id: 'rugpull', name: 'RUGPULL-SCAMP', emoji: '😈' },
+                    { id: 'stablecoin', name: 'STABLECOIN-ROCK', emoji: '🪨' },
+                    { id: 'hardfork', name: 'HARDFORK-TWINS', emoji: '👯‍♂️' },
+                    { id: 'gas_fee', name: 'GAS-FEE-CLOUD', emoji: '☁️' },
+                    { id: 'pump_dump', name: 'PUMP-AND-DUMP-IMP', emoji: '👺' }
+                ]
+            },
+            senior: [
+                { id: 'deity', name: 'BLOCKCHAIN DEITY', emoji: '👼' },
+                { id: 'archmage', name: 'DEFI ARCHMAGE', emoji: '🧙‍♂️' },
+                { id: 'wyvern', name: 'ETHEREAL WYVERN', emoji: '🐉' },
+                { id: 'hodl_master', name: 'ORIGINAL HODL MASTER', emoji: '🎅' }
+            ],
+            graveyard: [
+                { id: 'ascension', name: 'ブロックチェーンの海', emoji: '👻' },
+                { id: 'tomb', name: 'HODLの墓', emoji: '🪦' }
+            ]
+        };
 
+        // --- 2. ゲームの状態（ステート） ---
         let state = {
-            hunger: 5,
-            happiness: 5,
-            stage: 0,
+            stage: 'egg', // egg, baby, kids, adult, senior, dead
+            currentChar: EVOLUTION_TREE.egg[0],
             age: 0,
+            hunger: 4, // 0〜4
+            happy: 4,  // 0〜4
+            careMistakes: 0, // 0になった回数。進化に影響
+            satsTipped: 0,   // 課金・投げ銭額。レア進化に影響
             isAlive: true
         };
 
-        const charEl = document.getElementById('character-area');
-        const hungerEl = document.getElementById('hunger-val');
-        const happyEl = document.getElementById('happy-val');
-        const logEl = document.getElementById('logs');
-
-        function updateScreen() {
-            if (!state.isAlive) return;
-
-            hungerEl.innerText = state.hunger;
-            happyEl.innerText = state.happiness;
+        // --- 3. UI更新関数 ---
+        function updateUI() {
+            document.getElementById('hunger').innerText = state.hunger;
+            document.getElementById('happy').innerText = state.happy;
+            document.getElementById('sats').innerText = state.satsTipped;
             
-            // 進化ロジック
-            if (state.stage === 0 && state.age > 5) evolve(1);
-            if (state.stage === 1 && state.age > 15) evolve(2);
-            // ※ステージ3（大人）への進化は投げ銭（課金）でのみ発生するようにする
+            const charEl = document.getElementById('character');
+            charEl.innerText = state.currentChar.emoji;
+            document.getElementById('char-name').innerText = state.currentChar.name;
+        }
 
-            // 死亡ロジック
-            if (state.hunger <= 0 || state.happiness <= 0) {
-                die();
+        function showMessage(text) {
+            document.getElementById('message-box').innerText = text;
+        }
+
+        function playAnimation(animName) {
+            const charEl = document.getElementById('character');
+            charEl.classList.remove('idle');
+            charEl.classList.add(animName);
+            setTimeout(() => {
+                charEl.classList.remove(animName);
+                if(state.isAlive) charEl.classList.add('idle');
+            }, 1000);
+        }
+
+        // --- 4. お世話アクション ---
+        function feed() {
+            if(!state.isAlive) return;
+            if(state.hunger < 4) {
+                state.hunger++;
+                showMessage("ごはんを食べて満腹度が上がった！");
+                playAnimation('eat');
+                updateUI();
+            } else {
+                showMessage("もうお腹いっぱいみたい。");
             }
         }
 
-        function evolve(newStage) {
-            state.stage = newStage;
-            charEl.innerText = characters.find(c => c.stage === newStage).emoji;
-            logEl.innerText = `${characters.find(c => c.stage === newStage).name} に進化した！`;
-            charEl.classList.add('happy');
-            setTimeout(() => charEl.classList.remove('happy'), 1000);
+        function play() {
+            if(!state.isAlive) return;
+            if(state.hunger > 0 && state.happy < 4) {
+                state.happy++;
+                state.hunger--; // 遊ぶとお腹が減る
+                showMessage("遊んでご機嫌になった！");
+                playAnimation('happy');
+                updateUI();
+            } else if (state.hunger === 0) {
+                showMessage("お腹が空いてて遊べないよ！");
+            }
+        }
+
+        function clean() {
+            if(!state.isAlive) return;
+            showMessage("ブロックチェーンのゴミを掃除した！");
+        }
+
+        // --- 5. 課金（Lightning Network）連携モック ---
+        function tipSats() {
+            if(!state.isAlive) {
+                showMessage("魂はすでにブロックチェーンの海にあります...");
+                return;
+            }
+            // ※ここで実際のWebLN APIを呼び出します
+            state.satsTipped += 100;
+            state.happy = 4;
+            state.hunger = 4;
+            showMessage(`⚡ 100 sats ありがとう！ ${state.currentChar.name}は大喜び！`);
+            playAnimation('happy');
+            updateUI();
+            
+            // 投げ銭の勢いで即時進化する隠し要素（テスト用）
+            if(state.satsTipped >= 500 && state.stage === 'kids') {
+                evolveTo('adult', true);
+            }
+        }
+
+        // --- 6. 進化ロジック ---
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+        function evolveTo(nextStage, forceWhale = false) {
+            state.stage = nextStage;
+            let nextChar = null;
+
+            if(nextStage === 'baby') {
+                nextChar = getRandom(EVOLUTION_TREE.baby);
+            } 
+            else if(nextStage === 'kids') {
+                if(state.careMistakes === 0) nextChar = getRandom(EVOLUTION_TREE.kids.high);
+                else if(state.careMistakes < 3) nextChar = getRandom(EVOLUTION_TREE.kids.avg);
+                else nextChar = getRandom(EVOLUTION_TREE.kids.low);
+            }
+            else if(nextStage === 'adult') {
+                if(forceWhale || state.satsTipped >= 300) {
+                    // 投げ銭が多いとWHALEなど優良キャラに確定
+                    nextChar = EVOLUTION_TREE.adult.good.find(c => c.id === 'whale') || getRandom(EVOLUTION_TREE.adult.good);
+                } else if(state.careMistakes === 0) {
+                    nextChar = getRandom(EVOLUTION_TREE.adult.good);
+                } else if(state.careMistakes < 4) {
+                    nextChar = getRandom(EVOLUTION_TREE.adult.neutral);
+                } else {
+                    nextChar = getRandom(EVOLUTION_TREE.adult.bad); // RUGPULLなどに
+                }
+            }
+            else if(nextStage === 'senior') {
+                nextChar = getRandom(EVOLUTION_TREE.senior);
+            }
+
+            if(nextChar) {
+                state.currentChar = nextChar;
+                showMessage(`おや！？\n${nextChar.name} に進化した！`);
+                playAnimation('happy');
+                updateUI();
+            }
         }
 
         function die() {
             state.isAlive = false;
-            charEl.innerText = '🪦';
-            charEl.classList.remove('bounce');
-            logEl.innerText = "ブロックチェーンの海へ還りました...";
+            state.stage = 'dead';
+            state.currentChar = (state.satsTipped > 0) ? EVOLUTION_TREE.graveyard[0] : EVOLUTION_TREE.graveyard[1];
+            document.getElementById('character').classList.remove('idle');
+            showMessage("天寿を全うし、ブロックチェーンの海へ還りました...");
+            updateUI();
         }
 
-        function feed() {
-            if (!state.isAlive) return;
-            state.hunger = Math.min(10, state.hunger + 2);
-            logEl.innerText = "ご飯をたべた！";
-            updateScreen();
-        }
-
-        function play() {
-            if (!state.isAlive) return;
-            state.happiness = Math.min(10, state.happiness + 2);
-            state.hunger -= 1; // 遊ぶとお腹が減る
-            logEl.innerText = "遊んでご機嫌！";
-            updateScreen();
-        }
-
-        function clean() {
-            if (!state.isAlive) return;
-            logEl.innerText = "お部屋が綺麗になった！";
-        }
-
-        // WebLN (Lightning Network) を使った投げ銭シミュレーション
-        async function tipSats() {
-            if (!state.isAlive) {
-                alert("お墓には投げ銭できません（お花をお供えする機能を今後追加！）");
-                return;
-            }
-
-            try {
-                // AlbyなどのWebLN拡張機能がブラウザにあるかチェック
-                if (typeof window.webln !== 'undefined') {
-                    await window.webln.enable();
-                    logEl.innerText = "Lightning決済待ち...";
-                    
-                    // ※本来はバックエンド(LNbits等)でInvoiceを生成してここに渡す
-                    // 今回はダミーの送金リクエスト（拡張機能が起動します）
-                    await window.webln.keysend({
-                        destination: "YOUR_NODE_PUBKEY", // 自分のノードまたはZebedee等のアドレス
-                        amount: 10,
-                        customRecords: {
-                            696969: "Satoっちへの投げ銭"
-                        }
-                    });
-                    
-                    successTip();
-                } else {
-                    // WebLNがない場合のシミュレーション（通常ブラウザ用）
-                    const conf = confirm("Lightning拡張機能が見つかりません。[OK]を押すと投げ銭が成功したと仮定してシミュレートします。");
-                    if(conf) successTip();
-                }
-            } catch (err) {
-                logEl.innerText = "決済がキャンセルされました。";
-            }
-        }
-
-        function successTip() {
-            logEl.innerText = "⚡10 sats ありがとう！！⚡";
-            state.happiness = 10;
-            state.hunger = 10;
-            
-            // 投げ銭をすると特別に大人（ドラゴン）に進化する
-            if(state.stage < 3) {
-                evolve(3);
-                logEl.innerText = "投げ銭のパワーでレア進化！！";
-            }
-            
-            charEl.classList.add('happy');
-            setTimeout(() => charEl.classList.remove('happy'), 1000);
-            updateScreen();
-        }
-
-        // 時間経過（ゲームループ）
+        // --- 7. ゲームループ（時間の進行） ---
         setInterval(() => {
-            if (!state.isAlive) return;
-            state.age += 1;
-            
-            // 時間経過でお腹と機嫌が減る
-            if (state.age % 5 === 0) state.hunger -= 1;
-            if (state.age % 8 === 0) state.happiness -= 1;
-            
-            updateScreen();
-        }, 1000); // 1秒 = 1歳（テスト用設定）
+            if(!state.isAlive) return;
+            state.age++;
 
+            // パラメータの減少
+            if(state.age % 10 === 0 && state.hunger > 0) state.hunger--;
+            if(state.age % 15 === 0 && state.happy > 0) state.happy--;
+
+            // お世話ミス（Care Mistakes）のカウント
+            if(state.hunger === 0 || state.happy === 0) {
+                state.careMistakes++;
+            }
+
+            // 年齢（時間経過）による自動進化（テスト用に短く設定）
+            if(state.stage === 'egg' && state.age > 5) evolveTo('baby');
+            else if(state.stage === 'baby' && state.age > 15) evolveTo('kids');
+            else if(state.stage === 'kids' && state.age > 30) evolveTo('adult');
+            else if(state.stage === 'adult' && state.age > 60 && state.careMistakes < 5) evolveTo('senior');
+            
+            // 餓死や寿命
+            if(state.hunger === 0 && state.happy === 0 && state.careMistakes > 10) die();
+            if(state.age > 100) die();
+
+            updateUI();
+        }, 1000); // 1秒 = 1ゲーム内時間
+
+        // 初期化
+        updateUI();
     </script>
 </body>
 </html>
