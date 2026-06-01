@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>みんなのジェネシス・ブロック (Twitch Plays HODL)</title>
+    
+    <!-- 🥚 ファビコン設定 -->
+    <link rel="icon" href="images/egg.png" type="image/png">
+
+    <!-- 📢 OGP (Open Graph Protocol) ＆ Twitterカード設定 -->
+    <meta property="og:title" content="みんなのジェネシス・ブロック">
+    <meta property="og:description" content="みんなでsatsを投資して1つのキャラクターを共同育成するソーシャルゲーム！最悪の暴落（SELLが60%以上）を耐え抜き、オリジナルHODLマスターへ進化させよう！">
+    <meta property="og:image" content="evolution_tree.jpg">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="みんなのジェネシス・ブロック">
+    <meta name="twitter:description" content="みんなでsatsを投資して1つのキャラクターを共同育成するソーシャルゲーム！最悪の暴落（SELLが60%以上）を耐え抜き、オリジナルHODLマスターへ進化させよう！">
+    <meta name="twitter:image" content="evolution_tree.jpg">
+
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -122,6 +136,36 @@
                 </div>
             </div>
 
+            <!-- 🧪 ② 【開発・検証用】テスト・デバッグ進化パネル (完全復活) -->
+            <div class="debug-panel">
+                <h4>🧪 【開発・検証用】テスト・デバッグ進化パネル</h4>
+                <p style="font-size: 11px; color: #aaa; margin-top: -4px; margin-bottom: 12px;">※検証用シミュレーターです。本番時には削除またはコメントアウトしてご活用ください。</p>
+                
+                <div class="debug-row">
+                    <label for="debug-char-select" style="font-weight:bold;">① グラフィックバグ・画像表示テスト (全30キャラクター選択可能):</label>
+                    <div style="display:flex; gap:8px; margin-top:4px;">
+                        <select id="debug-char-select" style="flex:1; padding:6px; font-size:13px; background:#333; color:#fff; border:1px solid #555;">
+                            <!-- JS側で自動的に30キャラクターが挿入されます -->
+                        </select>
+                        <button onclick="testForceEvolve()" style="background:#2196F3; font-size:13px; padding:6px 12px; border-radius:4px; height:36px;">強制表示 👁️</button>
+                    </div>
+                </div>
+
+                <div class="debug-row" style="margin-top:15px;">
+                    <label style="font-weight:bold;">② 進化段階・メーターのしきい値テスト (仮想ポイント加算):</label>
+                    <div class="debug-btn-grid">
+                        <button onclick="addMockPoints('HODL', 1000)" style="background:#e65100; color:#fff;">+1,000 pt (🛡️ HODL)</button>
+                        <button onclick="addMockPoints('FOMO', 1000)" style="background:#b71c1c; color:#fff;">+1,000 pt (🚀 FOMO)</button>
+                        <button onclick="addMockPoints('BUIDL', 1000)" style="background:#0d47a1; color:#fff;">+1,000 pt (🔧 BUIDL)</button>
+                        <button onclick="addMockPoints('SELL', 1000)" style="background:#37474f; color:#fff;">+1,000 pt (📉 SELL)</button>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                        <button onclick="addMockDeaths(1)" style="background:#5d4037; font-size:11px; padding:6px 12px; border-radius:4px;">全滅回数 +1 💀</button>
+                        <button onclick="resetMockPoints()" style="background:#c62828; font-size:11px; padding:6px 12px; border-radius:4px;">シミュレーション初期化 🔄</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 📢 ① CRYPTO-ALERTS ツイート表示枠 (直近最新の1件に常時限定 ＆ 日本語ブラウザ用美化ボタン搭載) -->
             <div class="twitter-board">
                 <h3>📢 CRYPTO-ALERTS リアルタイム速報 (@Nishi8mAlert)</h3>
@@ -131,6 +175,25 @@
                         公式X (@Nishi8mAlert) で直接ツイートを見る ↗
                     </a>
                     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                </div>
+            </div>
+
+            <!-- 🎮 Bitcoiner 姉妹サイト・関連ミニゲームカード -->
+            <div class="sister-sites-board">
+                <h3>🎮 Bitcoiner 姉妹サイト・関連ミニゲーム</h3>
+                <div class="sister-btn-container">
+                    <a href="https://ck121212195.github.io/BITPUYO/" target="_blank" class="sister-link-btn">
+                        👾 BITPUYO
+                        <span>ビットコイン・ぷよぷよ</span>
+                    </a>
+                    <a href="https://ck121212195.github.io/market-price/" target="_blank" class="sister-link-btn">
+                        📈 Market Price
+                        <span>BTC相場・価格チャート</span>
+                    </a>
+                    <a href="https://ck121212195.github.io/Bitcoin-Run/" target="_blank" class="sister-link-btn">
+                        🏃‍♂️ Bitcoin Run
+                        <span>BTCラン・アクション</span>
+                    </a>
                 </div>
             </div>
 
@@ -231,7 +294,7 @@
                     <div id="char-counter" class="char-counter">0 / 500</div>
                 </div>
 
-                <!-- ⚡ Boost オプション (③ デフォルト値を 10 sats に、テキスト表現を『投資』に変更) -->
+                <!-- ⚡ Boost オプション -->
                 <div class="boost-option">
                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                         <input type="checkbox" id="boost-check">
