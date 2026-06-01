@@ -83,7 +83,7 @@ window.onload = () => {
     });
   }
 
-  // 文字数カウント連携
+  // 文字数カウント連携 (③ 掲示板に書き込める文字数の表示)
   const msgInput = document.getElementById("user-msg");
   const charCounter = document.getElementById("char-counter");
   if (msgInput && charCounter) {
@@ -183,7 +183,7 @@ function updateScoreUI(votes, deaths = 0) {
   document.getElementById("death-count").innerText = deaths.toLocaleString();
   document.getElementById("total-pt").innerText = totalPts.toLocaleString();
 
-  // ④ 滅亡リスク（SELL比率）の計算と描画
+  // ④ 滅亡リスク（SELL比率）の計算と表示
   const sellRatio = totalPts > 0 ? (scores.SELL / totalPts) : 0;
   const sellPercentage = Math.round(sellRatio * 100);
   document.getElementById("sell-ratio-val").innerText = sellPercentage + "%";
@@ -285,7 +285,7 @@ function updateScoreUI(votes, deaths = 0) {
         if (max2 === "HODL") character = CHARACTERS.ADULT_STABLECOIN_ROCK; // スタブルコーンロック
         else if (max2 === "FOMO") character = CHARACTERS.ADULT_PUMP_DUMP_IMP; // パンプダンプイマプ
         else if (max2 === "BUIDL") character = CHARACTERS.ADULT_RUGPULL_SCAMP; // リグプルルースケンプ
-        else character = CHARACTERS.ADULT_RUGPULL_SCAMP;
+        else character = CHARACTERS.ADUGY_RUGPULL_SCAMP;
       }
     }
   } 
@@ -310,6 +310,22 @@ function updateScoreUI(votes, deaths = 0) {
   document.getElementById("character-img").src = character.img;
   document.getElementById("evolution-status").innerText = character.name;
   document.getElementById("current-generation").innerText = "現在: " + genName;
+  
+  // モニターバッジ部分のSFネオンテキストの更新
+  const badge = document.getElementById("character-badge-text");
+  if (badge) {
+    if (character === CHARACTERS.GRAVEYARD) {
+      badge.innerText = "⚠️ SYSTEM CRITICAL";
+      badge.style.color = "#ff5252";
+      badge.style.borderColor = "#ff5252";
+      badge.style.boxShadow = "0 0 10px rgba(255, 82, 82, 0.3)";
+    } else {
+      badge.innerText = "TARGET ACQUIRED";
+      badge.style.color = "#f7931a";
+      badge.style.borderColor = "rgba(247, 147, 26, 0.4)";
+      badge.style.boxShadow = "0 0 10px rgba(247, 147, 26, 0.15)";
+    }
+  }
   
   // プログレスバーの更新
   let progress = 100;
