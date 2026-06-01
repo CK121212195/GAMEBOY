@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>みんなのジェネシス・ブロック (Twitch Plays HODL)</title>
     <link rel="stylesheet" href="style.css">
-    <!-- QRコード生成ライブラリ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
@@ -18,7 +17,6 @@
             </div>
             
             <div class="screen">
-                <!-- 背景：TradingViewチャート -->
                 <div id="tradingview-widget">
                     <div class="tradingview-widget-container">
                       <div id="tv_chart"></div>
@@ -42,9 +40,9 @@
                     </div>
                 </div>
 
-                <!-- キャラクター表示 -->
+                <!-- キャラクター表示（ここを 0.png に修正しました） -->
                 <div class="character-container">
-                    <img id="character-img" src="https://illustcenter.com/wp-content/uploads/2021/10/epc0082.png" alt="Character">
+                    <img id="character-img" src="0.png" alt="Character">
                 </div>
             </div>
 
@@ -63,9 +61,7 @@
         <!-- 右側：2ch風実況板＆コマンド入力 -->
         <div class="chat-area">
             <h2>実況掲示板</h2>
-            <div id="chat-box" class="chat-box">
-                <!-- コメントがここに追加される -->
-            </div>
+            <div id="chat-box" class="chat-box"></div>
 
             <div class="input-area">
                 <input type="text" id="user-name" placeholder="名前 (省略可: 名無しサトシ)" maxlength="15">
@@ -85,7 +81,6 @@
                 <button id="send-btn" onclick="sendMessage()">書き込む</button>
             </div>
             
-            <!-- 決済モーダル -->
             <div id="payment-modal" class="modal" style="display: none;">
                 <div class="modal-content">
                     <h3>Lightning決済 (1 sat)</h3>
