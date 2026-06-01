@@ -40,13 +40,17 @@
                     </div>
                 </div>
 
-                <!-- キャラクター表示エリア -->
+                <!-- 🚀 サイバーホログラム仕様に美麗化したキャラクター表示エリア -->
                 <div class="character-container">
-                    <img id="character-img" src="images/egg.png" alt="Character" onerror="this.src='https://placehold.co/250x250/000/f7931a?text=Image+Not+Found'">
+                    <div class="character-frame">
+                        <div class="holo-ring"></div>
+                        <img id="character-img" src="images/egg.png" alt="Character" onerror="this.src='https://placehold.co/250x250/000/f7931a?text=Image+Not+Found'">
+                    </div>
+                    <div class="character-badge" id="character-badge-text">TARGET ACQUIRED</div>
                 </div>
             </div>
 
-            <!-- ④ 世代や全滅回数が直感的に伝わる総合ステータスボード -->
+            <!-- ④ 世代や死亡情報などが初めての人にもひと目で伝わるUI構造 -->
             <div class="status-board">
                 <h3>現在の育成ステータス</h3>
                 <div class="status-header">
@@ -118,7 +122,7 @@
                     <label for="debug-char-select" style="font-weight:bold;">① グラフィックバグ・画像表示テスト (全30キャラクター選択可能):</label>
                     <div style="display:flex; gap:8px; margin-top:4px;">
                         <select id="debug-char-select" style="flex:1; padding:6px; font-size:13px; background:#333; color:#fff; border:1px solid #555;">
-                            <!-- JS側で動的に30キャラクターが挿入されます -->
+                            <!-- JS側で自動的に30キャラクターが挿入されます -->
                         </select>
                         <button onclick="testForceEvolve()" style="background:#2196F3; font-size:13px; padding:6px 12px; border-radius:4px; height:36px;">強制表示 👁️</button>
                     </div>
@@ -163,6 +167,7 @@
                     <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
                     <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
 
+                    <!-- ② 進化条件・ロジックと解説の一致化（全30種対応） -->
                     <h4>3. 🧬 進化条件と分岐ルート</h4>
                     <p>みんなの合計ポイント（合計pt）で世代が進行し、その世代に達した時点での<strong>「各コマンドのポイント比率」</strong>で全30種類の姿へ分岐します。</p>
                     
@@ -224,11 +229,11 @@
                 <select id="command-select">
                     <option value="HODL">🛡️ HODL (ガチホ・防御)</option>
                     <option value="FOMO">🚀 FOMO (イケイケ・買い煽り)</option>
-                    <option value="BUIDL">🔧 BUIDL (開発・堅実)</option>
+                    <option value="BUIDL">🔧 BUIDL (開発・技術)</option>
                     <option value="SELL">📉 SELL (売却・恐怖)</option>
                 </select>
 
-                <!-- ① 最大500文字対応＆伸縮可能なテキストエリア -->
+                <!-- ③ 最大500文字対応＆伸縮可能なテキストエリア -->
                 <div class="textarea-container">
                     <textarea id="user-msg" placeholder="コメントを入力（最大500文字・枠を引き伸ばせます）" maxlength="500" rows="4"></textarea>
                     <div id="char-counter" class="char-counter">0 / 500</div>
