@@ -5,7 +5,7 @@
 // ※ ご自身のGASのWebアプリURLをここに設定してください
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxBQvh7ZChbWwQtWM2wf2BMt6rMtmbPBx9CGWZAEM2k-NJt8sysFuDoPxWBebIonJ3e/exec";
 
-// 🐣 【全30種類】ツリー完全同期キャラクター定義 (画像名も整合)
+// 🐣 【全30種類】ツリー完全同期キャラクター定義
 const CHARACTERS = {
   // --- Egg (1) ---
   EGG: { name: "🥚 GENESIS BLOCK EGG (ジェネシス・ブロック)", img: "images/egg.png" },
@@ -46,16 +46,11 @@ const CHARACTERS = {
   SENIOR_WYVERN: { name: "🐉 ETHEREAL WYVERN (エチュアル ワイベーン)", img: "images/senior_wyvern.png" },
   SENIOR_MASTER: { name: "摸 ORIGINAL HODL MASTER (オリジナル HODL マスター)", img: "images/senior_master.png" },
 
-  // --- Graveyard/Ascension (1/墓と昇天) ---
+  // --- Graveyard/Ascension (1/お墓) ---
   GRAVEYARD: { name: "🪦 BLOCKCHAIN SEA ASCENSION (ブロックチェーンの海)", img: "images/graveyard.png" }
 };
 
 let paymentChecker = null;
-let lastFetchedData = null; // リアルタイムデータを一時保持するキャッシュ
-
-// 🧪 デバッグ用の模擬加算ポイント
-let mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
-let mockDeaths = 0;
 
 // ─── 起動処理 ───
 window.onload = () => {
@@ -83,24 +78,13 @@ window.onload = () => {
     });
   }
 
-  // 文字数カウント連携 (③ 掲示板に書き込める文字数の表示)
+  // 文字数カウント連携
   const msgInput = document.getElementById("user-msg");
   const charCounter = document.getElementById("char-counter");
   if (msgInput && charCounter) {
     msgInput.addEventListener("input", () => {
       const length = msgInput.value.length;
       charCounter.textContent = `${length} / 500`;
-    });
-  }
-
-  // 🧪 デバッグ dropdown の動的設定
-  const debugSelect = document.getElementById("debug-char-select");
-  if (debugSelect) {
-    Object.entries(CHARACTERS).forEach(([key, char]) => {
-      const opt = document.createElement("option");
-      opt.value = key;
-      opt.textContent = char.name;
-      debugSelect.appendChild(opt);
     });
   }
 };
@@ -129,11 +113,8 @@ async function fetchData() {
     const data = await res.json();
     if (data.error) return;
     
-    lastFetchedData = data; // キャッシュに格納
     updateChatUI(data.chats);
-    
-    // 擬似ポイントと合算して描画
-    mergeAndRenderVotes();
+    updateScoreUI(data.votes, data.deaths || 0);
   } catch (e) {}
 }
 
@@ -285,7 +266,7 @@ function updateScoreUI(votes, deaths = 0) {
         if (max2 === "HODL") character = CHARACTERS.ADULT_STABLECOIN_ROCK; // スタブルコーンロック
         else if (max2 === "FOMO") character = CHARACTERS.ADULT_PUMP_DUMP_IMP; // パンプダンプイマプ
         else if (max2 === "BUIDL") character = CHARACTERS.ADULT_RUGPULL_SCAMP; // リグプルルースケンプ
-        else character = CHARACTERS.ADUGY_RUGPULL_SCAMP;
+        else character = CHARACTERS.ADULT_RUGPULL_SCAMP;
       }
     }
   } 
@@ -342,49 +323,6 @@ function updateScoreUI(votes, deaths = 0) {
     resTip.innerHTML = `※ゲームオーバー（お墓）になっても、みんなで「HODL」などを書き込んで<strong>SELLの比率を60%未満に下げればその場で即座に復活</strong>します！`;
     resTip.style.color = "#aaa";
   }
-}
-
-// ─── 🧪 【開発・テスト専用】強制表示・モック加算機能群 ───
-function testForceEvolve() {
-  const select = document.getElementById("debug-char-select");
-  if (!select) return;
-  const key = select.value;
-  const character = CHARACTERS[key];
-  if (!character) return;
-  
-  document.getElementById("character-img").src = character.img;
-  document.getElementById("evolution-status").innerText = "【テスト表示中】 " + character.name;
-  alert(`${character.name} のグラフィック表示とエラー検証を行います。画像が正しく表示されるか確認してください。`);
-}
-
-function addMockPoints(cmd, amount) {
-  mockVotes[cmd] += amount;
-  mergeAndRenderVotes();
-}
-
-function addMockDeaths(amount) {
-  mockDeaths += amount;
-  mergeAndRenderVotes();
-}
-
-function resetMockPoints() {
-  mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
-  mockDeaths = 0;
-  mergeAndRenderVotes();
-}
-
-function mergeAndRenderVotes() {
-  const baseVotes = lastFetchedData ? lastFetchedData.votes : { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
-  const baseDeaths = lastFetchedData ? (lastFetchedData.deaths || 0) : 0;
-  
-  const mergedVotes = {
-    HODL: (baseVotes.HODL || 0) + mockVotes.HODL,
-    FOMO: (baseVotes.FOMO || 0) + mockVotes.FOMO,
-    BUIDL: (baseVotes.BUIDL || 0) + mockVotes.BUIDL,
-    SELL: (baseVotes.SELL || 0) + mockVotes.SELL
-  };
-  
-  updateScoreUI(mergedVotes, baseDeaths + mockDeaths);
 }
 
 // ─── メッセージ送信処理 ───
