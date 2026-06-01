@@ -51,6 +51,11 @@ const CHARACTERS = {
 };
 
 let paymentChecker = null;
+let lastFetchedData = null; // リアルタイムデータを一時保持するキャッシュ
+
+// 🧪 デバッグ用の模擬加算ポイント
+let mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+let mockDeaths = 0;
 
 // ─── 起動処理 ───
 window.onload = () => {
@@ -78,13 +83,24 @@ window.onload = () => {
     });
   }
 
-  // 文字数カウント連携 (③ 掲示板に書き込める文字数の表示)
+  // 文字数カウント連携
   const msgInput = document.getElementById("user-msg");
   const charCounter = document.getElementById("char-counter");
   if (msgInput && charCounter) {
     msgInput.addEventListener("input", () => {
       const length = msgInput.value.length;
       charCounter.textContent = `${length} / 500`;
+    });
+  }
+
+  // 🧪 デバッグ dropdown の動的設定
+  const debugSelect = document.getElementById("debug-char-select");
+  if (debugSelect) {
+    Object.entries(CHARACTERS).forEach(([key, char]) => {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = char.name;
+      debugSelect.appendChild(opt);
     });
   }
 };
@@ -113,9 +129,11 @@ async function fetchData() {
     const data = await res.json();
     if (data.error) return;
     
+    lastFetchedData = data; // キャッシュに格納
     updateChatUI(data.chats);
-    // ④ 全滅回数をGASから取得、ない場合は0をフォールバック
-    updateScoreUI(data.votes, data.deaths || 0);
+    
+    // 擬似ポイントと合算して描画
+    mergeAndRenderVotes();
   } catch (e) {}
 }
 
@@ -218,21 +236,18 @@ function updateScoreUI(votes, deaths = 0) {
     genName = "👦 キッズ期";
     
     if (careRatio >= 0.65) {
-      // [High Care]：開発・保全が圧倒的
       character = CHARACTERS.KID_SMART; // スマートコントラクト
     } else if (careRatio >= 0.4) {
-      // [Avg Care]：標準的なコミュニティ熱量
       if (scores.BUIDL > scores.HODL) {
         character = CHARACTERS.KID_DAO; // DAO ガイド
       } else {
         character = CHARACTERS.KID_LEDGER; // レジャー・バル
       }
     } else {
-      // [Low Care]：投機や売りが多く開発意欲が低い
       if (max1 === "HODL") {
-        character = CHARACTERS.KID_NODELING; // ノドリング (低電力HODL)
+        character = CHARACTERS.KID_NODELING; // ノドリング
       } else if (max1 === "SELL") {
-        character = CHARACTERS.KID_BAG; // バグホルダー (ガチ掴み)
+        character = CHARACTERS.KID_BAG; // バグホルダー
       } else {
         character = CHARACTERS.KID_FOMO; // フモートット
       }
@@ -311,6 +326,49 @@ function updateScoreUI(votes, deaths = 0) {
     resTip.innerHTML = `※ゲームオーバー（お墓）になっても、みんなで「HODL」などを書き込んで<strong>SELLの比率を60%未満に下げればその場で即座に復活</strong>します！`;
     resTip.style.color = "#aaa";
   }
+}
+
+// ─── 🧪 【開発・テスト専用】強制表示・モック加算機能群 ───
+function testForceEvolve() {
+  const select = document.getElementById("debug-char-select");
+  if (!select) return;
+  const key = select.value;
+  const character = CHARACTERS[key];
+  if (!character) return;
+  
+  document.getElementById("character-img").src = character.img;
+  document.getElementById("evolution-status").innerText = "【テスト表示中】 " + character.name;
+  alert(`${character.name} のグラフィック表示とエラー検証を行います。画像が正しく表示されるか確認してください。`);
+}
+
+function addMockPoints(cmd, amount) {
+  mockVotes[cmd] += amount;
+  mergeAndRenderVotes();
+}
+
+function addMockDeaths(amount) {
+  mockDeaths += amount;
+  mergeAndRenderVotes();
+}
+
+function resetMockPoints() {
+  mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+  mockDeaths = 0;
+  mergeAndRenderVotes();
+}
+
+function mergeAndRenderVotes() {
+  const baseVotes = lastFetchedData ? lastFetchedData.votes : { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+  const baseDeaths = lastFetchedData ? (lastFetchedData.deaths || 0) : 0;
+  
+  const mergedVotes = {
+    HODL: (baseVotes.HODL || 0) + mockVotes.HODL,
+    FOMO: (baseVotes.FOMO || 0) + mockVotes.FOMO,
+    BUIDL: (baseVotes.BUIDL || 0) + mockVotes.BUIDL,
+    SELL: (baseVotes.SELL || 0) + mockVotes.SELL
+  };
+  
+  updateScoreUI(mergedVotes, baseDeaths + mockDeaths);
 }
 
 // ─── メッセージ送信処理 ───
