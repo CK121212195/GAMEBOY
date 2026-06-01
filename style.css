@@ -11,7 +11,7 @@ body {
     height: 100vh;
 }
 
-/* 左側ゲームエリア */
+/* ─── 左ゲームエリア ─── */
 .game-area {
     flex: 2;
     display: flex;
@@ -59,7 +59,7 @@ body {
 
 @keyframes bounce {
     0%, 100% { transform: translate(-50%, -50%); }
-    50% { transform: translate(-50%, -55%); }
+    50%       { transform: translate(-50%, -55%); }
 }
 
 .status-board {
@@ -75,7 +75,7 @@ body {
     font-weight: bold;
 }
 
-/* 右側チャットエリア */
+/* ─── 右チャットエリア ─── */
 .chat-area {
     flex: 1;
     display: flex;
@@ -83,6 +83,7 @@ body {
     padding: 20px;
     background-color: #efefef;
     color: #000;
+    min-width: 320px;
 }
 
 .chat-area h2 {
@@ -119,7 +120,7 @@ body {
 .cmd-badge {
     background: #f7931a;
     color: #fff;
-    padding: 2px 5px;
+    padding: 2px 6px;
     border-radius: 3px;
     font-size: 12px;
 }
@@ -133,19 +134,21 @@ body {
 
 @keyframes flash {
     from { opacity: 1; }
-    to { opacity: 0.6; }
+    to   { opacity: 0.6; }
 }
 
-/* 入力エリア */
+/* ─── 入力エリア ─── */
 .input-area {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.input-area input[type="text"], .input-area select {
+.input-area input[type="text"],
+.input-area select {
     padding: 8px;
     border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .boost-option {
@@ -167,37 +170,44 @@ button {
     padding: 10px;
     cursor: pointer;
     font-weight: bold;
+    border-radius: 4px;
 }
 
-button:hover {
-    background-color: #e68a00;
-}
+button:hover    { background-color: #e68a00; }
+button:disabled { background-color: #aaa; cursor: not-allowed; }
 
-/* モーダル */
+/* ─── モーダル ─── */
 .modal {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 
 .modal-content {
     background: #fff;
     color: #000;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 24px;
+    border-radius: 12px;
     text-align: center;
+    max-width: 340px;
+    width: 90%;
 }
 
 #qrcode {
-    margin: 20px auto;
+    margin: 16px auto;
     width: 200px;
     height: 200px;
 }
 
 #invoice-text {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    word-break: break-all;
+    resize: none;
+    box-sizing: border-box;
 }
