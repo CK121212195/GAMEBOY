@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなのジェネシス・ブロック (Twitch Plays HODL)</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 左側：ゲーム画面 -->
+        <div class="game-area">
+            <div class="header">
+                <h1>みんなのジェネシス・ブロック</h1>
+                <p>現在地: ブロック高 <span id="block-height">取得中...</span></p>
+            </div>
+
+            <div class="screen">
+                <div id="tradingview-widget">
+                    <div class="tradingview-widget-container">
+                        <div id="tv_chart"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                        <script type="text/javascript">
+                        new TradingView.widget({
+                            "autosize": true,
+                            "symbol": "BINANCE:BTCUSDT",
+                            "interval": "1",
+                            "timezone": "Asia/Tokyo",
+                            "theme": "dark",
+                            "style": "3",
+                            "locale": "ja",
+                            "enable_publishing": false,
+                            "backgroundColor": "rgba(0, 0, 0, 1)",
+                            "hide_top_toolbar": true,
+                            "save_image": false,
+                            "container_id": "tv_chart"
+                        });
+                        </script>
+                    </div>
+                </div>
+
+                <div class="character-container">
+                    <img id="character-img" src="0.png" alt="Character">
+                </div>
+            </div>
+
+            <div class="status-board">
+                <h3>現在のコマンド勢力図 (進化への影響)</h3>
+                <div class="bars">
+                    <div>🛡️ HODL: <span id="score-HODL">0</span> pt</div>
+                    <div>🚀 FOMO: <span id="score-FOMO">0</span> pt</div>
+                    <div>📉 SELL: <span id="score-SELL">0</span> pt</div>
+                    <div>🔧 BUIDL: <span id="score-BUIDL">0</span> pt</div>
+                </div>
+                <p id="evolution-status" style="margin-top:10px;color:#f7931a;font-weight:bold;">
+                    現在の状態：Genesis Egg 🥚 (卵)
+                </p>
+                <p id="connection-status" style="display:none;font-size:12px;margin-top:5px;"></p>
+            </div>
+        </div>
+
+        <!-- 右側：実況板 -->
+        <div class="chat-area">
+            <h2>実況掲示板</h2>
+            <div id="chat-box" class="chat-box"></div>
+
+            <div class="input-area">
+                <input type="text" id="user-name" placeholder="名前 (省略可: 名無しサトシ)" maxlength="15">
+
+                <select id="command-select">
+                    <option value="HODL">🛡️ HODL (ガチホ)</option>
+                    <option value="FOMO">🚀 FOMO (イケイケ)</option>
+                    <option value="BUIDL">🔧 BUIDL (開発)</option>
+                    <option value="SELL">📉 SELL (売却)</option>
+                </select>
+
+                <input type="text" id="user-msg" placeholder="コメントを入力（おはぎゃー等）" maxlength="50">
+
+                <!-- ⚡ Boost オプション -->
+                <div class="boost-option">
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="checkbox" id="boost-check">
+                        <span id="boost-label" class="lightning-text">
+                            ⚡ <strong>100 sats</strong> 払って効力<strong>100倍</strong>にする (PoW)
+                        </span>
+                    </label>
+
+                    <!-- satsスライダー（チェック時に表示） -->
+                    <div id="sat-slider-area" style="display:none; margin-top:10px;">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:4px;">
+                            <span>10 sats</span>
+                            <span id="sat-display" style="font-weight:bold;color:#e65100;">100 sats</span>
+                            <span>10,000 sats</span>
+                        </div>
+                        <input type="range" id="sat-amount"
+                               min="10" max="10000" step="10" value="100"
+                               style="width:100%;accent-color:#f7931a;">
+                        <p style="font-size:11px;color:#999;margin:4px 0 0;">
+                            ※ 寄付額 = 効力倍率（100sats → ×100倍）
+                        </p>
+                    </div>
+                </div>
+
+                <button id="send-btn" onclick="sendMessage()">書き込む ✍️</button>
+            </div>
+
+            <!-- Lightning支払いモーダル -->
+            <div id="payment-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <h3>⚡ Lightning決済</h3>
+                    <p id="invoice-amount-text" style="color:#e65100;font-weight:bold;"></p>
+                    <p>このインボイスを支払うと、コマンドがその分だけ強力に反映されます！</p>
+                    <div id="qrcode"></div>
+                    <textarea id="invoice-text" rows="3"
+                        style="width:100%;font-size:11px;word-break:break-all;"
+                        readonly></textarea>
+                    <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">
+                        📋 インボイスをコピー
+                    </button>
+                    <p id="payment-status" style="font-weight:bold;color:#e65100;">支払い待ち...</p>
+                    <button onclick="closeModal()" style="background:#999;">キャンセル</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // チェックボックスでスライダーを表示/非表示
+        document.getElementById("boost-check").addEventListener("change", function() {
+            document.getElementById("sat-slider-area").style.display =
+                this.checked ? "block" : "none";
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
