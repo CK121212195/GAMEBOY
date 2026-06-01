@@ -1,3 +1,8 @@
+:root {
+    /* ② スライダーつまみのサイズを動的に制御するCSS変数 */
+    --thumb-size: 16px;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -54,7 +59,7 @@ body {
     opacity: 0.4;
 }
 
-/* ─── 🚀 美麗ホログラム・キャラクターコンテナ（大型化） ─── */
+/* ─── 美麗ホログラム・キャラクターコンテナ（大型化） ─── */
 .character-container {
     position: absolute;
     top: 50%;
@@ -192,6 +197,32 @@ body {
     font-weight: bold;
     font-size: 1.3em;
     margin: 0;
+}
+
+/* 🚀 美麗な X (旧Twitter) シェアボタン */
+.share-btn {
+    background: #000;
+    color: #fff;
+    border: 1px solid #333;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.share-btn:hover {
+    background: #111;
+    border-color: #1da1f2; /* ホバー時にうっすら青く発光 */
+}
+
+.share-btn svg {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .death-counter {
@@ -471,6 +502,42 @@ body {
     color: #e65100;
 }
 
+/* ② つまみ（◯）の大きさを動的に可変させるためのスライダースタイル設計 */
+#sat-amount {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: #444;
+    height: 8px;
+    border-radius: 4px;
+    outline: none;
+    margin: 25px 0; /* 大きくなるつまみを考慮して余白を設定 */
+    position: relative;
+}
+
+#sat-amount::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #f7931a;
+    width: var(--thumb-size) !important;
+    height: var(--thumb-size) !important;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(247, 147, 26, 0.6);
+    transition: width 0.1s ease, height 0.1s ease; /* なめらかなサイズ可変化 */
+}
+
+#sat-amount::-moz-range-thumb {
+    background: #f7931a;
+    width: var(--thumb-size) !important;
+    height: var(--thumb-size) !important;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(247, 147, 26, 0.6);
+    transition: width 0.1s ease, height 0.1s ease;
+}
+
 button {
     background-color: #f7931a;
     color: white;
@@ -574,7 +641,7 @@ button:disabled { background-color: #aaa; cursor: not-allowed; }
 }
 .wallet-btn:hover { background-color: #6a1b9a; }
 
-/* スマホ用レスポンシブ (② スマホ時はメインが上、掲示板が下に正しく並びます) */
+/* スマホ用レスポンシブ (スマホ時はメインが上、掲示板が下に並びます) */
 @media screen and (max-width: 768px) {
     .container {
         flex-direction: column; /* メイン(上)、チャット(下)に並び順を適正化 */
