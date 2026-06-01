@@ -56,7 +56,7 @@
                 <div class="status-header">
                     <p id="evolution-status" class="status-title">🥚 GENESIS BLOCK EGG (卵)</p>
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <!-- 🚀 ダイナミックX（旧Twitter）拡散シェアボタン -->
+                        <!-- 🚀 ダイナミックX（旧Twitter）拡散シェアボタン (140文字上限最適化) -->
                         <button class="share-btn" onclick="shareOnTwitter()">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -119,6 +119,36 @@
                     <p id="resurrection-tip" style="font-size:11px; color:#aaa; margin:6px 0 0 0; line-height:1.4;">
                         ※ゲームオーバー（お墓）になっても、みんなで「HODL」などを書き込んで<strong>SELLの比率を60%未満に下げればその場で即座に復活</strong>します！
                     </p>
+                </div>
+            </div>
+
+            <!-- 🧪 ② 【開発・検証用】テスト・デバッグ進化パネル (完全復活) -->
+            <div class="debug-panel">
+                <h4>🧪 【開発・検証用】テスト・デバッグ進化パネル</h4>
+                <p style="font-size: 11px; color: #aaa; margin-top: -4px; margin-bottom: 12px;">※検証用シミュレーターです。本番時には削除またはコメントアウトしてご活用ください。</p>
+                
+                <div class="debug-row">
+                    <label for="debug-char-select" style="font-weight:bold;">① グラフィックバグ・画像表示テスト (全30キャラクター選択可能):</label>
+                    <div style="display:flex; gap:8px; margin-top:4px;">
+                        <select id="debug-char-select" style="flex:1; padding:6px; font-size:13px; background:#333; color:#fff; border:1px solid #555;">
+                            <!-- JS側で自動的に30キャラクターが挿入されます -->
+                        </select>
+                        <button onclick="testForceEvolve()" style="background:#2196F3; font-size:13px; padding:6px 12px; border-radius:4px; height:36px;">強制表示 👁️</button>
+                    </div>
+                </div>
+
+                <div class="debug-row" style="margin-top:15px;">
+                    <label style="font-weight:bold;">② 進化段階・メーターのしきい値テスト (仮想ポイント加算):</label>
+                    <div class="debug-btn-grid">
+                        <button onclick="addMockPoints('HODL', 1000)" style="background:#e65100; color:#fff;">+1,000 pt (🛡️ HODL)</button>
+                        <button onclick="addMockPoints('FOMO', 1000)" style="background:#b71c1c; color:#fff;">+1,000 pt (🚀 FOMO)</button>
+                        <button onclick="addMockPoints('BUIDL', 1000)" style="background:#0d47a1; color:#fff;">+1,000 pt (🔧 BUIDL)</button>
+                        <button onclick="addMockPoints('SELL', 1000)" style="background:#37474f; color:#fff;">+1,000 pt (📉 SELL)</button>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:10px;">
+                        <button onclick="addMockDeaths(1)" style="background:#5d4037; font-size:11px; padding:6px 12px; border-radius:4px;">全滅回数 +1 💀</button>
+                        <button onclick="resetMockPoints()" style="background:#c62828; font-size:11px; padding:6px 12px; border-radius:4px;">シミュレーション初期化 🔄</button>
+                    </div>
                 </div>
             </div>
 
