@@ -53,6 +53,10 @@ const CHARACTERS = {
 let paymentChecker = null;
 let lastFetchedData = null; // リアルタイムデータを一時保持するキャッシュ
 
+// 🧪 デバッグ用の模擬加算ポイント
+let mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+let mockDeaths = 0;
+
 // ─── 起動処理 ───
 window.onload = () => {
   fetchBlockHeight();
@@ -99,6 +103,17 @@ window.onload = () => {
       charCounter.textContent = `${length} / 500`;
     });
   }
+
+  // 🧪 デバッグ dropdown の動的設定 (復活)
+  const debugSelect = document.getElementById("debug-char-select");
+  if (debugSelect) {
+    Object.entries(CHARACTERS).forEach(([key, char]) => {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = char.name;
+      debugSelect.appendChild(opt);
+    });
+  }
 };
 
 // ③ 表現の「育成投資」化
@@ -110,16 +125,16 @@ function updateBoostLabel() {
   label.innerHTML = `⚡ <strong>${sats.toLocaleString()} sats</strong> 投資して育成パワーを<strong>${sats}倍</strong>にする`;
 }
 
-// ─── 📢 X (Twitter) で現在の育成状況をダイナミック拡散シェア ───
+// ─── 📢 ① X (Twitter) 140文字に余裕で収まるコンパクト拡散シェア文面 ───
 function shareOnTwitter() {
   const charName = document.getElementById("evolution-status").innerText;
   const totalPt = document.getElementById("total-pt").innerText;
   const blockHeight = document.getElementById("block-height").innerText;
   
-  // ビットコイナーに刺さるテキストと4つのハッシュタグ
-  const text = `【みんなのジェネシス・ブロック】\n現在地：ブロック高 ${blockHeight}\n現在のキャラクター: ${charName} (総パワー: ${totalPt} pt)\n\nみんなで育成投資satsをして、最強伝説「オリジナルHODLマスター」へ進化させよう！\n`;
+  // 140文字（日本語）の上限を絶対に超えないよう最適化した短いテキスト
+  const text = `【みんなのジェネシス・ブロック】\nブロック高: ${blockHeight}\n現在の姿: ${charName} (${totalPt} pt)\nみんなでsats投資して伝説のマスターへ進化させよう！\n`;
   const url = window.location.href;
-  const hashtags = "SATOSHIっち,みんなのジェネシス・ブロック,育成sats,HODL";
+  const hashtags = "みんなのジェネシス・ブロック,育成sats"; // 最低限必要な2つに絞り、35文字削減
   
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
   window.open(twitterUrl, "_blank");
@@ -143,7 +158,9 @@ async function fetchData() {
     
     lastFetchedData = data;
     updateChatUI(data.chats);
-    updateScoreUI(data.votes, data.deaths || 0);
+    
+    // 擬似ポイントと合算して描画
+    mergeAndRenderVotes();
   } catch (e) {}
 }
 
@@ -352,6 +369,49 @@ function updateScoreUI(votes, deaths = 0) {
     resTip.innerHTML = `※ゲームオーバー（お墓）になっても、みんなで「HODL」などを書き込んで<strong>SELLの比率を60%未満に下げればその場で即座に復活</strong>します！`;
     resTip.style.color = "#aaa";
   }
+}
+
+// ─── 🧪 ② 【テスト・検証用】強制表示・モック加算機能群（完全復活） ───
+function testForceEvolve() {
+  const select = document.getElementById("debug-char-select");
+  if (!select) return;
+  const key = select.value;
+  const character = CHARACTERS[key];
+  if (!character) return;
+  
+  document.getElementById("character-img").src = character.img;
+  document.getElementById("evolution-status").innerText = "【テスト表示中】 " + character.name;
+  alert(`${character.name} のグラフィック表示とエラー検証を行います。画像が正しく表示されるか確認してください。`);
+}
+
+function addMockPoints(cmd, amount) {
+  mockVotes[cmd] += amount;
+  mergeAndRenderVotes();
+}
+
+function addMockDeaths(amount) {
+  mockDeaths += amount;
+  mergeAndRenderVotes();
+}
+
+function resetMockPoints() {
+  mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+  mockDeaths = 0;
+  mergeAndRenderVotes();
+}
+
+function mergeAndRenderVotes() {
+  const baseVotes = lastFetchedData ? lastFetchedData.votes : { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+  const baseDeaths = lastFetchedData ? (lastFetchedData.deaths || 0) : 0;
+  
+  const mergedVotes = {
+    HODL: (baseVotes.HODL || 0) + mockVotes.HODL,
+    FOMO: (baseVotes.FOMO || 0) + mockVotes.FOMO,
+    BUIDL: (baseVotes.BUIDL || 0) + mockVotes.BUIDL,
+    SELL: (baseVotes.SELL || 0) + mockVotes.SELL
+  };
+  
+  updateScoreUI(mergedVotes, baseDeaths + mockDeaths);
 }
 
 // ─── メッセージ送信処理 ───
