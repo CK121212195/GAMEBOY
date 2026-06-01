@@ -2,13 +2,11 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxBQvh7ZChbWwQtWM2wf2BMt6rMtmbPBx9CGWZAEM2k-NJt8sysFuDoPxWBeblonJ3e/exec";
 
 // 🎮【重要】キャラクター画像のファイル名設定
-// 提供いただいた画像を同じフォルダに入れて、以下のファイル名を書き換えてください。
-// (初期設定として、ダミーの画像URLを入れています)
-const IMG_EGG = "https://illustcenter.com/wp-content/uploads/2021/10/epc0082.png"; // 初期卵
-const IMG_HODL = "https://illustcenter.com/wp-content/uploads/2021/10/epc0082.png"; // ガチホ（例：亀の画像 "turtle.png" に変更）
-const IMG_FOMO = "https://illustcenter.com/wp-content/uploads/2021/10/epc0082.png"; // イケイケ（例：狼の画像 "wolf.png" に変更）
-const IMG_BUIDL = "https://illustcenter.com/wp-content/uploads/2021/10/epc0082.png"; // 開発（例：世界樹の画像 "tree.png" に変更）
-const IMG_SELL = "https://illustcenter.com/wp-content/uploads/2021/10/epc0082.png"; // 売却（例：ゴーストの画像 "ghost.png" に変更）
+const IMG_EGG = "0.png"; // 初期状態
+const IMG_HODL = "0.png"; // ガチホ
+const IMG_FOMO = "0.png"; // イケイケ
+const IMG_BUIDL = "0.png"; // 開発
+const IMG_SELL = "0.png"; // 売却
 
 
 let paymentChecker = null;
