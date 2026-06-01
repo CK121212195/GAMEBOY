@@ -1,0 +1,203 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a1a;
+    color: #fff;
+    font-family: "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* 左側ゲームエリア */
+.game-area {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-right: 2px solid #333;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #f7931a;
+}
+
+.screen {
+    position: relative;
+    flex: 1;
+    border: 4px solid #f7931a;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+}
+
+#tradingview-widget {
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+}
+
+.character-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: bounce 2s infinite;
+}
+
+.character-container img {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(247, 147, 26, 0.8));
+    transition: all 0.5s ease;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-50%, -55%); }
+}
+
+.status-board {
+    margin-top: 20px;
+    background: #222;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.bars {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+/* 右側チャットエリア */
+.chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #efefef;
+    color: #000;
+}
+
+.chat-area h2 {
+    margin-top: 0;
+    color: #c00;
+    font-size: 1.2em;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.chat-box {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.chat-post {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.chat-meta {
+    color: #008000;
+    font-weight: bold;
+}
+
+.chat-text {
+    margin-left: 10px;
+}
+
+.cmd-badge {
+    background: #f7931a;
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.boosted {
+    background: #ffea00;
+    color: #d32f2f;
+    font-weight: bold;
+    animation: flash 1s infinite alternate;
+}
+
+@keyframes flash {
+    from { opacity: 1; }
+    to { opacity: 0.6; }
+}
+
+/* 入力エリア */
+.input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-area input[type="text"], .input-area select {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.boost-option {
+    background: #ffe0b2;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ff9800;
+}
+
+.lightning-text {
+    font-weight: bold;
+    color: #e65100;
+}
+
+button {
+    background-color: #f7931a;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #e68a00;
+}
+
+/* モーダル */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#qrcode {
+    margin: 20px auto;
+    width: 200px;
+    height: 200px;
+}
+
+#invoice-text {
+    width: 100%;
+    margin-bottom: 10px;
+}
