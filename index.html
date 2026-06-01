@@ -42,6 +42,7 @@
 
                 <!-- キャラクター表示エリア -->
                 <div class="character-container">
+                    <!-- 画像がない場合は代替画像を表示 -->
                     <img id="character-img" src="images/egg.png" alt="Character" onerror="this.src='https://placehold.co/250x250/000/f7931a?text=Image+Not+Found'">
                 </div>
             </div>
@@ -58,10 +59,14 @@
                 <p id="evolution-status" style="margin-top:10px;color:#f7931a;font-weight:bold;font-size:1.2em;">
                     🥚 ジェネシス・ブロック (卵)
                 </p>
-                <div class="progress-container" style="margin-top:10px; background:#444; border-radius:5px; height:10px; overflow:hidden;">
-                    <div id="evolution-progress" style="background:#f7931a; width:0%; height:100%; transition: width 0.5s;"></div>
+                
+                <!-- プログレスバー -->
+                <div class="progress-container">
+                    <div id="evolution-progress"></div>
                 </div>
-                <p style="font-size:11px; color:#aaa; margin-top:5px; text-align:right;">次の進化まで: <span id="next-evolution-pt">1000</span> pt</p>
+                <p style="font-size:11px; color:#aaa; margin-top:5px; text-align:right;">
+                    次の進化まで: <span id="next-evolution-pt">1000</span> pt
+                </p>
                 <p id="connection-status" style="display:none;font-size:12px;margin-top:5px;"></p>
             </div>
         </div>
@@ -115,13 +120,13 @@
                     
                     <!-- スマホ用 ウォレット自動起動ボタン -->
                     <a id="wallet-link" href="#" class="wallet-btn" style="display:none;">
-                        ⚡ ウォレットアプリを開く (スマホ用)
+                        ⚡ ウォレットアプリを開く
                     </a>
 
                     <div id="qrcode"></div>
                     <textarea id="invoice-text" rows="3" style="width:100%;font-size:11px;word-break:break-all;" readonly></textarea>
                     
-                    <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">📋 コピー</button>
+                    <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">📋 インボイスをコピー</button>
                     <p id="payment-status" style="font-weight:bold;color:#e65100;">支払い待ち...</p>
                     <button onclick="closeModal()" style="background:#999;">キャンセル</button>
                 </div>
@@ -130,9 +135,12 @@
     </div>
 
     <script>
+        // チェックボックスでスライダー表示
         document.getElementById("boost-check").addEventListener("change", function() {
             document.getElementById("sat-slider-area").style.display = this.checked ? "block" : "none";
         });
+        
+        // インボイスコピー機能
         function copyInvoice() {
             const txt = document.getElementById("invoice-text");
             txt.select();
