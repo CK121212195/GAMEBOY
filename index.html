@@ -40,8 +40,9 @@
                     </div>
                 </div>
 
+                <!-- キャラクター表示エリア -->
                 <div class="character-container">
-                    <img id="character-img" src="0.png" alt="Character">
+                    <img id="character-img" src="images/egg.png" alt="Character" onerror="this.src='https://placehold.co/250x250/000/f7931a?text=Image+Not+Found'">
                 </div>
             </div>
 
@@ -50,12 +51,17 @@
                 <div class="bars">
                     <div>🛡️ HODL: <span id="score-HODL">0</span> pt</div>
                     <div>🚀 FOMO: <span id="score-FOMO">0</span> pt</div>
-                    <div>📉 SELL: <span id="score-SELL">0</span> pt</div>
                     <div>🔧 BUIDL: <span id="score-BUIDL">0</span> pt</div>
+                    <div>📉 SELL: <span id="score-SELL">0</span> pt</div>
                 </div>
-                <p id="evolution-status" style="margin-top:10px;color:#f7931a;font-weight:bold;">
-                    現在の状態：Genesis Egg 🥚 (卵)
+                <!-- 育成ステータスと進化先 -->
+                <p id="evolution-status" style="margin-top:10px;color:#f7931a;font-weight:bold;font-size:1.2em;">
+                    🥚 ジェネシス・ブロック (卵)
                 </p>
+                <div class="progress-container" style="margin-top:10px; background:#444; border-radius:5px; height:10px; overflow:hidden;">
+                    <div id="evolution-progress" style="background:#f7931a; width:0%; height:100%; transition: width 0.5s;"></div>
+                </div>
+                <p style="font-size:11px; color:#aaa; margin-top:5px; text-align:right;">次の進化まで: <span id="next-evolution-pt">1000</span> pt</p>
                 <p id="connection-status" style="display:none;font-size:12px;margin-top:5px;"></p>
             </div>
         </div>
@@ -69,10 +75,10 @@
                 <input type="text" id="user-name" placeholder="名前 (省略可: 名無しサトシ)" maxlength="15">
 
                 <select id="command-select">
-                    <option value="HODL">🛡️ HODL (ガチホ)</option>
-                    <option value="FOMO">🚀 FOMO (イケイケ)</option>
-                    <option value="BUIDL">🔧 BUIDL (開発)</option>
-                    <option value="SELL">📉 SELL (売却)</option>
+                    <option value="HODL">🛡️ HODL (ガチホ・防御)</option>
+                    <option value="FOMO">🚀 FOMO (イケイケ・買い煽り)</option>
+                    <option value="BUIDL">🔧 BUIDL (開発・堅実)</option>
+                    <option value="SELL">📉 SELL (売却・恐怖)</option>
                 </select>
 
                 <input type="text" id="user-msg" placeholder="コメントを入力（おはぎゃー等）" maxlength="50">
@@ -82,23 +88,18 @@
                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                         <input type="checkbox" id="boost-check">
                         <span id="boost-label" class="lightning-text">
-                            ⚡ <strong>100 sats</strong> 払って効力<strong>100倍</strong>にする (PoW)
+                            ⚡ <strong>100 sats</strong> 払って効力を<strong>100倍</strong>にする
                         </span>
                     </label>
 
-                    <!-- satsスライダー（チェック時に表示） -->
                     <div id="sat-slider-area" style="display:none; margin-top:10px;">
                         <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:4px;">
                             <span>10 sats</span>
                             <span id="sat-display" style="font-weight:bold;color:#e65100;">100 sats</span>
                             <span>10,000 sats</span>
                         </div>
-                        <input type="range" id="sat-amount"
-                               min="10" max="10000" step="10" value="100"
-                               style="width:100%;accent-color:#f7931a;">
-                        <p style="font-size:11px;color:#999;margin:4px 0 0;">
-                            ※ 寄付額 = 効力倍率（100sats → ×100倍）
-                        </p>
+                        <input type="range" id="sat-amount" min="10" max="10000" step="10" value="100" style="width:100%;accent-color:#f7931a;">
+                        <p style="font-size:11px;color:#999;margin:4px 0 0;">※ 寄付額 = コマンド効力（例: 100sats → 100pt）</p>
                     </div>
                 </div>
 
@@ -110,14 +111,17 @@
                 <div class="modal-content">
                     <h3>⚡ Lightning決済</h3>
                     <p id="invoice-amount-text" style="color:#e65100;font-weight:bold;"></p>
-                    <p>このインボイスを支払うと、コマンドがその分だけ強力に反映されます！</p>
+                    <p>このインボイスを支払うと、進化への影響力が爆発的に上がります！</p>
+                    
+                    <!-- スマホ用 ウォレット自動起動ボタン -->
+                    <a id="wallet-link" href="#" class="wallet-btn" style="display:none;">
+                        ⚡ ウォレットアプリを開く (スマホ用)
+                    </a>
+
                     <div id="qrcode"></div>
-                    <textarea id="invoice-text" rows="3"
-                        style="width:100%;font-size:11px;word-break:break-all;"
-                        readonly></textarea>
-                    <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">
-                        📋 インボイスをコピー
-                    </button>
+                    <textarea id="invoice-text" rows="3" style="width:100%;font-size:11px;word-break:break-all;" readonly></textarea>
+                    
+                    <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">📋 コピー</button>
                     <p id="payment-status" style="font-weight:bold;color:#e65100;">支払い待ち...</p>
                     <button onclick="closeModal()" style="background:#999;">キャンセル</button>
                 </div>
@@ -126,11 +130,15 @@
     </div>
 
     <script>
-        // チェックボックスでスライダーを表示/非表示
         document.getElementById("boost-check").addEventListener("change", function() {
-            document.getElementById("sat-slider-area").style.display =
-                this.checked ? "block" : "none";
+            document.getElementById("sat-slider-area").style.display = this.checked ? "block" : "none";
         });
+        function copyInvoice() {
+            const txt = document.getElementById("invoice-text");
+            txt.select();
+            document.execCommand("copy");
+            alert("インボイスをコピーしました！");
+        }
     </script>
     <script src="app.js"></script>
 </body>
