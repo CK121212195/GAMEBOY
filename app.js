@@ -10,11 +10,26 @@ const IMG_SELL = "0.png";
 
 let paymentChecker = null;
 
+// 起動時の処理
 window.onload = () => {
+    fetchBlockHeight(); // ★追加: ブロック高を取得
     fetchData();
     setInterval(fetchData, 5000);
+    setInterval(fetchBlockHeight, 60000); // ★追加: 1分ごとにブロック高を更新
 };
 
+// ★追加：リアルタイムのブロック高を取得する関数
+async function fetchBlockHeight() {
+    try {
+        const res = await fetch("https://mempool.space/api/blocks/tip/height");
+        const height = await res.text();
+        document.getElementById("block-height").innerText = Number(height).toLocaleString();
+    } catch (e) {
+        console.error("ブロック高取得エラー", e);
+    }
+}
+
+// データの取得
 async function fetchData() {
     try {
         const res = await fetch(GAS_URL + "?action=getChat");
@@ -152,12 +167,12 @@ async function checkPayment(hash, name, msg, cmd) {
     }
 }
 
-// 🌟 今回の修正の要点：mode: "no-cors" を追加してエラーを回避
+// ★修正：確実にデータが送られる設定（redirect: "follow"）
 async function postToGAS(name, msg, cmd, weight) {
     try {
         await fetch(GAS_URL, {
             method: "POST",
-            mode: "no-cors", // ← ブラウザの過剰なエラーブロックを防ぐ
+            redirect: "follow", 
             headers: {
                 "Content-Type": "text/plain;charset=utf-8"
             },
@@ -170,15 +185,13 @@ async function postToGAS(name, msg, cmd, weight) {
             })
         });
         
-        // エラーを出さずにそのまま画面をリセット＆更新
         setTimeout(() => {
             resetInput();
             fetchData();
         }, 1000);
         
     } catch (e) {
-        console.error("送信エラー（無視してOK）", e);
-        // 万が一エラー判定になっても処理を続行する
+        console.error("送信エラーログ（処理は継続）", e);
         setTimeout(() => {
             resetInput();
             fetchData();
