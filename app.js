@@ -51,6 +51,7 @@ const CHARACTERS = {
 };
 
 let paymentChecker = null;
+let lastFetchedData = null; // リアルタイムデータを一時保持するキャッシュ
 
 // ─── 起動処理 ───
 window.onload = () => {
@@ -64,9 +65,20 @@ window.onload = () => {
   const display = document.getElementById("sat-display");
   if (slider && display) {
     slider.addEventListener("input", () => {
-      display.textContent = Number(slider.value).toLocaleString() + " sats";
+      const sats = Number(slider.value);
+      display.textContent = sats.toLocaleString() + " sats";
       updateBoostLabel();
+      
+      // ② つまみ（◯）のサイズを対数スケールでダイナミックに可変
+      // 10sats時 = 16px、10000sats時 = 46px
+      const size = 16 + (Math.log10(sats) - 1) * 10;
+      document.documentElement.style.setProperty('--thumb-size', `${size}px`);
     });
+    
+    // 初回のつまみサイズ初期設定
+    const initialSats = Number(slider.value);
+    const initialSize = 16 + (Math.log10(initialSats) - 1) * 10;
+    document.documentElement.style.setProperty('--thumb-size', `${initialSize}px`);
   }
 
   // ⚡ Boost チェック連携
@@ -89,12 +101,28 @@ window.onload = () => {
   }
 };
 
+// ③ 表現の「育成投資」化
 function updateBoostLabel() {
   const slider = document.getElementById("sat-amount");
   const label  = document.getElementById("boost-label");
   if (!slider || !label) return;
   const sats = Number(slider.value);
-  label.innerHTML = `⚡ <strong>${sats.toLocaleString()} sats</strong> 払って効力を<strong>${sats}倍</strong>にする`;
+  label.innerHTML = `⚡ <strong>${sats.toLocaleString()} sats</strong> 投資して育成パワーを<strong>${sats}倍</strong>にする`;
+}
+
+// ─── 📢 X (Twitter) で現在の育成状況をダイナミック拡散シェア ───
+function shareOnTwitter() {
+  const charName = document.getElementById("evolution-status").innerText;
+  const totalPt = document.getElementById("total-pt").innerText;
+  const blockHeight = document.getElementById("block-height").innerText;
+  
+  // ビットコイナーに刺さるテキストと4つのハッシュタグ
+  const text = `【みんなのジェネシス・ブロック】\n現在地：ブロック高 ${blockHeight}\n現在のキャラクター: ${charName} (総パワー: ${totalPt} pt)\n\nみんなで育成投資satsをして、最強伝説「オリジナルHODLマスター」へ進化させよう！\n`;
+  const url = window.location.href;
+  const hashtags = "SATOSHIっち,みんなのジェネシス・ブロック,育成sats,HODL";
+  
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
+  window.open(twitterUrl, "_blank");
 }
 
 // ─── ブロック高取得 ───
@@ -113,6 +141,7 @@ async function fetchData() {
     const data = await res.json();
     if (data.error) return;
     
+    lastFetchedData = data;
     updateChatUI(data.chats);
     updateScoreUI(data.votes, data.deaths || 0);
   } catch (e) {}
@@ -348,8 +377,8 @@ async function requestInvoice(name, msg, cmd, sats) {
   const walletLink = document.getElementById("wallet-link");
   const amtText = document.getElementById("invoice-amount-text");
 
-  status.innerText = "インボイス生成中...";
-  if (amtText) amtText.innerText = `お支払い金額: ${sats.toLocaleString()} sats`;
+  status.innerText = "投資用インボイス生成中...";
+  if (amtText) amtText.innerText = `今回の育成投資額: ${sats.toLocaleString()} sats`;
   document.getElementById("invoice-text").value = "";
   qrdiv.innerHTML = "";
   walletLink.style.display = "none";
@@ -368,7 +397,7 @@ async function requestInvoice(name, msg, cmd, sats) {
     
     walletLink.href = "lightning:" + invoice;
     walletLink.style.display = "block"; 
-    status.innerText = `⚡ ${sats} sats のインボイスです。支払いを完了させてください。`;
+    status.innerText = `⚡ ${sats} sats の投資インボイスです。アプリから投資を完了させてください。`;
 
     paymentChecker = setInterval(() => checkPayment(data.payment_hash, name, msg, cmd, sats), 3000);
   } catch (e) {
@@ -385,7 +414,7 @@ async function checkPayment(hash, name, msg, cmd, sats) {
     
     if (data.paid) {
       clearInterval(paymentChecker);
-      document.getElementById("payment-status").innerText = "✅ 支払い確認！効力" + sats + "倍で反映します！";
+      document.getElementById("payment-status").innerText = "✅ 投資確認！育成パワー " + sats + " 倍を反映します！";
       await postToGAS(name, msg, cmd, sats);
       setTimeout(closeModal, 1500);
     }
