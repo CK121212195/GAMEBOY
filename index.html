@@ -46,27 +46,67 @@
                 </div>
             </div>
 
+            <!-- ④ 世代や全滅回数が直感的に伝わる総合ステータスボード -->
             <div class="status-board">
-                <h3>現在のコマンド勢力図 (進化への影響)</h3>
-                <div class="bars">
-                    <div>🛡️ HODL: <span id="score-HODL">0</span> pt</div>
-                    <div>🚀 FOMO: <span id="score-FOMO">0</span> pt</div>
-                    <div>🔧 BUIDL: <span id="score-BUIDL">0</span> pt</div>
-                    <div>📉 SELL: <span id="score-SELL">0</span> pt</div>
+                <h3>現在の育成ステータス</h3>
+                <div class="status-header">
+                    <p id="evolution-status" class="status-title">🥚 ジェネシス・ブロック (卵)</p>
+                    <div class="death-counter">💀 過去の全滅回数: <span id="death-count">0</span> 回</div>
                 </div>
-                <!-- 育成ステータスと進化先 -->
-                <p id="evolution-status" style="margin-top:10px;color:#f7931a;font-weight:bold;font-size:1.2em;">
-                    🥚 ジェネシス・ブロック (卵)
-                </p>
                 
-                <!-- プログレスバー -->
+                <!-- 世代進行プログレスバー -->
                 <div class="progress-container">
                     <div id="evolution-progress"></div>
                 </div>
-                <p style="font-size:11px; color:#aaa; margin-top:5px; text-align:right;">
-                    次の進化まで: <span id="next-evolution-pt">1000</span> pt
-                </p>
-                <p id="connection-status" style="display:none;font-size:12px;margin-top:5px;"></p>
+                <div class="progress-labels">
+                    <span id="current-generation">現在: 卵期</span>
+                    <span>次世代まで: <span id="next-evolution-pt">1,000</span> pt (合計: <span id="total-pt">0</span> pt)</span>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
+
+                <!-- ① 各勢力の優劣がひと目でわかる動的メーター -->
+                <h3>現在のコマンド勢力図 (進化への影響比率)</h3>
+                <div class="vote-bars">
+                    <div class="vote-bar-container">
+                        <span class="vote-label">🛡️ HODL (ガチホ・防御): <span id="score-HODL">0</span> pt</span>
+                        <div class="vote-progress">
+                            <div id="bar-HODL" class="vote-fill hodl-fill"></div>
+                        </div>
+                    </div>
+                    <div class="vote-bar-container">
+                        <span class="vote-label">🚀 FOMO (買い煽り): <span id="score-FOMO">0</span> pt</span>
+                        <div class="vote-progress">
+                            <div id="bar-FOMO" class="vote-fill fomo-fill"></div>
+                        </div>
+                    </div>
+                    <div class="vote-bar-container">
+                        <span class="vote-label">🔧 BUIDL (開発・技術): <span id="score-BUIDL">0</span> pt</span>
+                        <div class="vote-progress">
+                            <div id="bar-BUIDL" class="vote-fill buidl-fill"></div>
+                        </div>
+                    </div>
+                    <div class="vote-bar-container">
+                        <span class="vote-label">📉 SELL (恐怖・弱気): <span id="score-SELL">0</span> pt</span>
+                        <div class="vote-progress">
+                            <div id="bar-SELL" class="vote-fill sell-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ④ 💀 滅亡リスクメーター -->
+                <div class="risk-board">
+                    <div class="risk-label">
+                        <span>💀 滅亡リスク (SELL比率): <span id="sell-ratio-val">0%</span></span>
+                        <span style="font-size:11px; color:#ff8a80; font-weight:normal;">⚠️ 60%以上で全滅（合計5,000pt以上時）</span>
+                    </div>
+                    <div class="risk-progress">
+                        <div id="risk-fill" class="risk-fill"></div>
+                    </div>
+                    <p id="resurrection-tip" style="font-size:11px; color:#aaa; margin:6px 0 0 0; line-height:1.4;">
+                        ※ゲームオーバー（お墓）になっても、みんなで「HODL」などを書き込んで<strong>SELLの比率を60%未満に下げればその場で即座に復活</strong>します！
+                    </p>
+                </div>
             </div>
 
             <!-- ▼ 遊び方・ルール説明エリア ▼ -->
@@ -85,28 +125,42 @@
                     <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
                     <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
 
+                    <!-- ② 進化条件・ロジックと解説の一致化 -->
                     <h4>3. 🧬 進化条件と分岐ルート</h4>
-                    <p>合計ポイントで世代が進行し、その時点の各コマンドの勢力で姿が確定します。</p>
+                    <p>みんなの合計ポイント（合計pt）で世代が進行し、その世代に達した時点での<strong>「各コマンドのポイント比率」</strong>で姿が変化します。</p>
                     
-                    <ul style="font-size: 13px; line-height: 1.6; color: #ddd; background: #1a1a1a; padding: 10px 10px 10px 30px; border-radius: 4px;">
-                        <li><strong>👶 ベビー期 (1,000 pt〜)</strong>
-                            <br>FOMO優勢で「アルトちゃん」、SELLがHODLを上回ると「シバいぬ」、基本は「ビットくん」
+                    <ul style="font-size: 13px; line-height: 1.6; color: #ddd; background: #1a1a1a; padding: 10px 10px 10px 30px; border-radius: 4px; list-style-type: square;">
+                        <li><strong>🥚 卵期 (0 〜 999 pt)</strong>
+                            <br>合計1,000 pt未満はすべてこの状態です。
                         </li>
-                        <li style="margin-top: 8px;"><strong>👦 キッズ期 (5,000 pt〜)</strong>
-                            <br>FOMO優勢で「フモートット」、SELLがBUIDLを上回ると「バグホルダー」、基本は「スマートコントラクト」
+                        <li style="margin-top: 8px;"><strong>👶 ベビー期 (1,000 〜 4,999 pt)</strong>
+                            <br>・<span class="highlight">アルトちゃん 👶</span> (FOMOがHODLとBUIDLを上回る)
+                            <br>・<span class="highlight">シバいぬベビー 🐶</span> (SELLがHODLを上回る)
+                            <br>・<span class="highlight">ビットくん 👶</span> (それ以外の標準状態)
                         </li>
-                        <li style="margin-top: 8px;"><strong>🧑 大人期 (20,000 pt〜)</strong>
-                            <br>一番多いポイントの属性へ進化。
-                            <br>🛡️HODL⇒「亀」 / 🚀FOMO⇒「ウサギ」 / 🔧BUIDL⇒「魔法使い」
-                            <br>※方針がブレたりSELLが多いと「詐欺師(👿)」になります。
-                            <br><span class="highlight">★超レア★ HODL単体で 50,000 pt を超えると「課金王クジラ 🐳」に！</span>
+                        <li style="margin-top: 8px;"><strong>👦 キッズ期 (5,000 〜 19,999 pt)</strong>
+                            <br>・<span class="highlight">フモートット 🍼</span> (FOMOがHODLを上回る)
+                            <br>・<span class="highlight">バグホルダー・キッド 🎒</span> (SELLがBUIDLを上回る)
+                            <br>・<span class="highlight">スマートコントラクト・キッズ 👦</span> (それ以外の標準状態)
                         </li>
-                        <li style="margin-top: 8px;"><strong>摸 伝説期 (100,000 pt〜)</strong>
-                            <br>暴落を乗り越えた最終形態「オリジナルHODLマスター」！
+                        <li style="margin-top: 8px;"><strong>🧑 大人期 (20,000 〜 99,999 pt)</strong>
+                            <br>基本は一番ポイントが多い属性に進化します。
+                            <br>・🛡️ HODL最多 ⇒ <span class="highlight">HODLer 亀 🐢</span>
+                            <br>・🚀 FOMO最多 ⇒ <span class="highlight">トレーダー・ウサギ 🐰</span>
+                            <br>・🔧 BUIDL最多 ⇒ <span class="highlight">DeFi ウィザード 🧙‍♂️</span>
+                            <br>・📉 SELL最多または同点多数 ⇒ <span class="highlight">ラグプル・スキャンプ 👿 (詐欺師)</span>
+                            <br><span class="highlight" style="color:#ffea00;">★超レア進化★ HODL単体で 50,000 pt を超えると、一気に「課金王 クジラ 🐳」になります！</span>
+                        </li>
+                        <li style="margin-top: 8px;"><strong>摸 伝説期 (100,000 pt 〜)</strong>
+                            <br>すべての歴史を乗り越えた最終の姿：<span class="highlight">オリジナルHODLマスター 摸</span>
                         </li>
                     </ul>
 
-                    <p style="margin-top:10px;"><span style="color:#ff5252; font-weight:bold;">⚠️ バッドエンド：</span>合計5,000pt以上で <strong>📉 SELL が全体の60%を超える</strong>と、キャラはお墓（ゲームオーバー）へ直行します。悲観相場こそ HODL して命を守りましょう！</p>
+                    <!-- ④ 死亡と自動復活（サバイブ）に関する解説 -->
+                    <p style="margin-top:12px;"><span style="color:#ff5252; font-weight:bold;">⚠️ 滅亡（全滅）条件：</span>合計 5,000 pt 以上の状態で、<strong>📉 SELL の獲得ポイントが全体の 60% 以上</strong>に達すると、どの世代からでも一発でお墓（ゲームオーバー）へ引きずり込まれます。</p>
+                    <p style="font-size:12px; color:#ff8a80; background:#331515; padding:8px; border-radius:4px; border-left:3px solid #ff5252;">
+                        <strong>💡 復活の仕組み:</strong> 全滅してしまっても心配ありません。みんなで「HODL」などのコメントや投げ銭ブーストを重ねて、<strong>SELLの比率を全体の60%未満に引き下げれば、即座に本来の世代のキャラクターとして自動的に復活</strong>します！
+                    </p>
                     
                     <!-- 進化ツリー表示ボタン -->
                     <button class="tree-btn" onclick="openTreeModal()">🗺️ 進化ツリー全体図を見る</button>
@@ -130,7 +184,11 @@
                     <option value="SELL">📉 SELL (売却・恐怖)</option>
                 </select>
 
-                <input type="text" id="user-msg" placeholder="コメントを入力（おはぎゃー等）" maxlength="50">
+                <!-- ③ 最大500文字対応テキストエリア -->
+                <div class="textarea-container">
+                    <textarea id="user-msg" placeholder="コメントを入力（最大500文字）" maxlength="500" rows="3" style="resize:none;"></textarea>
+                    <div id="char-counter" class="char-counter">0 / 500</div>
+                </div>
 
                 <!-- ⚡ Boost オプション -->
                 <div class="boost-option">
@@ -183,17 +241,6 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById("boost-check").addEventListener("change", function() {
-            document.getElementById("sat-slider-area").style.display = this.checked ? "block" : "none";
-        });
-        function copyInvoice() {
-            const txt = document.getElementById("invoice-text");
-            txt.select();
-            document.execCommand("copy");
-            alert("インボイスをコピーしました！");
-        }
-    </script>
     <script src="app.js"></script>
 </body>
 </html>
