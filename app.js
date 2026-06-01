@@ -51,6 +51,11 @@ const CHARACTERS = {
 };
 
 let paymentChecker = null;
+let lastFetchedData = null; // リアルタイムデータを一時保持するキャッシュ
+
+// 🧪 デバッグ用の模擬加算ポイント
+let mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+let mockDeaths = 0;
 
 // ─── 起動処理 ───
 window.onload = () => {
@@ -98,6 +103,17 @@ window.onload = () => {
       charCounter.textContent = `${length} / 500`;
     });
   }
+
+  // 🧪 デバッグ dropdown の動的設定 (復活)
+  const debugSelect = document.getElementById("debug-char-select");
+  if (debugSelect) {
+    Object.entries(CHARACTERS).forEach(([key, char]) => {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = char.name;
+      debugSelect.appendChild(opt);
+    });
+  }
 };
 
 // ③ 表現の「育成投資」化
@@ -140,9 +156,11 @@ async function fetchData() {
     const data = await res.json();
     if (data.error) return;
     
+    lastFetchedData = data;
     updateChatUI(data.chats);
-    // テスト項目不要のため、直接リアルタイムデータを反映
-    updateScoreUI(data.votes, data.deaths || 0);
+    
+    // 擬似ポイントと合算して描画
+    mergeAndRenderVotes();
   } catch (e) {}
 }
 
@@ -353,6 +371,49 @@ function updateScoreUI(votes, deaths = 0) {
   }
 }
 
+// ─── 🧪 ② 【テスト・検証用】強制表示・モック加算機能群（完全復活） ───
+function testForceEvolve() {
+  const select = document.getElementById("debug-char-select");
+  if (!select) return;
+  const key = select.value;
+  const character = CHARACTERS[key];
+  if (!character) return;
+  
+  document.getElementById("character-img").src = character.img;
+  document.getElementById("evolution-status").innerText = "【テスト表示中】 " + character.name;
+  alert(`${character.name} のグラフィック表示とエラー検証を行います。画像が正しく表示されるか確認してください。`);
+}
+
+function addMockPoints(cmd, amount) {
+  mockVotes[cmd] += amount;
+  mergeAndRenderVotes();
+}
+
+function addMockDeaths(amount) {
+  mockDeaths += amount;
+  mergeAndRenderVotes();
+}
+
+function resetMockPoints() {
+  mockVotes = { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+  mockDeaths = 0;
+  mergeAndRenderVotes();
+}
+
+function mergeAndRenderVotes() {
+  const baseVotes = lastFetchedData ? lastFetchedData.votes : { HODL: 0, FOMO: 0, BUIDL: 0, SELL: 0 };
+  const baseDeaths = lastFetchedData ? (lastFetchedData.deaths || 0) : 0;
+  
+  const mergedVotes = {
+    HODL: (baseVotes.HODL || 0) + mockVotes.HODL,
+    FOMO: (baseVotes.FOMO || 0) + mockVotes.FOMO,
+    BUIDL: (baseVotes.BUIDL || 0) + mockVotes.BUIDL,
+    SELL: (baseVotes.SELL || 0) + mockVotes.SELL
+  };
+  
+  updateScoreUI(mergedVotes, baseDeaths + mockDeaths);
+}
+
 // ─── メッセージ送信処理 ───
 async function sendMessage() {
   const name = document.getElementById("user-name").value.trim() || "名無しサトシ";
@@ -463,16 +524,16 @@ function closeModal() {
   document.getElementById("send-btn").disabled = false;
 }
 
-// 進化ツリー画像のモーダル表示用
+function escHtml(str) {
+  if (!str) return "";
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// ─── 進化ツリー画像のモーダル表示用 ───
 function openTreeModal() {
   document.getElementById("tree-modal").style.display = "flex";
 }
 
 function closeTreeModal() {
   document.getElementById("tree-modal").style.display = "none";
-}
-
-function escHtml(str) {
-  if (!str) return "";
-  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
