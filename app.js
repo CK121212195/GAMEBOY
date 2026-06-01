@@ -1,7 +1,5 @@
-// GASのURL
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxBQvh7ZChbWwQtWM2wf2BMt6rMtmbPBx9CGWZAEM2k-NJt8sysFuDoPxWBeblonJ3e/exec";
 
-// キャラクター画像
 const IMG_EGG = "0.png";
 const IMG_HODL = "0.png";
 const IMG_FOMO = "0.png";
@@ -10,15 +8,13 @@ const IMG_SELL = "0.png";
 
 let paymentChecker = null;
 
-// 起動時の処理
 window.onload = () => {
-    fetchBlockHeight(); // ★追加: ブロック高を取得
+    fetchBlockHeight();
     fetchData();
     setInterval(fetchData, 5000);
-    setInterval(fetchBlockHeight, 60000); // ★追加: 1分ごとにブロック高を更新
+    setInterval(fetchBlockHeight, 60000);
 };
 
-// ★追加：リアルタイムのブロック高を取得する関数
 async function fetchBlockHeight() {
     try {
         const res = await fetch("https://mempool.space/api/blocks/tip/height");
@@ -29,12 +25,16 @@ async function fetchBlockHeight() {
     }
 }
 
-// データの取得
 async function fetchData() {
     try {
         const res = await fetch(GAS_URL + "?action=getChat");
         const data = await res.json();
         
+        if (data.error) {
+            console.error("GASエラー:", data.details);
+            return;
+        }
+
         updateChatUI(data.chats);
         updateScoreUI(data.votes);
     } catch (e) {
@@ -128,6 +128,7 @@ async function sendMessage() {
     }
 }
 
+// ★修正：エラー理由をポップアップ表示する
 async function requestInvoice(name, msg, cmd) {
     document.getElementById("payment-status").innerText = "インボイス生成中...";
     document.getElementById("payment-modal").style.display = "flex";
@@ -135,6 +136,13 @@ async function requestInvoice(name, msg, cmd) {
     try {
         const res = await fetch(GAS_URL + "?action=createInvoice&command=" + cmd);
         const data = await res.json();
+        
+        // ウォレットがリセットされていた場合のアラート
+        if (data.error) {
+            alert("【LNbitsエラー】\ndemo.lnbits.com のウォレットがリセットされたため、インボイスが作れません！\n新しいウォレットを作り直してGASのキーを更新してください。\n\n詳細: " + data.details);
+            closeModal();
+            return;
+        }
         
         document.getElementById("invoice-text").value = data.payment_request;
         document.getElementById("qrcode").innerHTML = "";
@@ -167,35 +175,25 @@ async function checkPayment(hash, name, msg, cmd) {
     }
 }
 
-// ★修正：確実にデータが送られる設定（redirect: "follow"）
+// ★究極の修正：セキュリティブロックを100%回避する通信方法
 async function postToGAS(name, msg, cmd, weight) {
     try {
-        await fetch(GAS_URL, {
-            method: "POST",
-            redirect: "follow", 
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify({
-                action: "postMessage",
-                name: name,
-                message: msg,
-                command: cmd,
-                weight: weight
-            })
-        });
+        // パラメータをURLにくっつけて送信する（これで弾かれません）
+        const url = `${GAS_URL}?action=postMessage&name=${encodeURIComponent(name)}&message=${encodeURIComponent(msg)}&command=${encodeURIComponent(cmd)}&weight=${weight}`;
         
-        setTimeout(() => {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.error) {
+            alert("スプレッドシート書き込みエラー: " + data.details);
+        } else {
             resetInput();
             fetchData();
-        }, 1000);
-        
+        }
     } catch (e) {
-        console.error("送信エラーログ（処理は継続）", e);
-        setTimeout(() => {
-            resetInput();
-            fetchData();
-        }, 1000);
+        console.error("送信エラー", e);
+        alert("通信エラーが発生しました");
+        resetInput();
     }
 }
 
