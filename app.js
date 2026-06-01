@@ -5,7 +5,7 @@
 // ※ ご自身のGASのWebアプリURLをここに設定してください
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxBQvh7ZChbWwQtWM2wf2BMt6rMtmbPBx9CGWZAEM2k-NJt8sysFuDoPxWBebIonJ3e/exec";
 
-// 🐣 キャラクター定義
+// 🐣 キャラクター定義 (画像フォルダに以下のファイル名で保存してください)
 const CHARACTERS = {
   EGG: { name: "🥚 ジェネシス・ブロック (卵)", img: "images/egg.png" },
   BABY_BTC: { name: "👶 ビットくん", img: "images/baby_btc.png" },
@@ -29,8 +29,8 @@ let paymentChecker = null;
 window.onload = () => {
   fetchBlockHeight();
   fetchData();
-  setInterval(fetchData, 5000);
-  setInterval(fetchBlockHeight, 60000);
+  setInterval(fetchData, 5000); // 5秒ごとに最新のチャットを取得
+  setInterval(fetchBlockHeight, 60000); // 1分ごとにブロック高を取得
 
   const slider = document.getElementById("sat-amount");
   const display = document.getElementById("sat-display");
@@ -110,33 +110,55 @@ function updateScoreUI(votes) {
   
   const sellRatio = totalPts > 0 ? (scores.SELL / totalPts) : 0;
   
-  if (sellRatio > 0.6 && totalPts > 5000) { character = CHARACTERS.GRAVEYARD; nextTarget = totalPts; } 
-  else if (totalPts < 1000) { character = CHARACTERS.EGG; nextTarget = 1000; } 
+  // バッドエンド判定 (5000pt以上かつSELLが全体の60%以上)
+  if (sellRatio >= 0.6 && totalPts >= 5000) { 
+    character = CHARACTERS.GRAVEYARD; 
+    nextTarget = totalPts; // 進行停止
+  } 
+  // 卵期 (0 - 999pt)
+  else if (totalPts < 1000) { 
+    character = CHARACTERS.EGG; 
+    nextTarget = 1000; 
+  } 
+  // ベビー期 (1,000 - 4,999pt)
   else if (totalPts < 5000) {
     nextTarget = 5000;
     if (scores.FOMO > scores.HODL && scores.FOMO > scores.BUIDL) character = CHARACTERS.BABY_ALT;
     else if (scores.SELL > scores.HODL) character = CHARACTERS.BABY_SHIBA;
     else character = CHARACTERS.BABY_BTC;
   } 
+  // キッズ期 (5,000 - 19,999pt)
   else if (totalPts < 20000) {
     nextTarget = 20000;
     if (scores.FOMO > scores.HODL) character = CHARACTERS.KID_FOMO;
     else if (scores.SELL > scores.BUIDL) character = CHARACTERS.KID_BAG;
     else character = CHARACTERS.KID_SMART;
   } 
+  // 大人期 (20,000 - 99,999pt)
   else if (totalPts < 100000) {
     nextTarget = 100000;
-    if (scores.HODL > 50000) character = CHARACTERS.ADULT_WHALE;
-    else if (scores.HODL > Math.max(scores.FOMO, scores.SELL)) character = CHARACTERS.ADULT_HODL;
-    else if (scores.FOMO > Math.max(scores.HODL, scores.BUIDL)) character = CHARACTERS.ADULT_TRADER;
-    else if (scores.BUIDL > Math.max(scores.FOMO, scores.SELL)) character = CHARACTERS.ADULT_DEFI;
-    else character = CHARACTERS.ADULT_RUGPULL;
+    if (scores.HODL > 50000) {
+      character = CHARACTERS.ADULT_WHALE; // 超レア：クジラ
+    } else {
+      // 一番ポイントが高い勢力へ進化
+      const maxPts = Math.max(scores.HODL, scores.FOMO, scores.BUIDL, scores.SELL);
+      if (scores.HODL === maxPts) character = CHARACTERS.ADULT_HODL;
+      else if (scores.FOMO === maxPts) character = CHARACTERS.ADULT_TRADER;
+      else if (scores.BUIDL === maxPts) character = CHARACTERS.ADULT_DEFI;
+      else character = CHARACTERS.ADULT_RUGPULL; // SELLが最多、または同点多数の場合など
+    }
   } 
-  else { character = CHARACTERS.SENIOR_MASTER; nextTarget = totalPts; }
+  // 伝説期 (100,000pt -)
+  else { 
+    character = CHARACTERS.SENIOR_MASTER; 
+    nextTarget = totalPts; // カンスト
+  }
 
+  // 画面に適用
   document.getElementById("character-img").src = character.img;
   document.getElementById("evolution-status").innerText = "現在の状態: " + character.name;
   
+  // プログレスバーの更新
   let progress = 100;
   if (nextTarget > totalPts) { progress = (totalPts / nextTarget) * 100; }
   document.getElementById("evolution-progress").style.width = progress + "%";
@@ -188,7 +210,7 @@ async function requestInvoice(name, msg, cmd, sats) {
 
     paymentChecker = setInterval(() => checkPayment(data.payment_hash, name, msg, cmd, sats), 3000);
   } catch (e) {
-    alert("生成失敗: " + e.message);
+    alert("インボイスの生成に失敗しました: " + e.message);
     closeModal();
   }
 }
