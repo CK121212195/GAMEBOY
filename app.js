@@ -5,22 +5,49 @@
 // ※ ご自身のGASのWebアプリURLをここに設定してください
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxBQvh7ZChbWwQtWM2wf2BMt6rMtmbPBx9CGWZAEM2k-NJt8sysFuDoPxWBebIonJ3e/exec";
 
-// 🐣 キャラクター定義 (画像フォルダに以下のファイル名で保存してください)
+// 🐣 【全30種類】ツリー完全同期キャラクター定義 (画像名も整合)
 const CHARACTERS = {
-  EGG: { name: "🥚 ジェネシス・ブロック (卵)", img: "images/egg.png" },
-  BABY_BTC: { name: "👶 ビットくん", img: "images/baby_btc.png" },
-  BABY_ALT: { name: "👶 アルトちゃん", img: "images/baby_alt.png" },
-  BABY_SHIBA: { name: "🐶 シバいぬベビー", img: "images/baby_shiba.png" },
-  KID_SMART: { name: "👦 スマートコントラクト・キッズ", img: "images/kids_smart.png" },
-  KID_FOMO: { name: "🍼 フモートット", img: "images/kids_fomo.png" },
-  KID_BAG: { name: "🎒 バグホルダー・キッド", img: "images/kids_bag.png" },
-  ADULT_HODL: { name: "🐢 HODLer 亀 (ガチホの達人)", img: "images/adult_hodl.png" },
-  ADULT_WHALE: { name: "🐳 課金王 クジラ (富豪)", img: "images/adult_whale.png" },
-  ADULT_TRADER: { name: "🐰 トレーダー・ウサギ (イケイケ)", img: "images/adult_trader.png" },
-  ADULT_DEFI: { name: "🧙‍♂️ DeFi ウィザード (開発者)", img: "images/adult_defi.png" },
-  ADULT_RUGPULL: { name: "👿 ラグプル・スキャンプ (詐欺師)", img: "images/adult_rugpull.png" },
-  SENIOR_MASTER: { name: "摸 オリジナルHODLマスター (伝説)", img: "images/senior_master.png" },
-  GRAVEYARD: { name: "🪦 ブロックチェーンの海 (ゲームオーバー)", img: "images/graveyard.png" }
+  // --- Egg (1) ---
+  EGG: { name: "🥚 GENESIS BLOCK EGG (ジェネシス・ブロック)", img: "images/egg.png" },
+
+  // --- Baby (3) ---
+  BABY_BTC: { name: "👶 BITCOIN-KUN (ビットくん)", img: "images/baby_btc.png" },
+  BABY_ALT: { name: "👶 ALT-CHAN (アルトちゃん)", img: "images/baby_alt.png" },
+  BABY_SHIBA: { name: "🐶 SHIBA INU BABY (シバいぬベビー)", img: "images/baby_shiba.png" },
+
+  // --- Kids (6) ---
+  KID_SMART: { name: "👦 SMART CONTRACT KID (スマートコントラクト)", img: "images/kids_smart.png" },
+  KID_DAO: { name: "👦 DAO CHILD (DAO ガイド)", img: "images/kids_dao.png" },
+  KID_LEDGER: { name: "👦 LEDGER PAL (レジャー・バル)", img: "images/kids_ledger.png" },
+  KID_NODELING: { name: "👦 NODELING (ノドリング)", img: "images/kids_nodeling.png" },
+  KID_BAG: { name: "🎒 BAGHOLDER-KID (バグホルダー)", img: "images/kids_bag.png" },
+  KID_FOMO: { name: "🍼 FOMO-TOT (フモートット)", img: "images/kids_fomo.png" },
+
+  // --- Adult (15) ---
+  ADULT_HODL_TURTLE: { name: "🐢 HODLER, 亀", img: "images/adult_hodl_turtle.png" },
+  ADULT_TRADER_BUNNY: { name: "🐰 TRADER-BUNNY (トラダー, ウサギ)", img: "images/adult_trader_bunny.png" },
+  ADULT_MINER_MOLE: { name: "🦫 MINER-MOLE (ミニアー, モグラ)", img: "images/adult_miner_mole.png" },
+  ADULT_WHALE: { name: "🐳 WHALE, 王様 (課金クジラ)", img: "images/adult_whale.png" },
+  ADULT_DOGE_KNIGHT: { name: "🐕 DOGE-KNIGHT (ドゴジ, 騎士)", img: "images/adult_doge_knight.png" },
+  ADULT_SATOSHI_BOT: { name: "🤖 SATOSHI-BOT (ソソシーボット)", img: "images/adult_satoshi_bot.png" },
+  ADULT_DEFI_WIZARD: { name: "🧙‍♂️ DEFI-WIZARD (デFi-ウィザード)", img: "images/adult_defi_wizard.png" },
+  ADULT_NF_PET: { name: "🦜 NF-PET (NF-ペット)", img: "images/adult_nf_pet.png" },
+  ADULT_STAKING_LLAMA: { name: "🦙 STAKING-LLAMA (スタキング-ララマ)", img: "images/adult_staking_llama.png" },
+  ADULT_MEMECOIN_CAT: { name: "🐱 MEMECOIN-CAT (メモコイン-カット)", img: "images/adult_memecoin_cat.png" },
+  ADULT_RUGPULL_SCAMP: { name: "👿 RUGPULL-SCAMP (リグプルルースケンプ)", img: "images/adult_rugpull_scamp.png" },
+  ADULT_STABLECOIN_ROCK: { name: "🪨 STABLECOIN-ROCK (スタブルコーン-ロック)", img: "images/adult_stablecoin_rock.png" },
+  ADULT_HARDFORK_TWINS: { name: "👬 HARDFORK-TWINS (ハードフォーク-ツイン)", img: "images/adult_hardfork_twins.png" },
+  ADULT_GAS_FEE_CLOUD: { name: "☁️ GAS-FEE-CLOUD (カス-フェー-クロード)", img: "images/adult_gas_fee_cloud.png" },
+  ADULT_PUMP_DUMP_IMP: { name: "😈 PUMP-AND-DUMP-IMP (パンプ-アンド-ダンプ-イマプ)", img: "images/adult_pump_dump_imp.png" },
+
+  // --- Senior/Special (4) ---
+  SENIOR_DEITY: { name: "😇 BLOCKCHAIN DEITY (チィティ)", img: "images/senior_deity.png" },
+  SENIOR_ARCHMAGE: { name: "🧙‍♂️ DEFI ARCHMAGE (デフィアクマジ)", img: "images/senior_archmage.png" },
+  SENIOR_WYVERN: { name: "🐉 ETHEREAL WYVERN (エチュアル ワイベーン)", img: "images/senior_wyvern.png" },
+  SENIOR_MASTER: { name: "摸 ORIGINAL HODL MASTER (オリジナル HODL マスター)", img: "images/senior_master.png" },
+
+  // --- Graveyard/Ascension (1/墓と昇天) ---
+  GRAVEYARD: { name: "🪦 BLOCKCHAIN SEA ASCENSION (ブロックチェーンの海)", img: "images/graveyard.png" }
 };
 
 let paymentChecker = null;
@@ -117,7 +144,7 @@ function updateChatUI(chats) {
   if (wasAtBottom) box.scrollTop = box.scrollHeight;
 }
 
-// ─── 🧬 育成・進化判定ロジック & UI更新 (①・④) ───
+// ─── 🧬 育成・30種完全同期進化判定ロジック ───
 function updateScoreUI(votes, deaths = 0) {
   const scores = { HODL: votes.HODL || 0, FOMO: votes.FOMO || 0, BUIDL: votes.BUIDL || 0, SELL: votes.SELL || 0 };
   const totalPts = scores.HODL + scores.FOMO + scores.BUIDL + scores.SELL;
@@ -147,55 +174,121 @@ function updateScoreUI(votes, deaths = 0) {
   let character = CHARACTERS.EGG;
   let nextTarget = 1000;
   let genName = "卵期";
+
+  // コマンドの強さ順ソート (1位と2位のコンビを検出)
+  const sorted = Object.entries(scores)
+    .map(([name, val]) => ({ name, val }))
+    .sort((a, b) => b.val - a.val);
+  const max1 = sorted[0].name;
+  const max2 = sorted[1].name;
+
+  // 建設的エネルギー (HODL + BUIDL) の割合 (High / Avg / Low Care用)
+  const constructive = scores.HODL + scores.BUIDL;
+  const careRatio = totalPts > 0 ? (constructive / totalPts) : 0;
   
-  // バッドエンド判定 (5000pt以上かつSELLが全体の60%以上)
+  // ─── 判定マトリクス ───
+  
+  // 0. バッドエンド（お墓）判定 (5,000pt以上かつSELLが全体の60%以上)
   if (sellRatio >= 0.6 && totalPts >= 5000) { 
     character = CHARACTERS.GRAVEYARD; 
     nextTarget = totalPts; // 進行停止
     genName = "🪦 滅亡期 (お墓)";
   } 
-  // 卵期 (0 - 999pt)
+  // 1. 卵期 (0 - 999pt)
   else if (totalPts < 1000) { 
     character = CHARACTERS.EGG; 
     nextTarget = 1000; 
     genName = "🥚 卵期";
   } 
-  // ベビー期 (1,000 - 4,999pt)
+  // 2. ベビー期 (1,000 - 4,999pt)
   else if (totalPts < 5000) {
     nextTarget = 5000;
     genName = "👶 ベビー期";
-    if (scores.FOMO > scores.HODL && scores.FOMO > scores.BUIDL) character = CHARACTERS.BABY_ALT;
-    else if (scores.SELL > scores.HODL) character = CHARACTERS.BABY_SHIBA;
-    else character = CHARACTERS.BABY_BTC;
+    if (max1 === "FOMO") {
+      character = CHARACTERS.BABY_ALT; // アルトちゃん
+    } else if (max1 === "SELL") {
+      character = CHARACTERS.BABY_SHIBA; // シバいぬベビー
+    } else {
+      character = CHARACTERS.BABY_BTC; // ビットくん
+    }
   } 
-  // キッズ期 (5,000 - 19,999pt)
+  // 3. キッズ期 (5,000 - 19,999pt) [画像にある全6種類のキッズへ分岐]
   else if (totalPts < 20000) {
     nextTarget = 20000;
     genName = "👦 キッズ期";
-    if (scores.FOMO > scores.HODL) character = CHARACTERS.KID_FOMO;
-    else if (scores.SELL > scores.BUIDL) character = CHARACTERS.KID_BAG;
-    else character = CHARACTERS.KID_SMART;
+    
+    if (careRatio >= 0.65) {
+      // [High Care]：開発・保全が圧倒的
+      character = CHARACTERS.KID_SMART; // スマートコントラクト
+    } else if (careRatio >= 0.4) {
+      // [Avg Care]：標準的なコミュニティ熱量
+      if (scores.BUIDL > scores.HODL) {
+        character = CHARACTERS.KID_DAO; // DAO ガイド
+      } else {
+        character = CHARACTERS.KID_LEDGER; // レジャー・バル
+      }
+    } else {
+      // [Low Care]：投機や売りが多く開発意欲が低い
+      if (max1 === "HODL") {
+        character = CHARACTERS.KID_NODELING; // ノドリング (低電力HODL)
+      } else if (max1 === "SELL") {
+        character = CHARACTERS.KID_BAG; // バグホルダー (ガチ掴み)
+      } else {
+        character = CHARACTERS.KID_FOMO; // フモートット
+      }
+    }
   } 
-  // 大人期 (20,000 - 99,999pt)
+  // 4. 大人期 (20,000 - 99,999pt) [画像にある全15種類の大人へ1位2位マトリクスで完璧に分岐]
   else if (totalPts < 100000) {
     nextTarget = 100000;
     genName = "🧑 大人期";
-    if (scores.HODL > 50000) {
-      character = CHARACTERS.ADULT_WHALE; // 超レア：クジラ
+    
+    // ★超レア進化：HODL単体が50,000pt以上
+    if (scores.HODL >= 50000) {
+      character = CHARACTERS.ADULT_WHALE; // WHALE, 王様
     } else {
-      // 一番ポイントが高い勢力へ進化
-      const maxPts = Math.max(scores.HODL, scores.FOMO, scores.BUIDL, scores.SELL);
-      if (scores.HODL === maxPts) character = CHARACTERS.ADULT_HODL;
-      else if (scores.FOMO === maxPts) character = CHARACTERS.ADULT_TRADER;
-      else if (scores.BUIDL === maxPts) character = CHARACTERS.ADULT_DEFI;
-      else character = CHARACTERS.ADULT_RUGPULL; // SELLが最多、または同点多数の場合など
+      // 1位(max1)と2位(max2)の組み合わせで15パターンを網羅
+      if (max1 === "HODL") {
+        if (max2 === "BUIDL") character = CHARACTERS.ADULT_MINER_MOLE; // モグラ
+        else if (max2 === "FOMO") character = CHARACTERS.ADULT_STAKING_LLAMA; // ララマ
+        else if (max2 === "SELL") character = CHARACTERS.ADULT_SATOSHI_BOT; // サトシボット
+        else character = CHARACTERS.ADULT_HODL_TURTLE; // 亀
+      } 
+      else if (max1 === "FOMO") {
+        if (max2 === "HODL") character = CHARACTERS.ADULT_DOGE_KNIGHT; // ドージ騎士
+        else if (max2 === "BUIDL") character = CHARACTERS.ADULT_DEFI_WIZARD; // DeFiウィザード
+        else if (max2 === "SELL") character = CHARACTERS.ADULT_MEMECOIN_CAT; // メモコインカット
+        else character = CHARACTERS.ADULT_TRADER_BUNNY; // ウサギ
+      } 
+      else if (max1 === "BUIDL") {
+        if (max2 === "HODL") character = CHARACTERS.ADULT_HARDFORK_TWINS; // ハードフォークツイン
+        else if (max2 === "FOMO") character = CHARACTERS.ADULT_NF_PET; // NFペット
+        else if (max2 === "SELL") character = CHARACTERS.ADULT_GAS_FEE_CLOUD; // カスフェークロード
+        else character = CHARACTERS.ADULT_MINER_MOLE;
+      } 
+      else { // max1 === "SELL"
+        if (max2 === "HODL") character = CHARACTERS.ADULT_STABLECOIN_ROCK; // スタブルコーンロック
+        else if (max2 === "FOMO") character = CHARACTERS.ADULT_PUMP_DUMP_IMP; // パンプダンプイマプ
+        else if (max2 === "BUIDL") character = CHARACTERS.ADULT_RUGPULL_SCAMP; // リグプルルースケンプ
+        else character = CHARACTERS.ADULT_RUGPULL_SCAMP;
+      }
     }
   } 
-  // 伝説期 (100,000pt -)
+  // 5. 伝説期 (100,000pt -) [画像にある全4種類の最終形態へ分岐]
   else { 
-    character = CHARACTERS.SENIOR_MASTER; 
     nextTarget = totalPts; // カンスト
     genName = "摸 伝説期";
+    
+    // シニア期の4分岐
+    if ((max1 === "HODL" && max2 === "BUIDL") || (max1 === "BUIDL" && max2 === "HODL")) {
+      character = CHARACTERS.SENIOR_DEITY; // チィティ (BLOCKCHAIN DEITY)
+    } else if ((max1 === "BUIDL" && max2 === "FOMO") || (max1 === "FOMO" && max2 === "BUIDL")) {
+      character = CHARACTERS.SENIOR_ARCHMAGE; // デフィアクマジ (DEFI ARCHMAGE)
+    } else if ((max1 === "HODL" && max2 === "FOMO") || (max1 === "FOMO" && max2 === "HODL")) {
+      character = CHARACTERS.SENIOR_WYVERN; // エチュアルワイベーン (ETHEREAL WYVERN)
+    } else {
+      character = CHARACTERS.SENIOR_MASTER; // オリジナル HODL マスター
+    }
   }
 
   // 画面に適用
