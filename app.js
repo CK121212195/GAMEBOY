@@ -141,7 +141,7 @@ async function fetchData() {
     if (data.error) return;
     
     updateChatUI(data.chats);
-    // テスト項目なしの本番接続用
+    // デバッグ用の模擬合算処理を完全消去し、リアルタイムの本番データのみで描画
     updateScoreUI(data.votes, data.deaths || 0);
   } catch (e) {}
 }
@@ -159,12 +159,10 @@ function updateChatUI(chats) {
     const badgeClass = isBoost ? "cmd-badge boosted" : "cmd-badge";
     const boostText = isBoost ? `⚡×${chat.weight}` : "";
     
+    // 【掲示板のズレバグ修正】バッジと本文の間の不要な改行コード・インデントを完全排除して一列に配置
     div.innerHTML = `
       <div class="chat-meta">${index + 1} 名前：${escHtml(chat.name)} 投稿日：${chat.time}</div>
-      <div class="chat-text">
-        <span class="${badgeClass}">${escHtml(chat.command)} ${boostText}</span>
-        ${escHtml(chat.message)}
-      </div>`;
+      <div class="chat-text"><span class="${badgeClass}">${escHtml(chat.command)} ${boostText}</span> ${escHtml(chat.message)}</div>`;
     box.appendChild(div);
   });
   
