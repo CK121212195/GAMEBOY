@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- 左側：ゲーム画面 -->
+        <!-- 左側：ゲーム画面＆ルール -->
         <div class="game-area">
             <div class="header">
                 <h1>みんなのジェネシス・ブロック</h1>
@@ -42,7 +42,6 @@
 
                 <!-- キャラクター表示エリア -->
                 <div class="character-container">
-                    <!-- 画像がない場合は代替画像を表示 -->
                     <img id="character-img" src="images/egg.png" alt="Character" onerror="this.src='https://placehold.co/250x250/000/f7931a?text=Image+Not+Found'">
                 </div>
             </div>
@@ -69,6 +68,29 @@
                 </p>
                 <p id="connection-status" style="display:none;font-size:12px;margin-top:5px;"></p>
             </div>
+
+            <!-- ▼ 遊び方・ルール説明エリア ▼ -->
+            <div class="rule-board">
+                <h3>📜 遊び方ガイド</h3>
+                <div class="rule-content">
+                    <h4>1. みんなで1つのキャラを育てよう！</h4>
+                    <p>右の掲示板からコメントと「コマンド」を選んで書き込みます。全プレイヤーの選んだコマンドのポイント（pt）で進化先が決まります。</p>
+                    <div class="rule-cmds">
+                        <span class="cmd-badge">🛡️ HODL</span> 堅実・防御。 <br>
+                        <span class="cmd-badge">🚀 FOMO</span> 攻撃・買い煽り。<br>
+                        <span class="cmd-badge">🔧 BUIDL</span> 開発・技術。<br>
+                        <span class="cmd-badge" style="background:#555;">📉 SELL</span> 弱気・恐怖。
+                    </div>
+
+                    <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
+                    <p>「⚡ Boost」にチェックを入れて<strong>Lightning決済</strong>を行うと、<span class="highlight">支払った sats がそのままポイント</span>として強力に反映されます！(例: 100 sats = 100 pt)</p>
+
+                    <h4>3. 🧬 進化とバッドエンド</h4>
+                    <p>全体ポイントの合計で「卵→ベビー→キッズ→大人→伝説」と進化します。<br>
+                    <span style="color:#ff5252; font-weight:bold;">⚠️ 警告：</span>合計5,000pt以上で <strong>📉 SELL が全体の60%を超える</strong>と、キャラはお墓（ゲームオーバー）へ直行します。悲観相場こそみんなで HODL して命を守ろう！</p>
+                </div>
+            </div>
+            <!-- ▲ 遊び方・ルール説明エリア ▲ -->
         </div>
 
         <!-- 右側：実況板 -->
@@ -135,12 +157,9 @@
     </div>
 
     <script>
-        // チェックボックスでスライダー表示
         document.getElementById("boost-check").addEventListener("change", function() {
             document.getElementById("sat-slider-area").style.display = this.checked ? "block" : "none";
         });
-        
-        // インボイスコピー機能
         function copyInvoice() {
             const txt = document.getElementById("invoice-text");
             txt.select();
