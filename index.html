@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                <!-- 🚀 サイバーホログラム仕様に美麗大型化したキャラクター表示エリア -->
+                <!-- 🚀 サイバーホログラム仕様に美麗大型化したキャラクター表示エリア (280px版) -->
                 <div class="character-container">
                     <div class="character-frame">
                         <div class="holo-ring"></div>
@@ -55,7 +55,16 @@
                 <h3>現在の育成ステータス</h3>
                 <div class="status-header">
                     <p id="evolution-status" class="status-title">🥚 GENESIS BLOCK EGG (卵)</p>
-                    <div class="death-counter">💀 過去の全滅回数: <span id="death-count">0</span> 回</div>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <!-- 🚀 ダイナミックX（旧Twitter）拡散シェアボタン -->
+                        <button class="share-btn" onclick="shareOnTwitter()">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                            Xでシェア 📢
+                        </button>
+                        <div class="death-counter">💀 過去の全滅回数: <span id="death-count">0</span> 回</div>
+                    </div>
                 </div>
                 
                 <!-- 世代進行プログレスバー -->
@@ -113,11 +122,11 @@
                 </div>
             </div>
 
-            <!-- 📢 ⑥ CRYPTO-ALERTS ツイートリアルタイム自動配信枠 -->
+            <!-- 📢 ① CRYPTO-ALERTS ツイート表示枠 (直近最新の1件に常時限定) -->
             <div class="twitter-board">
                 <h3>📢 CRYPTO-ALERTS リアルタイム速報 (@Nishi8mAlert)</h3>
                 <div class="twitter-widget-container">
-                    <a class="twitter-timeline" data-theme="dark" data-height="500" href="https://twitter.com/Nishi8mAlert?ref_src=twsrc%5Etfw">Tweets by Nishi8mAlert</a>
+                    <a class="twitter-timeline" data-theme="dark" data-tweet-limit="1" data-chrome="noheader nofooter noborders transparent" href="https://twitter.com/Nishi8mAlert?ref_src=twsrc%5Etfw">Tweets by Nishi8mAlert</a>
                     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 </div>
             </div>
@@ -126,7 +135,7 @@
             <div class="rule-board">
                 <h3>📜 遊び方ガイド</h3>
                 <div class="rule-content">
-                    <!-- ② コマンドをキャラの「DNA」としてわかりやすく解説再構築 -->
+                    <!-- ②・③ 表現を「DNA」「育成投資」に美麗アップデート -->
                     <h4>1. 4つのコマンド（勢力）を選ぼう！</h4>
                     <p>右の掲示板からメッセージと「コマンド」を選んで投稿します。あなたが選ぶコマンドは、<strong>キャラクターの「能力値（DNA）」</strong>となって蓄積されます。</p>
                     <div class="rule-cmds">
@@ -143,8 +152,9 @@
                         キャラクターの<strong>不信感・流動性・システムリスク</strong>に影響します。SELL比率が高すぎるとゲームオーバー（お墓）になりますが、ほどよく混ざることで「サトシボット 🤖」などの特殊な合体進化を促します。
                     </div>
 
-                    <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
-                    <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
+                    <!-- ③ 投資表現へのリフレーミング -->
+                    <h4>2. ⚡ 育成投資ブースト (Proof of Work)</h4>
+                    <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">投資した sats がそのままキャラクター育成ポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
 
                     <!-- ② 進化条件・ロジックと解説の一致化（全30種対応） -->
                     <h4>3. 🧬 進化条件と分岐ルート</h4>
@@ -173,7 +183,7 @@
                             <br>・🛡️ HODL単独圧倒 ⇒ <span class="highlight">HODLer 亀 🐢</span>
                             <br>・🚀 FOMO最多＆🛡️ HODL 2位 ⇒ <span class="highlight">ドージ騎士 🐕</span> / 🚀 FOMO単独圧倒 ⇒ <span class="highlight">ウサギ 🐰</span>
                             <br>・📉 SELL最多＆🔧 BUIDL 2位 ⇒ <span class="highlight">詐欺師(👿)</span> / 📉 SELL＆🚀 FOMO 2位 ⇒ <span class="highlight">パンプ魔 😈</span> など
-                            <br><span class="highlight" style="color:#ffea00;">★超レア最終★ 誰もが認めるガチホ勢：HODL単体で 50,000 pt を超えると、一気に「王様クジラ 🐳」になります！</span>
+                            <br><span class="highlight" style="color:#ffea00;">★超レア最終★ 誰もが認めるガチホ勢：HODL単体で 50,000 pt を超えると、一キーに「王様クジラ 🐳」になります！</span>
                         </li>
                         <li style="margin-top: 8px;"><strong>摸 [Senior/Special] 伝説期 (100,000 pt 〜)</strong> <span style="color:#ffea00; font-size:11px;">(全4種)</span>
                             <br>究極 of 究極の4神仙形態に到達。
@@ -187,7 +197,7 @@
                     <!-- ④ 死亡条件と自動蘇生ルールの明記 -->
                     <p style="margin-top:12px;"><span style="color:#ff5252; font-weight:bold;">⚠️ 滅亡（全滅）条件：</span>合計 5,000 pt 以上の状態で、<strong>📉 SELL の獲得ポイントが全体の 60% 以上</strong>に達すると、どの世代からでも一発でお墓（ゲームオーバー）へ引きずり込まれ、<span class="highlight" style="color:#ff5252;">ブロックチェーンの海 🪦 (昇天)</span>へと送られます。</p>
                     <p style="font-size:12px; color:#ff8a80; background:#331515; padding:8px; border-radius:4px; border-left:3px solid #ff5252;">
-                        <strong>💡 復活の仕組み:</strong> 全滅してしまっても心配ありません。みんなで「HODL」などのコメントや投げ銭ブーストを重ねて、<strong>SELLの比率を全体の60%未満に引き下げれば、即座に本来の世代のキャラクターとして自動的に復活</strong>します！
+                        <strong>💡 復活の仕組み:</strong> 全滅してしまっても心配ありません。みんなで「HODL」などのコメントや投資ブーストを重ねて、<strong>SELLの比率を全体の60%未満に引き下げれば、即座に本来の世代のキャラクターとして自動的に復活</strong>します！
                     </p>
                     
                     <!-- 進化ツリー表示ボタン -->
@@ -218,12 +228,12 @@
                     <div id="char-counter" class="char-counter">0 / 500</div>
                 </div>
 
-                <!-- ⚡ Boost オプション (③ デフォルト値を 10 sats に変更) -->
+                <!-- ⚡ Boost オプション (③ デフォルト値を 10 sats に、テキスト表現を『投資』に変更) -->
                 <div class="boost-option">
                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                         <input type="checkbox" id="boost-check">
                         <span id="boost-label" class="lightning-text">
-                            ⚡ <strong>10 sats</strong> 払って効力を<strong>10倍</strong>にする
+                            ⚡ <strong>10 sats</strong> 投資して育成パワーを<strong>10倍</strong>にする
                         </span>
                     </label>
 
@@ -234,7 +244,7 @@
                             <span>10,000 sats</span>
                         </div>
                         <input type="range" id="sat-amount" min="10" max="10000" step="10" value="10" style="width:100%;accent-color:#f7931a;">
-                        <p style="font-size:11px;color:#999;margin:4px 0 0;">※ 寄付額 = コマンド効力（例: 10sats → 10pt）</p>
+                        <p style="font-size:11px;color:#999;margin:4px 0 0;">※ 育成投資額 = コマンドパワー（例: 10sats 投資 ➡ 10pt）</p>
                     </div>
                 </div>
 
@@ -246,9 +256,9 @@
     <!-- ⚡ Lightning支払いモーダル -->
     <div id="payment-modal" class="modal" style="display:none;">
         <div class="modal-content">
-            <h3>⚡ Lightning決済</h3>
+            <h3>⚡ 育成投資（Lightning 決済）</h3>
             <p id="invoice-amount-text" style="color:#e65100;font-weight:bold;"></p>
-            <p>このインボイスを支払うと、進化への影響力が爆発的に上がります！</p>
+            <p>このインボイスへ投資を完了させると、キャラクター育成への貢献が爆発的に反映されます！</p>
             
             <a id="wallet-link" href="#" class="wallet-btn" style="display:none;">⚡ ウォレットアプリを開く</a>
 
@@ -256,12 +266,12 @@
             <textarea id="invoice-text" rows="3" style="width:100%;font-size:11px;word-break:break-all;" readonly></textarea>
             
             <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">📋 インボイスをコピー</button>
-            <p id="payment-status" style="font-weight:bold;color:#e65100;">支払い待ち...</p>
-            <button onclick="closeModal()" style="background:#999;">キャンセル</button>
+            <p id="payment-status" style="font-weight:bold;color:#e65100;">投資承認待ち...</p>
+            <button onclick="closeModal()" style="background:#999;">閉じる</button>
         </div>
     </div>
 
-    <!-- 🗺️ ⑤ 参照階層をルートディレクトリ(evolution_tree.jpg)に修正したモーダル -->
+    <!-- 🗺️ ⑤ 参照階層をルートの evolution_tree.jpg に修正したモーダル -->
     <div id="tree-modal" class="modal" style="display:none;" onclick="closeTreeModal()">
         <div class="image-modal-content" onclick="event.stopPropagation()">
             <img src="evolution_tree.jpg" alt="進化ツリー" onerror="this.src='https://placehold.co/600x400/000/fff?text=Evolution+Tree+Image+Missing'">
