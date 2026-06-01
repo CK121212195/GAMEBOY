@@ -1,378 +1,103 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Satoshi Egg - Crypto Virtual Pet</title>
-  <style>
-    :root {
-      --bg-color: #0b0c10; --panel-bg: rgba(31, 40, 51, 0.8);
-      --primary: #66fcf1; --secondary: #45a29e;
-      --accent: #f7931a; --danger: #ff4e50; --text: #c5c6c7;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 0; background: radial-gradient(circle at center, #1f2833 0%, #0b0c10 100%);
-      color: var(--text); font-family: 'Segoe UI', sans-serif;
-      min-height: 100vh; display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
-      user-select: none;
-    }
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-    .pixel-font { font-family: 'Press Start 2P', cursive; font-size: 0.7rem; line-height: 1.5; }
-    
-    header { width: 100%; text-align: center; padding: 15px 0; background: rgba(11, 12, 16, 0.9); border-bottom: 2px solid var(--primary); }
-    h1 { margin: 0; color: var(--accent); font-family: 'Press Start 2P', cursive; font-size: 1.2rem; text-shadow: 2px 2px 0px #000; }
-    #mempool-status { font-size: 0.7rem; color: var(--primary); margin-top: 10px; font-family: monospace; }
-
-    main { width: 100%; max-width: 450px; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
-    
-    .glass-panel {
-      background: var(--panel-bg); border: 2px solid var(--primary);
-      border-radius: 10px; padding: 15px; box-shadow: 4px 4px 0px rgba(102, 252, 241, 0.3);
-    }
-    
-    .bar-wrapper { margin-bottom: 10px; }
-    .bar-label-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 3px; font-weight: bold;}
-    .bar-bg { width: 100%; height: 14px; background: #000; border: 2px solid #555; }
-    .bar-fill { height: 100%; transition: width 0.3s; }
-    #hp-bar { background: var(--danger); }
-    #mood-bar { background: #ff9a9e; }
-
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; text-align: center;}
-    .stat-label { font-size: 0.7rem; color: #aaa; margin-bottom: 4px;}
-    .stat-value { font-size: 0.9rem; color: var(--primary); font-weight: bold; }
-    
-    #stage-text-container { margin-top: 15px; text-align: center; padding: 10px; background: #000; border: 2px dashed var(--accent); }
-    #stage-name { font-size: 1rem; color: #fff; font-weight: bold; display: block; margin-bottom: 5px;}
-    #stage-class { font-size: 0.7rem; color: var(--accent); }
-
-    #character-container {
-      height: 250px; display: flex; justify-content: center; align-items: center; border-radius: 10px;
-      background: #85c1e9; /* 空のような水色背景 */
-      border: 4px solid #fff; box-shadow: inset 0 0 20px rgba(0,0,0,0.2), 4px 4px 0px rgba(0,0,0,0.5);
-      position: relative; overflow: hidden;
-    }
-    
-    /* ドット絵がぼやけないための魔法のCSS */
-    .character-img {
-      max-width: 150px; max-height: 150px; object-fit: contain;
-      image-rendering: pixelated; /* ドットをくっきりさせる */
-      filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3));
-      transition: transform 0.1s;
-    }
-    
-    .sick-icon { position: absolute; top: 10px; right: 20px; font-size: 2rem; animation: blink 1s infinite; display: none; }
-    .junk-icon { position: absolute; font-size: 1.5rem; }
-    
-    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-8px); } 100% { transform: translateY(0px); } }
-    @keyframes jump { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.1); } }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-    
-    .anim-float { animation: float 2s steps(4) infinite; }
-    .anim-jump { animation: jump 0.3s steps(3); }
-
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
-    button {
-      background: #000; border: 2px solid var(--primary); color: var(--primary); padding: 12px; font-family: 'Press Start 2P', cursive; font-size: 0.6rem; cursor: pointer; box-shadow: 3px 3px 0px var(--primary); transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; gap: 8px;
-    }
-    button:active { transform: translate(3px, 3px); box-shadow: none; }
-    button.btn-feed { border-color: var(--accent); color: var(--accent); box-shadow: 3px 3px 0px var(--accent);}
-    button.btn-play { border-color: #ff9a9e; color: #ff9a9e; box-shadow: 3px 3px 0px #ff9a9e;}
-    button.btn-clean { border-color: #c5c6c7; color: #c5c6c7; box-shadow: 3px 3px 0px #c5c6c7;}
-    button.btn-cure { border-color: #00f5d4; color: #00f5d4; box-shadow: 3px 3px 0px #00f5d4;}
-
-    .debug-panel { border: 2px dashed #666; padding: 10px; background: rgba(0,0,0,0.8); display: flex; justify-content: space-between; margin-top: 15px;}
-    .debug-panel button { padding: 8px; font-size: 0.5rem; margin:0; width: 48%; box-shadow: 2px 2px 0px #fff; border-color: #fff; color: #fff;}
-    #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; border: 2px solid #000; padding: 10px 20px; font-family: 'Press Start 2P', cursive; font-size: 0.6rem; opacity: 0; z-index: 200; box-shadow: 4px 4px 0px #000; transition: opacity 0.2s;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>みんなのジェネシス・ブロック (Twitch Plays HODL)</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- QRコード生成ライブラリ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
+    <div class="container">
+        <!-- 左側：ゲーム画面とチャート -->
+        <div class="game-area">
+            <div class="header">
+                <h1>みんなのジェネシス・ブロック</h1>
+                <p>現在地: ブロック高 <span id="block-height">840,000</span></p>
+            </div>
+            
+            <div class="screen">
+                <!-- 背景：TradingViewチャート -->
+                <div id="tradingview-widget">
+                    <div class="tradingview-widget-container">
+                      <div id="tv_chart"></div>
+                      <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                      <script type="text/javascript">
+                      new TradingView.widget({
+                        "autosize": true,
+                        "symbol": "BINANCE:BTCUSDT",
+                        "interval": "1",
+                        "timezone": "Asia/Tokyo",
+                        "theme": "dark",
+                        "style": "3",
+                        "locale": "ja",
+                        "enable_publishing": false,
+                        "backgroundColor": "rgba(0, 0, 0, 1)",
+                        "hide_top_toolbar": true,
+                        "save_image": false,
+                        "container_id": "tv_chart"
+                      });
+                      </script>
+                    </div>
+                </div>
 
-  <header>
-    <h1>SATOSHI EGG</h1>
-    <div id="mempool-status">Connecting...</div>
-  </header>
-  
-  <main>
-    <div class="glass-panel">
-      <div class="bar-wrapper"><div class="bar-label-row"><span>HP(FEED)</span><span id="hp-text">100/100</span></div><div class="bar-bg"><div id="hp-bar" class="bar-fill"></div></div></div>
-      <div class="bar-wrapper"><div class="bar-label-row"><span style="color:#ff9a9e;">MOOD(PLAY)</span><span id="mood-text">100/100</span></div><div class="bar-bg"><div id="mood-bar" class="bar-fill"></div></div></div>
-      
-      <div class="stats-grid">
-        <div><div class="stat-label">BLOCK AGE</div><div class="stat-value" id="age-text">0</div></div>
-        <div><div class="stat-label">IDLE TIME</div><div class="stat-value" id="idle-time">00:00:00</div></div>
-      </div>
-      
-      <div id="stage-text-container">
-        <span id="stage-name">ジェネシス・ブロック</span>
-        <span id="stage-class">[Egg] 初期状態</span>
-      </div>
+                <!-- キャラクター表示 -->
+                <div class="character-container">
+                    <img id="character-img" src="https://illustcenter.com/wp-content/uploads/2021/10/epc0082.png" alt="Character">
+                </div>
+            </div>
+
+            <div class="status-board">
+                <h3>現在のコマンド勢力図 (進化への影響)</h3>
+                <div class="bars">
+                    <div>🛡️ HODL (ガチホ): <span id="score-HODL">0</span> pt</div>
+                    <div>🚀 FOMO (イケイケ): <span id="score-FOMO">0</span> pt</div>
+                    <div>📉 SELL (利確/損切): <span id="score-SELL">0</span> pt</div>
+                    <div>🔧 BUIDL (開発): <span id="score-BUIDL">0</span> pt</div>
+                </div>
+                <p id="evolution-status" style="margin-top: 10px; color: #f7931a; font-weight: bold;">現在の状態：Genesis Egg</p>
+            </div>
+        </div>
+
+        <!-- 右側：2ch風実況板＆コマンド入力 -->
+        <div class="chat-area">
+            <h2>実況掲示板</h2>
+            <div id="chat-box" class="chat-box">
+                <!-- コメントがここに追加される -->
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="user-name" placeholder="名前 (省略可: 名無しサトシ)" maxlength="15">
+                <select id="command-select">
+                    <option value="HODL">🛡️ HODL (ガチホ)</option>
+                    <option value="FOMO">🚀 FOMO (イケイケ)</option>
+                    <option value="BUIDL">🔧 BUIDL (開発)</option>
+                    <option value="SELL">📉 SELL (売却)</option>
+                </select>
+                <input type="text" id="user-msg" placeholder="コメントを入力（おはぎゃー等）" maxlength="50">
+                
+                <div class="boost-option">
+                    <input type="checkbox" id="boost-check">
+                    <label for="boost-check" class="lightning-text">⚡ 1 satoshi 払って効力100倍にする (PoW)</label>
+                </div>
+
+                <button id="send-btn" onclick="sendMessage()">書き込む</button>
+            </div>
+            
+            <!-- 決済モーダル -->
+            <div id="payment-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3>Lightning決済 (1 sat)</h3>
+                    <p>このインボイスを支払うと、あなたのコマンドが100倍の力で反映されます！</p>
+                    <div id="qrcode"></div>
+                    <input type="text" id="invoice-text" readonly>
+                    <p id="payment-status">支払い待ち...</p>
+                    <button onclick="closeModal()">キャンセル</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- ドット絵表示エリア -->
-    <div id="character-container">
-      <div id="sick-indicator" class="sick-icon">💀</div>
-      <div id="junks-container"></div>
-      <div id="character-display"></div>
-    </div>
-
-    <div class="action-grid" id="action-buttons">
-      <button class="btn-feed" onclick="action('feed')"><span style="font-size:1.5rem">🍖</span>FEED (Sats)</button>
-      <button class="btn-play" onclick="action('play')"><span style="font-size:1.5rem">🎮</span>PLAY (Hash)</button>
-      <button class="btn-clean" onclick="action('clean')"><span style="font-size:1.5rem">🧹</span>CLEAN (Mempool)</button>
-      <button class="btn-cure" onclick="action('cure')"><span style="font-size:1.5rem">💉</span>CURE (Debug)</button>
-    </div>
-
-    <div class="debug-panel">
-      <button onclick="forceNextStage()" style="border-color:#ffd700; color:#ffd700;">⏩ NEXT STAGE</button>
-      <button onclick="reincarnate()" style="border-color:#ff4e50; color:#ff4e50;">♻️ RESET</button>
-    </div>
-  </main>
-
-  <div id="toast">MESSAGE</div>
-
-  <script>
-    // ==========================================
-    // 🎨 キャラクター名と画像定義 (ドット絵30種)
-    // ==========================================
-    const IMG = (filename) => `<img src="assets/${filename}" class="character-img anim-float" alt="Pet image">`;
-
-    // 世代ごとのデータ
-    const CHAR_DATA = {
-      egg: [ { name: "ジェネシス・ブロック", desc: "[Egg] 最初のブロック" } ],
-      baby: [
-        { name: "ビットくん", desc: "[Baby] ご飯大好き" }, 
-        { name: "アルトちゃん", desc: "[Baby] 遊ぶの大好き" }, 
-        { name: "シバいぬベビー", desc: "[Baby] 放置されがち" }
-      ],
-      kid: [
-        { name: "スマートコントラクト", desc: "[Kids] エリート優等生" },
-        { name: "DAOチャイルド", desc: "[Kids] みんなで決める" },
-        { name: "レジャー・パル", desc: "[Kids] セキュリティ万全" },
-        { name: "ノードリング", desc: "[Kids] フルノード見習い" },
-        { name: "バグホルダー", desc: "[Kids] 塩漬け中..." },
-        { name: "FOMOトット", desc: "[Kids] 高値掴み注意" }
-      ],
-      adult: [
-        { name: "HODLER 亀", desc: "[Adult] 鉄壁の防御力 (放置派)" },
-        { name: "トレーダー・ウサギ", desc: "[Adult] 動きが激しい (遊ぶ派)" },
-        { name: "マイナー・モグラ", desc: "[Adult] サトシを掘る (掃除派)" },
-        { name: "王様 クジラ", desc: "[Adult] 相場を動かす巨獣" },
-        { name: "ドージ・ナイト", desc: "[Adult] ミームの守護者" },
-        { name: "サトシ・ボット", desc: "[Adult] 自動トレードAI" },
-        { name: "DeFi ウィザード", desc: "[Adult] 魔界の錬金術師" },
-        { name: "NF-ペット", desc: "[Adult] 唯一無二の存在" },
-        { name: "ステーキング・ララマ", desc: "[Adult] 寝てても増える" },
-        { name: "ミームコイン・キャット", desc: "[Adult] 可愛さだけで暴騰" },
-        { name: "ラグプル・スキャンプ", desc: "[Adult] 資金を持ち逃げ!?" },
-        { name: "ステーブルコイン岩", desc: "[Adult] 1ドルから動かない" },
-        { name: "ハードフォーク・ツイン", desc: "[Adult] 意見が分かれた姿" },
-        { name: "ガス代クラウド", desc: "[Adult] 手数料高騰の元凶" },
-        { name: "パンプ＆ダンプ悪魔", desc: "[Adult] チャートを操る悪魔" }
-      ],
-      senior: [
-        { name: "ブロックチェーン神", desc: "[Senior] 神格化" },
-        { name: "DeFi アークメイジ", desc: "[Senior] 魔界を極めし者" },
-        { name: "エセリアル・ワイバーン", desc: "[Senior] 幻の竜" },
-        { name: "オリジナル HODL マスター", desc: "[Senior] 伝説のガチホ勢" }
-      ],
-      dead: [ { name: "ブロックチェーンの海", desc: "[Graveyard] 承認されず昇天..." } ]
-    };
-
-    const IMAGES = {
-      egg: [IMG('egg.png')], 
-      baby: [IMG('baby_0.png'), IMG('baby_1.png'), IMG('baby_2.png')],
-      kid: [IMG('kid_0.png'), IMG('kid_1.png'), IMG('kid_2.png'), IMG('kid_3.png'), IMG('kid_4.png'), IMG('kid_5.png')],
-      adult: Array.from({length: 15}, (_, i) => IMG(`adult_${i}.png`)),
-      senior: [IMG('senior_0.png'), IMG('senior_1.png'), IMG('senior_2.png'), IMG('senior_3.png')],
-      dead: [IMG('dead.png')]
-    };
-
-    // 進化するブロック数の閾値
-    const STAGES = [
-      { id: 'egg', maxAge: 11 }, { id: 'baby', maxAge: 71 }, { id: 'kid', maxAge: 215 },
-      { id: 'adult', maxAge: 431 }, { id: 'senior', maxAge: 1007 }
-    ];
-
-    let state = { 
-      birthHeight: 0, hp: 100, mood: 100, txJunk: 0, isSick: false, 
-      lastAccess: Date.now(), isDead: false, 
-      variation: 0, stageId: 'egg',
-      // 育成履歴（これで進化先が決まる！）
-      stats: { feeds: 0, plays: 0, cleans: 0 } 
-    };
-    
-    let currentTipHeight = 0;
-
-    function loadData() { const d = localStorage.getItem('satoshi_egg_pixel'); if(d) state = Object.assign(state, JSON.parse(d)); }
-    function saveData() { localStorage.setItem('satoshi_egg_pixel', JSON.stringify(state)); }
-
-    async function updateNetwork() {
-      if (state.isDead) return renderDead();
-      try {
-        const [tipRes, feeRes] = await Promise.all([fetch('https://mempool.space/api/blocks/tip/height'), fetch('https://mempool.space/api/v1/fees/recommended')]);
-        currentTipHeight = parseInt(await tipRes.text());
-        document.getElementById('mempool-status').innerText = `Block: ${currentTipHeight} | Fee: ${await feeRes.json().then(f=>f.fastestFee)}s/vB`;
-        if(!state.birthHeight) { state.birthHeight = currentTipHeight; saveData(); }
-      } catch(e) {}
-    }
-
-    setInterval(() => {
-      if(state.isDead || currentTipHeight === 0) return;
-      const ms = Date.now() - state.lastAccess;
-      const s = Math.floor((ms/1000)%60).toString().padStart(2,'0'), m = Math.floor((ms/60000)%60).toString().padStart(2,'0'), h = Math.floor(ms/3600000).toString().padStart(2,'0');
-      document.getElementById('idle-time').innerText = `${h}:${m}:${s}`;
-
-      const mult = state.isSick ? 3 : 1; // 病気だと3倍早く減る
-      let curHp = Math.max(0, state.hp - (ms/86400000) * 50 * mult);
-      let curMood = Math.max(0, state.mood - (ms/43200000) * 50 * mult);
-
-      // ゴミ発生
-      if (Math.random() < 0.005 && state.txJunk < 5) {
-        state.txJunk++; if (state.txJunk >= 3 && Math.random() < 0.3) state.isSick = true;
-        saveData(); renderJunks();
-      }
-
-      const age = currentTipHeight - state.birthHeight;
-      if (curHp <= 0 || age >= 1008) { 
-        state.hp = 0; state.isDead = true; saveData(); renderDead(); return; 
-      }
-
-      document.getElementById('hp-text').innerText = `${Math.floor(curHp)}/100`; document.getElementById('hp-bar').style.width = `${curHp}%`;
-      document.getElementById('mood-text').innerText = `${Math.floor(curMood)}/100`; document.getElementById('mood-bar').style.width = `${curMood}%`;
-      document.getElementById('age-text').innerText = age;
-      document.getElementById('sick-indicator').style.display = state.isSick ? 'block' : 'none';
-      checkEvolution(age);
-    }, 1000);
-
-    function applyDrops() {
-      const ms = Date.now() - state.lastAccess, mult = state.isSick ? 3 : 1;
-      state.hp = Math.max(0, state.hp - (ms/86400000)*50*mult); state.mood = Math.max(0, state.mood - (ms/43200000)*50*mult);
-      state.lastAccess = Date.now();
-    }
-
-    // ==========================================
-    // 🕹️ アクションと育成カウント
-    // ==========================================
-    function action(type) {
-      if(state.isDead) return;
-      applyDrops();
-      const chara = document.querySelector('.character-img');
-      if(chara) { chara.classList.remove('anim-jump'); void chara.offsetWidth; chara.classList.add('anim-jump'); }
-
-      if (type === 'feed') { 
-        state.hp = Math.min(100, state.hp + 20); state.stats.feeds++; showToast("🍖 YUMMY!"); 
-      }
-      else if (type === 'play') { 
-        if(state.isSick) { showToast("⚠️ I'M SICK!"); return; } 
-        state.mood = Math.min(100, state.mood + 30); state.stats.plays++; showToast("🎮 FUN!"); 
-      }
-      else if (type === 'clean') { 
-        if(state.txJunk===0) { showToast("✨ CLEAN!"); return; } 
-        state.txJunk = 0; state.stats.cleans++; showToast("🧹 SWEPT!"); renderJunks(); 
-      }
-      else if (type === 'cure') { 
-        if(!state.isSick) { showToast("💚 HEALTHY!"); return; } 
-        state.isSick = false; showToast("💉 CURED!"); document.getElementById('sick-indicator').style.display='none'; 
-      }
-      saveData();
-    }
-
-    function renderJunks() {
-      const c = document.getElementById('junks-container'); c.innerHTML = '';
-      for(let i=0; i<state.txJunk; i++) {
-        let j = document.createElement('div'); j.className = 'junk-icon'; j.innerText = '💩'; 
-        j.style.left = (10 + Math.random()*80) + '%'; j.style.top = (60 + Math.random()*30) + '%'; c.appendChild(j);
-      }
-    }
-
-    // ==========================================
-    // 🧬 進化の分岐ロジック (ここが面白い部分！)
-    // ==========================================
-    function checkEvolution(age) {
-      let targetStageId = 'egg';
-      for (let s of STAGES) { if (age <= s.maxAge) { targetStageId = s.id; break; } }
-      if (age > 1007) targetStageId = 'dead';
-
-      // ステージが変わった瞬間、育成履歴から進化先(variation)を決定する
-      if (state.stageId !== targetStageId && !state.isDead) {
-        state.stageId = targetStageId;
-        const f = state.stats.feeds, p = state.stats.plays, c = state.stats.cleans;
-        const totalCare = f + p + c;
-
-        if (targetStageId === 'baby') {
-          // エサ重視=ビットくん(0), 遊び重視=アルトちゃん(1), 放置=シバいぬ(2)
-          if (f > p && f > 0) state.variation = 0;
-          else if (p >= f && p > 0) state.variation = 1;
-          else state.variation = 2;
-        } 
-        else if (targetStageId === 'kid') {
-          // ケア回数で分岐
-          if (totalCare >= 15) state.variation = Math.random() < 0.5 ? 0 : 1; // High care
-          else if (totalCare >= 5) state.variation = Math.random() < 0.5 ? 2 : 3; // Avg care
-          else state.variation = Math.random() < 0.5 ? 4 : 5; // Low care
-        }
-        else if (targetStageId === 'adult') {
-          // 特徴的な育て方で固有キャラに、それ以外はランダム
-          if (totalCare < 10) state.variation = 0; // HODLER (放置)
-          else if (p > 20) state.variation = 1; // トレーダー (遊びまくり)
-          else if (c > 10) state.variation = 2; // マイナー (掃除しまくり)
-          else if (f > 30) state.variation = 3; // クジラ (エサ与えまくり)
-          else {
-            // それ以外(4〜14)からランダム
-            state.variation = Math.floor(Math.random() * 11) + 4; 
-          }
-        }
-        else if (targetStageId === 'senior') {
-          state.variation = Math.floor(Math.random() * 4); // シニアはランダム4種
-        }
-
-        saveData();
-        showToast("✨ EVOLVED!");
-      }
-
-      renderStage();
-    }
-
-    function renderStage() {
-      const stageObj = CHAR_DATA[state.stageId][state.variation] || CHAR_DATA[state.stageId][0];
-      
-      document.getElementById('stage-name').innerText = stageObj.name;
-      document.getElementById('stage-class').innerText = stageObj.desc;
-      
-      const imgTag = IMAGES[state.stageId][state.variation] || IMAGES[state.stageId][0];
-      const disp = document.getElementById('character-display');
-      if(disp.innerHTML !== imgTag) disp.innerHTML = imgTag;
-    }
-
-    function renderDead() {
-      document.getElementById('stage-name').innerText = CHAR_DATA['dead'][0].name;
-      document.getElementById('stage-class').innerText = CHAR_DATA['dead'][0].desc;
-      document.getElementById('character-display').innerHTML = IMAGES['dead'][0];
-      document.getElementById('hp-bar').style.width = `0%`; document.getElementById('mood-bar').style.width = `0%`;
-      document.getElementById('action-buttons').style.display = 'none';
-      document.getElementById('junks-container').innerHTML = ''; document.getElementById('sick-indicator').style.display='none';
-    }
-
-    function reincarnate() { 
-      state = { birthHeight: 0, hp: 100, mood: 100, txJunk: 0, isSick: false, lastAccess: Date.now(), isDead: false, variation: 0, stageId: 'egg', stats: { feeds: 0, plays: 0, cleans: 0 } }; 
-      saveData(); location.reload(); 
-    }
-
-    function forceNextStage() {
-      if (state.isDead || currentTipHeight === 0) return;
-      const age = currentTipHeight - state.birthHeight; let next = 0;
-      if(age<12) next=12; else if(age<72) next=72; else if(age<216) next=216; else if(age<432) next=432;
-      else { showToast("MAX STAGE REACHED"); return; }
-      state.birthHeight = currentTipHeight - next; saveData(); showToast("⏩ TIME SKIP!"); checkEvolution(next);
-    }
-
-    function showToast(msg) { 
-      const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = 1; t.style.transform = "translate(-50%, 10px)";
-      setTimeout(() => { t.style.opacity = 0; t.style.transform = "translate(-50%, 0px)"; }, 1500); 
-    }
-
-    window.onload = () => { loadData(); updateNetwork(); renderJunks(); setInterval(updateNetwork, 60000); checkEvolution(currentTipHeight - state.birthHeight); };
-  </script>
+    <script src="app.js"></script>
 </body>
 </html>
