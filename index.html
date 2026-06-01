@@ -73,21 +73,24 @@
             <div class="rule-board">
                 <h3>📜 遊び方ガイド</h3>
                 <div class="rule-content">
-                    <h4>1. みんなで1つのキャラを育てよう！</h4>
-                    <p>右の掲示板からコメントと「コマンド」を選んで書き込みます。全プレイヤーの選んだコマンドのポイント（pt）で進化先が決まります。</p>
+                    <h4>1. 4つのコマンド（勢力）を選ぼう！</h4>
+                    <p>右の掲示板からコメントと「コマンド」を選んで書き込みます。選んだコマンドのポイント（pt）で進化先が決まります。</p>
                     <div class="rule-cmds">
-                        <span class="cmd-badge">🛡️ HODL</span> 堅実・防御。 <br>
-                        <span class="cmd-badge">🚀 FOMO</span> 攻撃・買い煽り。<br>
-                        <span class="cmd-badge">🔧 BUIDL</span> 開発・技術。<br>
-                        <span class="cmd-badge" style="background:#555;">📉 SELL</span> 弱気・恐怖。
+                        <span class="cmd-badge">🛡️ HODL</span> <strong>ガチホ・防御。</strong> 堅実なキャラに育ちやすい。<br>
+                        <span class="cmd-badge" style="background:#d32f2f;">🚀 FOMO</span> <strong>攻撃・買い煽り。</strong> イケイケなキャラに育ちやすい。<br>
+                        <span class="cmd-badge" style="background:#1976d2;">🔧 BUIDL</span> <strong>開発・技術。</strong> 開発者系のキャラに育ちやすい。<br>
+                        <span class="cmd-badge" style="background:#555;">📉 SELL</span> <strong>弱気・恐怖。</strong> 詐欺師やバッドエンドの要因に。
                     </div>
 
                     <h4>2. ⚡ 課金ブースト (Proof of Work)</h4>
-                    <p>「⚡ Boost」にチェックを入れて<strong>Lightning決済</strong>を行うと、<span class="highlight">支払った sats がそのままポイント</span>として強力に反映されます！(例: 100 sats = 100 pt)</p>
+                    <p>「⚡ Boost」にチェックを入れてLightning決済を行うと、<span class="highlight">支払った sats がそのままポイント</span>として強力に反映されます！推しキャラへの進化を狙う時の切り札です。(例: 100 sats = 100 pt)</p>
 
-                    <h4>3. 🧬 進化とバッドエンド</h4>
-                    <p>全体ポイントの合計で「卵→ベビー→キッズ→大人→伝説」と進化します。<br>
-                    <span style="color:#ff5252; font-weight:bold;">⚠️ 警告：</span>合計5,000pt以上で <strong>📉 SELL が全体の60%を超える</strong>と、キャラはお墓（ゲームオーバー）へ直行します。悲観相場こそみんなで HODL して命を守ろう！</p>
+                    <h4>3. 🧬 進化条件とバッドエンド</h4>
+                    <p>全体ポイントの合計で「卵 → ベビー → キッズ → 大人 → 伝説」と世代が進行します。次の世代へ移行する瞬間に最もポイントが高いコマンドによって姿が変わります。</p>
+                    <p><span style="color:#ff5252; font-weight:bold;">⚠️ 警告：</span>合計5,000pt以上で <strong>📉 SELL が全体の60%を超える</strong>と、キャラはお墓（ゲームオーバー）へ直行します。悲観相場こそ HODL して命を守りましょう！</p>
+                    
+                    <!-- 進化ツリー表示ボタン -->
+                    <button class="tree-btn" onclick="openTreeModal()">🗺️ 進化ツリー全体図を見る</button>
                 </div>
             </div>
             <!-- ▲ 遊び方・ルール説明エリア ▲ -->
@@ -132,27 +135,33 @@
 
                 <button id="send-btn" onclick="sendMessage()">書き込む ✍️</button>
             </div>
+        </div>
+    </div>
 
-            <!-- Lightning支払いモーダル -->
-            <div id="payment-modal" class="modal" style="display:none;">
-                <div class="modal-content">
-                    <h3>⚡ Lightning決済</h3>
-                    <p id="invoice-amount-text" style="color:#e65100;font-weight:bold;"></p>
-                    <p>このインボイスを支払うと、進化への影響力が爆発的に上がります！</p>
-                    
-                    <!-- スマホ用 ウォレット自動起動ボタン -->
-                    <a id="wallet-link" href="#" class="wallet-btn" style="display:none;">
-                        ⚡ ウォレットアプリを開く
-                    </a>
+    <!-- ⚡ Lightning支払いモーダル -->
+    <div id="payment-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h3>⚡ Lightning決済</h3>
+            <p id="invoice-amount-text" style="color:#e65100;font-weight:bold;"></p>
+            <p>このインボイスを支払うと、進化への影響力が爆発的に上がります！</p>
+            
+            <a id="wallet-link" href="#" class="wallet-btn" style="display:none;">⚡ ウォレットアプリを開く</a>
 
-                    <div id="qrcode"></div>
-                    <textarea id="invoice-text" rows="3" style="width:100%;font-size:11px;word-break:break-all;" readonly></textarea>
-                    
-                    <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">📋 インボイスをコピー</button>
-                    <p id="payment-status" style="font-weight:bold;color:#e65100;">支払い待ち...</p>
-                    <button onclick="closeModal()" style="background:#999;">キャンセル</button>
-                </div>
-            </div>
+            <div id="qrcode"></div>
+            <textarea id="invoice-text" rows="3" style="width:100%;font-size:11px;word-break:break-all;" readonly></textarea>
+            
+            <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">📋 インボイスをコピー</button>
+            <p id="payment-status" style="font-weight:bold;color:#e65100;">支払い待ち...</p>
+            <button onclick="closeModal()" style="background:#999;">キャンセル</button>
+        </div>
+    </div>
+
+    <!-- 🗺️ 進化ツリー画像モーダル -->
+    <div id="tree-modal" class="modal" style="display:none;" onclick="closeTreeModal()">
+        <div class="image-modal-content" onclick="event.stopPropagation()">
+            <!-- ここで進化ツリー画像を読み込みます -->
+            <img src="images/evolution_tree.jpg" alt="進化ツリー">
+            <button class="close-btn" onclick="closeTreeModal()">閉じる</button>
         </div>
     </div>
 
