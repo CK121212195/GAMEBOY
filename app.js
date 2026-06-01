@@ -1,25 +1,23 @@
-// 画像から読み取ったあなたのGASウェブアプリURL
+// 画像から読み取ったGASのURLを設定済みです
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxBQvh7ZChbWwQtWM2wf2BMt6rMtmbPBx9CGWZAEM2k-NJt8sysFuDoPxWBeblonJ3e/exec";
 
-// 🎮【重要】キャラクター画像のファイル名設定
-const IMG_EGG = "0.png"; // 初期状態
-const IMG_HODL = "0.png"; // ガチホ
-const IMG_FOMO = "0.png"; // イケイケ
-const IMG_BUIDL = "0.png"; // 開発
-const IMG_SELL = "0.png"; // 売却
-
+// 画像は全て 0.png に統一
+const IMG_EGG = "0.png";
+const IMG_HODL = "0.png";
+const IMG_FOMO = "0.png";
+const IMG_BUIDL = "0.png";
+const IMG_SELL = "0.png";
 
 let paymentChecker = null;
 
 window.onload = () => {
     fetchData();
-    setInterval(fetchData, 5000); // 5秒ごとに更新
+    setInterval(fetchData, 5000);
 };
 
-// GASからデータ取得
 async function fetchData() {
     try {
-        const res = await fetch(GAS_URL + "?action=getChat", { redirect: "follow" });
+        const res = await fetch(GAS_URL + "?action=getChat");
         const data = await res.json();
         
         updateChatUI(data.chats);
@@ -36,7 +34,6 @@ function updateChatUI(chats) {
     chats.forEach((chat, index) => {
         const div = document.createElement("div");
         div.className = "chat-post";
-        
         const isBoost = chat.weight >= 100;
         const badgeClass = isBoost ? "cmd-badge boosted" : "cmd-badge";
         const boostText = isBoost ? "⚡x100" : "";
@@ -53,7 +50,6 @@ function updateChatUI(chats) {
     box.scrollTop = box.scrollHeight;
 }
 
-// 👑 勢力図の更新と「進化（画像の切り替え）」処理
 function updateScoreUI(votes) {
     const scoreHODL = votes.HODL || 0;
     const scoreFOMO = votes.FOMO || 0;
@@ -65,7 +61,6 @@ function updateScoreUI(votes) {
     document.getElementById("score-SELL").innerText = scoreSELL;
     document.getElementById("score-BUIDL").innerText = scoreBUIDL;
     
-    // 一番ポイントが高いコマンドを判定
     const scores = { HODL: scoreHODL, FOMO: scoreFOMO, SELL: scoreSELL, BUIDL: scoreBUIDL };
     let maxCmd = "";
     let maxScore = 0;
@@ -77,7 +72,6 @@ function updateScoreUI(votes) {
         }
     }
 
-    // 最多ポイントに応じて画像とステータス名を変更
     const imgElement = document.getElementById("character-img");
     const statusText = document.getElementById("evolution-status");
 
@@ -99,7 +93,6 @@ function updateScoreUI(votes) {
     }
 }
 
-// 送信ボタンの処理
 async function sendMessage() {
     const name = document.getElementById("user-name").value || "名無しサトシ";
     const msg = document.getElementById("user-msg").value;
@@ -126,7 +119,7 @@ async function requestInvoice(name, msg, cmd) {
     document.getElementById("payment-modal").style.display = "flex";
     
     try {
-        const res = await fetch(GAS_URL + "?action=createInvoice&command=" + cmd, { redirect: "follow" });
+        const res = await fetch(GAS_URL + "?action=createInvoice&command=" + cmd);
         const data = await res.json();
         
         document.getElementById("invoice-text").value = data.payment_request;
@@ -145,7 +138,7 @@ async function requestInvoice(name, msg, cmd) {
 
 async function checkPayment(hash, name, msg, cmd) {
     try {
-        const res = await fetch(GAS_URL + "?action=checkPayment&hash=" + hash, { redirect: "follow" });
+        const res = await fetch(GAS_URL + "?action=checkPayment&hash=" + hash);
         const data = await res.json();
         
         if (data.paid) {
@@ -165,11 +158,14 @@ async function checkPayment(hash, name, msg, cmd) {
     }
 }
 
+// ⚠️ここが一番の修正ポイント（通信ブロック回避）
 async function postToGAS(name, msg, cmd, weight) {
     try {
         await fetch(GAS_URL, {
             method: "POST",
-            redirect: "follow",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
             body: JSON.stringify({
                 action: "postMessage",
                 name: name,
@@ -178,9 +174,12 @@ async function postToGAS(name, msg, cmd, weight) {
                 weight: weight
             })
         });
-        fetchData(); // 送信完了後に即座に読み込み直す
+        
+        // GASの書き込み処理を少し待ってから画面を更新する
+        setTimeout(fetchData, 1000); 
     } catch (e) {
         console.error("送信エラー", e);
+        alert("書き込みに失敗しました");
     }
 }
 
