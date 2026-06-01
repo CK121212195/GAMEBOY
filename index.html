@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                <!-- 🚀 サイバーホログラム仕様に美麗化したキャラクター表示エリア -->
+                <!-- 🚀 サイバーホログラム仕様に美麗大型化したキャラクター表示エリア -->
                 <div class="character-container">
                     <div class="character-frame">
                         <div class="holo-ring"></div>
@@ -113,33 +113,12 @@
                 </div>
             </div>
 
-            <!-- 🧪 ③ デバッグ・強制進化＆しきい値テスト制御パネル -->
-            <div class="debug-panel">
-                <h4>🧪 【開発・検証用】テスト・デバッグ進化パネル</h4>
-                <p style="font-size: 11px; color: #aaa; margin-top: -4px; margin-bottom: 12px;">※開発中のみ利用するシミュレーターです。本番デプロイ時には削除してご活用ください。</p>
-                
-                <div class="debug-row">
-                    <label for="debug-char-select" style="font-weight:bold;">① グラフィックバグ・画像表示テスト (全30キャラクター選択可能):</label>
-                    <div style="display:flex; gap:8px; margin-top:4px;">
-                        <select id="debug-char-select" style="flex:1; padding:6px; font-size:13px; background:#333; color:#fff; border:1px solid #555;">
-                            <!-- JS側で自動的に30キャラクターが挿入されます -->
-                        </select>
-                        <button onclick="testForceEvolve()" style="background:#2196F3; font-size:13px; padding:6px 12px; border-radius:4px; height:36px;">強制表示 👁️</button>
-                    </div>
-                </div>
-
-                <div class="debug-row" style="margin-top:15px;">
-                    <label style="font-weight:bold;">② 進化段階・メーターのしきい値テスト (仮想ポイント追加):</label>
-                    <div class="debug-btn-grid">
-                        <button onclick="addMockPoints('HODL', 1000)" style="background:#e65100; color:#fff;">+1,000 pt (🛡️ HODL)</button>
-                        <button onclick="addMockPoints('FOMO', 1000)" style="background:#b71c1c; color:#fff;">+1,000 pt (🚀 FOMO)</button>
-                        <button onclick="addMockPoints('BUIDL', 1000)" style="background:#0d47a1; color:#fff;">+1,000 pt (🔧 BUIDL)</button>
-                        <button onclick="addMockPoints('SELL', 1000)" style="background:#37474f; color:#fff;">+1,000 pt (📉 SELL)</button>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; margin-top:10px;">
-                        <button onclick="addMockDeaths(1)" style="background:#5d4037; font-size:11px; padding:6px 12px; border-radius:4px;">全滅回数 +1 💀</button>
-                        <button onclick="resetMockPoints()" style="background:#c62828; font-size:11px; padding:6px 12px; border-radius:4px;">シミュレーション初期化 🔄</button>
-                    </div>
+            <!-- 📢 ⑥ CRYPTO-ALERTS ツイートリアルタイム自動配信枠 -->
+            <div class="twitter-board">
+                <h3>📢 CRYPTO-ALERTS リアルタイム速報 (@Nishi8mAlert)</h3>
+                <div class="twitter-widget-container">
+                    <a class="twitter-timeline" data-theme="dark" data-height="500" href="https://twitter.com/Nishi8mAlert?ref_src=twsrc%5Etfw">Tweets by Nishi8mAlert</a>
+                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 </div>
             </div>
 
@@ -197,7 +176,7 @@
                             <br><span class="highlight" style="color:#ffea00;">★超レア最終★ 誰もが認めるガチホ勢：HODL単体で 50,000 pt を超えると、一気に「王様クジラ 🐳」になります！</span>
                         </li>
                         <li style="margin-top: 8px;"><strong>摸 [Senior/Special] 伝説期 (100,000 pt 〜)</strong> <span style="color:#ffea00; font-size:11px;">(全4種)</span>
-                            <br>究極の4神仙形態に到達。
+                            <br>究極 of 究極の4神仙形態に到達。
                             <br>・HODL＋BUIDLが1位2位 ⇒ <span class="highlight">チィティ 😇 (BLOCKCHAIN DEITY)</span>
                             <br>・BUIDL＋FOMOが1位2位 ⇒ <span class="highlight">デフィアクマジ 🧙‍♂️ (DEFI ARCHMAGE)</span>
                             <br>・HODL＋FOMOが1位2位 ⇒ <span class="highlight">エチュアルワイベーン 🐉 (ETHEREAL WYVERN)</span>
@@ -239,23 +218,23 @@
                     <div id="char-counter" class="char-counter">0 / 500</div>
                 </div>
 
-                <!-- ⚡ Boost オプション -->
+                <!-- ⚡ Boost オプション (③ デフォルト値を 10 sats に変更) -->
                 <div class="boost-option">
                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                         <input type="checkbox" id="boost-check">
                         <span id="boost-label" class="lightning-text">
-                            ⚡ <strong>100 sats</strong> 払って効力を<strong>100倍</strong>にする
+                            ⚡ <strong>10 sats</strong> 払って効力を<strong>10倍</strong>にする
                         </span>
                     </label>
 
                     <div id="sat-slider-area" style="display:none; margin-top:10px;">
                         <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:4px;">
                             <span>10 sats</span>
-                            <span id="sat-display" style="font-weight:bold;color:#e65100;">100 sats</span>
+                            <span id="sat-display" style="font-weight:bold;color:#e65100;">10 sats</span>
                             <span>10,000 sats</span>
                         </div>
-                        <input type="range" id="sat-amount" min="10" max="10000" step="10" value="100" style="width:100%;accent-color:#f7931a;">
-                        <p style="font-size:11px;color:#999;margin:4px 0 0;">※ 寄付額 = コマンド効力（例: 100sats → 100pt）</p>
+                        <input type="range" id="sat-amount" min="10" max="10000" step="10" value="10" style="width:100%;accent-color:#f7931a;">
+                        <p style="font-size:11px;color:#999;margin:4px 0 0;">※ 寄付額 = コマンド効力（例: 10sats → 10pt）</p>
                     </div>
                 </div>
 
@@ -282,10 +261,10 @@
         </div>
     </div>
 
-    <!-- 🗺️ 進化ツリー画像モーダル -->
+    <!-- 🗺️ ⑤ 参照階層をルートディレクトリ(evolution_tree.jpg)に修正したモーダル -->
     <div id="tree-modal" class="modal" style="display:none;" onclick="closeTreeModal()">
         <div class="image-modal-content" onclick="event.stopPropagation()">
-            <img src="images/evolution_tree.jpg" alt="進化ツリー" onerror="this.src='https://placehold.co/600x400/000/fff?text=Evolution+Tree+Image+Missing'">
+            <img src="evolution_tree.jpg" alt="進化ツリー" onerror="this.src='https://placehold.co/600x400/000/fff?text=Evolution+Tree+Image+Missing'">
             <button class="close-btn" onclick="closeTreeModal()">閉じる</button>
         </div>
     </div>
