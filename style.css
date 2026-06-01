@@ -116,7 +116,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ① メイン画像のサイズを280pxに大型化 */
+/* メイン画像のサイズを280pxに大型化 */
 .character-container img {
     width: 280px;
     height: 280px;
@@ -154,6 +154,43 @@ body {
     background: #222;
     padding: 15px;
     border-radius: 5px;
+}
+
+/* ─── 🧪 デバッグ・テストパネルのスタイル（復活） ─── */
+.debug-panel {
+    margin-top: 20px;
+    background: #221a10;
+    border: 2px dashed #f7931a;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.debug-panel h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #ffea00;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.debug-row {
+    font-size: 13px;
+    color: #ddd;
+}
+
+.debug-btn-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.debug-btn-grid button {
+    font-size: 11px;
+    padding: 6px;
+    border-radius: 4px;
 }
 
 /* ─── 📢 CRYPTO-ALERTS ツイート表示エリア ─── */
@@ -199,7 +236,7 @@ body {
     margin: 0;
 }
 
-/* 🚀 美麗な X (旧Twitter) シェアボタン */
+/* 美麗な X (旧Twitter) シェアボタン */
 .share-btn {
     background: #000;
     color: #fff;
@@ -502,7 +539,7 @@ body {
     color: #e65100;
 }
 
-/* ② つまみ（◯）の大きさを動的に可変させるためのスライダースタイル設計 */
+/* つまみ（◯）の大きさを動的に可変させるためのスライダースタイル設計 */
 #sat-amount {
     -webkit-appearance: none;
     appearance: none;
