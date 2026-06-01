@@ -54,26 +54,93 @@ body {
     opacity: 0.4;
 }
 
+/* ─── 🚀 美麗ホログラム・キャラクターコンテナ ─── */
 .character-container {
     position: absolute;
-    top: 50%;
+    top: 55%; /* チャートヘッダーを考慮して少し下部に配置 */
     left: 50%;
     transform: translate(-50%, -50%);
     animation: bounce 2s infinite;
-    pointer-events: none; /* チャットやチャート操作の邪魔をしない設定 */
+    pointer-events: none; /* 下層のTradingView操作を妨げない */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
+
+/* サイバーパンク風高精度モニターフレーム */
+.character-frame {
+    background: rgba(10, 15, 25, 0.85); /* 深い電子ダークブルー */
+    border: 3px solid #f7931a;
+    border-radius: 12px;
+    padding: 10px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 25px rgba(247, 147, 26, 0.5), inset 0 0 15px rgba(247, 147, 26, 0.3);
+    overflow: hidden;
+}
+
+/* 走査線（スキャンライン）エフェクト */
+.character-frame::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+    background-size: 100% 4px, 6px 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* レーダー風回転リング */
+.holo-ring {
+    position: absolute;
+    width: 125%;
+    height: 125%;
+    border: 1px dashed rgba(247, 147, 26, 0.35);
+    border-radius: 50%;
+    animation: rotateRadar 20s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes rotateRadar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .character-container img {
-    width: 250px;
-    height: 250px;
+    width: 180px;
+    height: 180px;
     object-fit: contain;
-    filter: drop-shadow(0 0 20px rgba(247, 147, 26, 0.8));
-    transition: all 0.5s ease;
+    border-radius: 6px;
+    border: 1px solid rgba(247, 147, 26, 0.2);
+    image-rendering: pixelated; /* ドット絵をぼかさずくっきり映し出す設定 */
+    position: relative;
+    z-index: 3;
+}
+
+/* モニター下部のサイバーバッジ */
+.character-badge {
+    margin-top: 10px;
+    background: rgba(247, 147, 26, 0.15);
+    color: #f7931a;
+    border: 1px solid rgba(247, 147, 26, 0.4);
+    padding: 3px 12px;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 0 10px rgba(247, 147, 26, 0.15);
+    transition: all 0.3s ease;
 }
 
 @keyframes bounce {
     0%, 100% { transform: translate(-50%, -50%); }
-    50%       { transform: translate(-50%, -55%); }
+    50%       { transform: translate(-50%, -53%); }
 }
 
 .status-board {
@@ -326,11 +393,12 @@ body {
     font-size: 12px;
 }
 
-/* ① 500文字コメント表示の最適化 */
+/* ①・② 日本語アスキーアート(Mona/PGothic)完全同期化 */
 .chat-text {
     margin-top: 4px;
-    font-size: 14px;
-    line-height: 1.6; /* 読みやすいように行幅を拡張 */
+    font-family: "MS PGothic", "ＭＳ Ｐゴシック", "Mona", "Mona-sans", monospace, sans-serif;
+    font-size: 16px; /* アスキーアートの標準スケール */
+    line-height: 1.15; /* 縦のドット絵ラインが美しく繋がる極細行間 */
     white-space: pre-wrap;
     word-break: break-all;
     overflow-wrap: break-word;
