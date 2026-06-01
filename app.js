@@ -32,12 +32,32 @@ window.onload = () => {
   setInterval(fetchData, 5000); // 5秒ごとに最新のチャットを取得
   setInterval(fetchBlockHeight, 60000); // 1分ごとにブロック高を取得
 
+  // スライダー連携
   const slider = document.getElementById("sat-amount");
   const display = document.getElementById("sat-display");
   if (slider && display) {
     slider.addEventListener("input", () => {
       display.textContent = Number(slider.value).toLocaleString() + " sats";
       updateBoostLabel();
+    });
+  }
+
+  // ⚡ Boost チェック連携
+  const boostCheck = document.getElementById("boost-check");
+  const satSliderArea = document.getElementById("sat-slider-area");
+  if (boostCheck && satSliderArea) {
+    boostCheck.addEventListener("change", function() {
+      satSliderArea.style.display = this.checked ? "block" : "none";
+    });
+  }
+
+  // 文字数カウント連携 (③ 掲示板に書き込める文字数の表示)
+  const msgInput = document.getElementById("user-msg");
+  const charCounter = document.getElementById("char-counter");
+  if (msgInput && charCounter) {
+    msgInput.addEventListener("input", () => {
+      const length = msgInput.value.length;
+      charCounter.textContent = `${length} / 500`;
     });
   }
 };
@@ -67,7 +87,8 @@ async function fetchData() {
     if (data.error) return;
     
     updateChatUI(data.chats);
-    updateScoreUI(data.votes);
+    // ④ 全滅回数をGASから取得、ない場合は0をフォールバック
+    updateScoreUI(data.votes, data.deaths || 0);
   } catch (e) {}
 }
 
@@ -96,33 +117,53 @@ function updateChatUI(chats) {
   if (wasAtBottom) box.scrollTop = box.scrollHeight;
 }
 
-// ─── 🧬 育成・進化判定ロジック ───
-function updateScoreUI(votes) {
+// ─── 🧬 育成・進化判定ロジック & UI更新 (①・④) ───
+function updateScoreUI(votes, deaths = 0) {
   const scores = { HODL: votes.HODL || 0, FOMO: votes.FOMO || 0, BUIDL: votes.BUIDL || 0, SELL: votes.SELL || 0 };
+  const totalPts = scores.HODL + scores.FOMO + scores.BUIDL + scores.SELL;
+  
+  // ① コマンド勢力図（投票件数）とメーターの動的連動
   Object.entries(scores).forEach(([cmd, score]) => {
     const el = document.getElementById("score-" + cmd);
     if (el) el.innerText = score.toLocaleString();
+
+    const bar = document.getElementById("bar-" + cmd);
+    if (bar) {
+      const percentage = totalPts > 0 ? (score / totalPts) * 100 : 0;
+      bar.style.width = percentage + "%";
+    }
   });
 
-  const totalPts = scores.HODL + scores.FOMO + scores.BUIDL + scores.SELL;
+  // ④ 全滅回数と総獲得ポイントの表示
+  document.getElementById("death-count").innerText = deaths.toLocaleString();
+  document.getElementById("total-pt").innerText = totalPts.toLocaleString();
+
+  // ④ 滅亡リスク（SELL比率）の計算と描画
+  const sellRatio = totalPts > 0 ? (scores.SELL / totalPts) : 0;
+  const sellPercentage = Math.round(sellRatio * 100);
+  document.getElementById("sell-ratio-val").innerText = sellPercentage + "%";
+  document.getElementById("risk-fill").style.width = sellPercentage + "%";
+
   let character = CHARACTERS.EGG;
   let nextTarget = 1000;
-  
-  const sellRatio = totalPts > 0 ? (scores.SELL / totalPts) : 0;
+  let genName = "卵期";
   
   // バッドエンド判定 (5000pt以上かつSELLが全体の60%以上)
   if (sellRatio >= 0.6 && totalPts >= 5000) { 
     character = CHARACTERS.GRAVEYARD; 
     nextTarget = totalPts; // 進行停止
+    genName = "🪦 滅亡期 (お墓)";
   } 
   // 卵期 (0 - 999pt)
   else if (totalPts < 1000) { 
     character = CHARACTERS.EGG; 
     nextTarget = 1000; 
+    genName = "🥚 卵期";
   } 
   // ベビー期 (1,000 - 4,999pt)
   else if (totalPts < 5000) {
     nextTarget = 5000;
+    genName = "👶 ベビー期";
     if (scores.FOMO > scores.HODL && scores.FOMO > scores.BUIDL) character = CHARACTERS.BABY_ALT;
     else if (scores.SELL > scores.HODL) character = CHARACTERS.BABY_SHIBA;
     else character = CHARACTERS.BABY_BTC;
@@ -130,6 +171,7 @@ function updateScoreUI(votes) {
   // キッズ期 (5,000 - 19,999pt)
   else if (totalPts < 20000) {
     nextTarget = 20000;
+    genName = "👦 キッズ期";
     if (scores.FOMO > scores.HODL) character = CHARACTERS.KID_FOMO;
     else if (scores.SELL > scores.BUIDL) character = CHARACTERS.KID_BAG;
     else character = CHARACTERS.KID_SMART;
@@ -137,6 +179,7 @@ function updateScoreUI(votes) {
   // 大人期 (20,000 - 99,999pt)
   else if (totalPts < 100000) {
     nextTarget = 100000;
+    genName = "🧑 大人期";
     if (scores.HODL > 50000) {
       character = CHARACTERS.ADULT_WHALE; // 超レア：クジラ
     } else {
@@ -152,17 +195,29 @@ function updateScoreUI(votes) {
   else { 
     character = CHARACTERS.SENIOR_MASTER; 
     nextTarget = totalPts; // カンスト
+    genName = "摸 伝説期";
   }
 
   // 画面に適用
   document.getElementById("character-img").src = character.img;
-  document.getElementById("evolution-status").innerText = "現在の状態: " + character.name;
+  document.getElementById("evolution-status").innerText = character.name;
+  document.getElementById("current-generation").innerText = "現在: " + genName;
   
   // プログレスバーの更新
   let progress = 100;
   if (nextTarget > totalPts) { progress = (totalPts / nextTarget) * 100; }
   document.getElementById("evolution-progress").style.width = progress + "%";
   document.getElementById("next-evolution-pt").innerText = nextTarget.toLocaleString();
+
+  // ④ お墓時の復活誘導メッセージ切り替え
+  const resTip = document.getElementById("resurrection-tip");
+  if (character === CHARACTERS.GRAVEYARD) {
+    resTip.innerHTML = `<strong>💀 全滅中！</strong> みんなで「HODL」「FOMO」「BUIDL」を書き込んで（または投げ銭ブーストして）<strong>SELLの比率を60%未満に下げれば、即座に蘇生（現在の世代で復活）</strong>します！`;
+    resTip.style.color = "#ff8a80";
+  } else {
+    resTip.innerHTML = `※ゲームオーバー（お墓）になっても、みんなで「HODL」などを書き込んで<strong>SELLの比率を60%未満に下げればその場で即座に復活</strong>します！`;
+    resTip.style.color = "#aaa";
+  }
 }
 
 // ─── メッセージ送信処理 ───
@@ -186,8 +241,10 @@ async function requestInvoice(name, msg, cmd, sats) {
   const status = document.getElementById("payment-status");
   const qrdiv = document.getElementById("qrcode");
   const walletLink = document.getElementById("wallet-link");
+  const amtText = document.getElementById("invoice-amount-text");
 
   status.innerText = "インボイス生成中...";
+  if (amtText) amtText.innerText = `お支払い金額: ${sats.toLocaleString()} sats`;
   document.getElementById("invoice-text").value = "";
   qrdiv.innerHTML = "";
   walletLink.style.display = "none";
@@ -243,9 +300,25 @@ async function postToGAS(name, msg, cmd, weight) {
   }
 }
 
+// ─── インボイスのコピー機能 (クリップボードAPI対応) ───
+function copyInvoice() {
+  const txt = document.getElementById("invoice-text");
+  if (!txt || !txt.value) return;
+  txt.select();
+  txt.setSelectionRange(0, 99999); // モバイル環境用
+  navigator.clipboard.writeText(txt.value).then(() => {
+    alert("インボイスをコピーしました！");
+  }).catch(() => {
+    // 古いブラウザ向けのフォールバック処理
+    document.execCommand("copy");
+    alert("インボイスをコピーしました！");
+  });
+}
+
 // ─── ユーティリティ ───
 function resetInput() {
   document.getElementById("user-msg").value = "";
+  document.getElementById("char-counter").textContent = "0 / 500"; // 文字数リセット
   document.getElementById("boost-check").checked = false;
   document.getElementById("send-btn").disabled = false;
   document.getElementById("sat-slider-area").style.display = "none";
