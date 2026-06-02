@@ -79,7 +79,7 @@ body {
     background: rgba(10, 15, 25, 0.85); /* 深い電子ダークブルー */
     border: 3px solid #f7931a;
     border-radius: 12px;
-    padding: 15px;
+    padding: 12px;
     position: relative;
     display: flex;
     justify-content: center;
@@ -409,6 +409,7 @@ body {
     background-color: #efefef;
     color: #000;
     min-width: 350px;
+    overflow-y: auto; /* ★縦の低いノートPC等でもフォーム全体をスクロールして書き込めるように改善 */
 }
 
 .chat-area h2 {
@@ -426,7 +427,7 @@ body {
     background: #fff;
     border: 1px solid #ccc;
     margin-bottom: 15px;
-    min-height: 200px;
+    min-height: 120px; /* ★ 200pxから120pxに可変。狭い画面でもログが自動で薄く縮み、書き込み欄を潰しません */
 }
 
 .chat-post {
