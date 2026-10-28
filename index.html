@@ -1,308 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>みんなのジェネシス・ブロック (Twitch Plays HODL)</title>
-    
-    <!-- 🥚 ファビコン設定 (ルート階層の egg.png を参照) -->
-    <link rel="icon" href="egg.png" type="image/png">
-
-    <!-- 📢 OGP (Open Graph Protocol) ＆ Twitterカード設定 -->
-    <meta property="og:title" content="みんなのジェネシス・ブロック">
-    <meta property="og:description" content="みんなでsatsを投資して1つのキャラクターを共同育成するソーシャルゲーム！最悪の暴落（SELLが60%以上）を耐え抜き、オリジナルHODLマスターへ進化させよう！">
-    <meta property="og:image" content="evolution_tree.jpg">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="みんなのジェネシス・ブロック">
-    <meta name="twitter:description" content="みんなでsatsを投資して1つのキャラクターを共同育成するソーシャルゲーム！最悪の暴落（SELLが60%以上）を耐え抜き、オリジナルHODLマスターへ進化させよう！">
-    <meta name="twitter:image" content="evolution_tree.jpg">
-
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SATOSHI CATCHER ₿ クリプトUFOキャッチャー</title>
+<meta name="description" content="ビットコインやクリプトのぬいぐるみを狙うブラウザUFOキャッチャー。HODLするか利確するかはあなた次第。">
+<meta name="theme-color" content="#0b0820">
+<meta property="og:title" content="SATOSHI CATCHER ₿ クリプトUFOキャッチャー">
+<meta property="og:description" content="₿ Ξ ◎ Ð … クリプトぬいぐるみをつかみ取れ！">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23f7931a'/%3E%3Ctext x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E%E2%82%BF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <!-- 左側：ゲーム画面＆ルール -->
-        <div class="game-area">
-            <div class="header">
-                <h1>みんなのジェネシス・ブロック</h1>
-                <p>現在地: ブロック高 <span id="block-height">取得中...</span></p>
-            </div>
+<div class="bg-grid" aria-hidden="true"></div>
 
-            <div class="screen">
-                <div id="tradingview-widget">
-                    <div class="tradingview-widget-container">
-                        <div id="tv_chart"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                        <script type="text/javascript">
-                        new TradingView.widget({
-                            "autosize": true,
-                            "symbol": "BINANCE:BTCUSDT",
-                            "interval": "1",
-                            "timezone": "Asia/Tokyo",
-                            "theme": "dark",
-                            "style": "3",
-                            "locale": "ja",
-                            "enable_publishing": false,
-                            "backgroundColor": "rgba(0, 0, 0, 1)",
-                            "hide_top_toolbar": true,
-                            "save_image": false,
-                            "container_id": "tv_chart"
-                        });
-                        </script>
-                    </div>
-                </div>
+<div class="ticker" aria-label="マーケット"><div class="ticker-track" id="ticker"></div></div>
 
-                <!-- 🚀 サイバーホログラム仕様に美麗大型化したキャラクター表示エリア (280px版) -->
-                <div class="character-container">
-                    <div class="character-frame">
-                        <div class="holo-ring"></div>
-                        <img id="character-img" src="images/egg.png" alt="Character" onerror="this.src='https://placehold.co/250x250/000/f7931a?text=Image+Not+Found'">
-                    </div>
-                    <div class="character-badge" id="character-badge-text">TARGET ACQUIRED</div>
-                </div>
-            </div>
+<div class="app">
+  <header class="marquee" id="marquee">
+    <div class="bulbs top" aria-hidden="true"></div>
+    <h1><span class="b">₿</span> SATOSHI CATCHER</h1>
+    <p class="sub">クリプト UFOキャッチャー</p>
+  </header>
 
-            <!-- ④ 世代や死亡情報などが初めての人にもひと目で伝わるUI構造 -->
-            <div class="status-board">
-                <h3>現在の育成ステータス</h3>
-                <div class="status-header">
-                    <p id="evolution-status" class="status-title">🥚 GENESIS BLOCK EGG (卵)</p>
-                    <div style="display:flex; gap:8px; align-items:center;">
-                        <!-- 🚀 ダイナミックX（旧Twitter）拡散シェアボタン (140文字制限対応) -->
-                        <button class="share-btn" onclick="shareOnTwitter()">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                            </svg>
-                            Xでシェア 📢
-                        </button>
-                        <div class="death-counter">💀 過去の全滅回数: <span id="death-count">0</span> 回</div>
-                    </div>
-                </div>
-                
-                <!-- 世代進行プログレスバー -->
-                <div class="progress-container">
-                    <div id="evolution-progress"></div>
-                </div>
-                <div class="progress-labels">
-                    <span id="current-generation">現在: 卵期</span>
-                    <span>次世代まで: <span id="next-evolution-pt">1,000</span> pt (合計: <span id="total-pt">0</span> pt)</span>
-                </div>
-
-                <hr style="border: 0; border-top: 1px solid #444; margin: 15px 0;">
-
-                <!-- ①・② 同期カラー化されたコマンドメーター -->
-                <h3>現在のコマンド勢力図 (進化への影響比率)</h3>
-                <div class="vote-bars">
-                    <div class="vote-bar-container">
-                        <span class="vote-label" style="color:#f7931a;">🛡️ HODL (ガチホ・防御): <span id="score-HODL">0</span> pt</span>
-                        <div class="vote-progress">
-                            <div id="bar-HODL" class="vote-fill hodl-fill"></div>
-                        </div>
-                    </div>
-                    <div class="vote-bar-container">
-                        <span class="vote-label" style="color:#d32f2f;">🚀 FOMO (買い煽り): <span id="score-FOMO">0</span> pt</span>
-                        <div class="vote-progress">
-                            <div id="bar-FOMO" class="vote-fill fomo-fill"></div>
-                        </div>
-                    </div>
-                    <div class="vote-bar-container">
-                        <span class="vote-label" style="color:#1976d2;">🔧 BUIDL (開発・技術): <span id="score-BUIDL">0</span> pt</span>
-                        <div class="vote-progress">
-                            <div id="bar-BUIDL" class="vote-fill buidl-fill"></div>
-                        </div>
-                    </div>
-                    <div class="vote-bar-container">
-                        <span class="vote-label" style="color:#888888;">📉 SELL (恐怖・弱気): <span id="score-SELL">0</span> pt</span>
-                        <div class="vote-progress">
-                            <div id="bar-SELL" class="vote-fill sell-fill"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ④ 💀 滅亡リスクメーター -->
-                <div class="risk-board">
-                    <div class="risk-label">
-                        <span>💀 滅亡リスク (SELL比率): <span id="sell-ratio-val">0%</span></span>
-                        <span style="font-size:11px; color:#ff8a80; font-weight:normal;">⚠️ 60%以上で全滅（合計5,000pt以上時）</span>
-                    </div>
-                    <div class="risk-progress">
-                        <div id="risk-fill" class="risk-fill"></div>
-                    </div>
-                    <p id="resurrection-tip" style="font-size:11px; color:#aaa; margin:6px 0 0 0; line-height:1.4;">
-                        ※ゲームオーバー（お墓）になっても、みんなで「HODL」などを書き込んで<strong>SELLの比率を60%未満に下げればその場で即座に復活</strong>します！
-                    </p>
-                </div>
-            </div>
-
-            <!-- ▼ 遊び方・ルール説明エリア ▼ -->
-            <div class="rule-board">
-                <h3>📜 遊び方ガイド</h3>
-                <div class="rule-content">
-                    <!-- ②・③ 表現を「DNA」「育成投資」に美麗アップデート -->
-                    <h4>1. 4つのコマンド（勢力）を選ぼう！</h4>
-                    <p>右の掲示板からメッセージと「コマンド」を選んで投稿します。あなたが選ぶコマンドは、<strong>キャラクターの「能力値（DNA）」</strong>となって蓄積されます。</p>
-                    <div class="rule-cmds">
-                        <span class="cmd-badge" style="background:#f7931a;">🛡️ HODL (ガチホ・防御)</span> <br>
-                        キャラクターの<strong>生命力・防御力・セキュリティ</strong>が向上します。HODL比率が高いと、堅実な「亀 🐢」や、超レア形態の「王様クジラ 🐳」に育ちます。<br><br>
-                        
-                        <span class="cmd-badge" style="background:#d32f2f;">🚀 FOMO (買い煽り・攻撃)</span> <br>
-                        キャラクターの<strong>攻撃性・知名度・熱狂度</strong>が向上します。FOMO比率が高いと、アグレッシブな「ウサギ 🐰」や「ドージ騎士 🐕」に育ちます。<br><br>
-                        
-                        <span class="cmd-badge" style="background:#1976d2;">🔧 BUIDL (開発・技術)</span> <br>
-                        キャラクターの<strong>知性・インフラ技術力</strong>が向上します。BUIDL比率が高いと、開発者系の「DeFiウィザード 🧙‍♂️」や、勤勉な「モグラ 🦫」に育ちます。<br><br>
-                        
-                        <span class="cmd-badge" style="background:#555555;">📉 SELL (恐怖・弱気)</span> <br>
-                        キャラクターの<strong>不信感・流動性・システムリスク</strong>に影響します。SELL比率が高すぎるとゲームオーバー（お墓）になりますが、ほどよく混ざることで「サトシボット 🤖」などの特殊な合体進化を促します。
-                    </div>
-
-                    <!-- ③ 投資表現へのリフレーミング -->
-                    <h4>2. ⚡ 育成投資ブースト (Proof of Work)</h4>
-                    <p>["⚡ Boost"にチェックを入れてLightning決済を行うと、<span class="highlight">投資した sats がそのままキャラクター育成ポイント</span>として反映されます！進化の主導権を握りたい時の切り札です。(例: 1,000 sats = 1,000 pt)</p>
-
-                    <!-- ② 進化条件・ロジックと解説の一致化（全30種対応） -->
-                    <h4>3. 🧬 進化条件と分岐ルート</h4>
-                    <p>みんなの合計ポイント（合計pt）で世代が進行し、その世代に達した時点での<strong>「各コマンドのポイント比率」</strong>で全30種類の姿へ分岐します。</p>
-                    
-                    <ul style="font-size: 13px; line-height: 1.6; color: #ddd; background: #1a1a1a; padding: 10px 10px 10px 30px; border-radius: 4px; list-style-type: square;">
-                        <li><strong>🥚 [Egg] 卵期 (0 〜 999 pt)</strong>
-                            <br>合計1,000 pt未満はすべてこの状態です。
-                        </li>
-                        <li style="margin-top: 8px;"><strong>👶 [Baby] ベビー期 (1,000 〜 4,999 pt)</strong> <span style="color:#ffea00; font-size:11px;">(全3種)</span>
-                            <br>・<span class="highlight">ALT-CHAN (アルトちゃん) 👶</span> (FOMOが1位)
-                            <br>・<span class="highlight">SHIBA INU BABY (シバいぬベビー) 🐶</span> (SELLが1位)
-                            <br>・<span class="highlight">BITCOIN-KUN (ビットくん) 👶</span> (それ以外の標準状態)
-                        </li>
-                        <li style="margin-top: 8px;"><strong>👦 [Kids] キッズ期 (5,000 〜 19,999 pt)</strong> <span style="color:#ffea00; font-size:11px;">(全6種)</span>
-                            <br>開発・保全の関与度「Care」の比率（HODL＋BUIDLの割合）で完璧に分岐します。
-                            <br>・<strong>[High Care]</strong> (開発保全65%以上) ⇒ <span class="highlight">スマートコントラクト 👦</span>
-                            <br>・<strong>[Avg Care]</strong> (開発保全40〜65%) ⇒ <span class="highlight">DAOガイド 👦</span> / <span class="highlight">レジャー・バル 👦</span>
-                            <br>・<strong>[Low Care]</strong> (開発保全40%未満) ⇒ <span class="highlight">ノドリング 👦</span> / <span class="highlight">バグホルダー 🎒</span> / <span class="highlight">フモートット 🍼</span>
-                        </li>
-                        <li style="margin-top: 8px;"><strong>🧑 [Adult] 大人期 (20,000 〜 99,999 pt)</strong> <span style="color:#ffea00; font-size:11px;">(全15種)</span>
-                            <br>1位と2位 of コマンドの比率（組み合わせ）によって**15種類すべての大人**に進化します！
-                            <br>・🛡️ HODL最多＆🔧 BUIDL 2位 ⇒ <span class="highlight">モグラ 🦫</span>
-                            <br>・🛡️ HODL最多＆🚀 FOMO 2位 ⇒ <span class="highlight">ララマ 🦙</span>
-                            <br>・🛡️ HODL最多＆📉 SELL 2位 ⇒ <span class="highlight">サトシボット 🤖</span>
-                            <br>・🛡️ HODL単独圧倒 ⇒ <span class="highlight">HODLer 亀 🐢</span>
-                            <br>・🚀 FOMO最多＆🛡️ HODL 2位 ⇒ <span class="highlight">ドージ騎士 🐕</span> / 🚀 FOMO単独圧倒 ⇒ <span class="highlight">ウサギ 🐰</span>
-                            <br>・📉 SELL最多＆🔧 BUIDL 2位 ⇒ <span class="highlight">詐欺師(👿)</span> / 📉 SELL＆🚀 FOMO 2位 ⇒ <span class="highlight">パンプ魔 😈</span> など
-                            <br><span class="highlight" style="color:#ffea00;">★超レア最終★ 誰もが認めるガチホ勢：HODL単体で 50,000 pt を超えると、一キーに「王様クジラ 🐳」になります！</span>
-                        </li>
-                        <li style="margin-top: 8px;"><strong>摸 [Senior/Special] 伝説期 (100,000 pt 〜)</strong> <span style="color:#ffea00; font-size:11px;">(全4種)</span>
-                            <br>究極 of 究極の4神仙形態に到達。
-                            <br>・HODL＋BUIDLが1位2位 ⇒ <span class="highlight">チィティ 😇 (BLOCKCHAIN DEITY)</span>
-                            <br>・BUIDL＋FOMOが1位2位 ⇒ <span class="highlight">デフィアクマジ 🧙‍♂️ (DEFI ARCHMAGE)</span>
-                            <br>・HODL＋FOMOが1位2位 ⇒ <span class="highlight">エチュアルワイベーン 🐉 (ETHEREAL WYVERN)</span>
-                            <br>・圧倒的なガチホ一筋 ⇒ <span class="highlight">オリジナル HODL マスター 摸</span>
-                        </li>
-                    </ul>
-
-                    <!-- ④ 死亡条件と自動蘇生ルールの明記 -->
-                    <p style="margin-top:12px;"><span style="color:#ff5252; font-weight:bold;">⚠️ 滅亡（全滅）条件：</span>合計 5,000 pt 以上の状態で、<strong>📉 SELL の獲得ポイントが全体の 60% 以上</strong>に達すると、どの世代からでも一発でお墓（ゲームオーバー）へ引きずり込まれ、<span class="highlight" style="color:#ff5252;">ブロックチェーンの海 🪦 (昇天)</span>へと送られます。</p>
-                    <p style="font-size:12px; color:#ff8a80; background:#331515; padding:8px; border-radius:4px; border-left:3px solid #ff5252;">
-                        <strong>💡 復活の仕組み:</strong> 全滅してしまっても心配ありません。みんなで「HODL」などのコメントや投資ブーストを重ねて、<strong>SELLの比率を全体の60%未満に引き下げれば、即座に本来の世代のキャラクターとして自動的に復活</strong>します！
-                    </p>
-                    
-                    <!-- 進化ツリー表示ボタン -->
-                    <button class="tree-btn" onclick="openTreeModal()">🗺️ 進化ツリー全体図を見る</button>
-                </div>
-            </div>
-            <!-- ▲ 遊び方・ルール説明エリア ▲ -->
-
-            <!-- 🎮 Bitcoiner 姉妹サイト・関連ミニゲームカード (最下部へスマートに移動) -->
-            <div class="sister-sites-board">
-                <div class="sister-btn-container">
-                    <a href="https://ck121212195.github.io/BITPUYO/" target="_blank" class="sister-link-btn">
-                        👾 BITPUYO
-                        <span>ビットコイン・ぷよぷよ</span>
-                    </a>
-                    <a href="https://ck121212195.github.io/market-price/" target="_blank" class="sister-link-btn">
-                        📈 Market Price
-                        <span>BTC相場・価格チャート</span>
-                    </a>
-                    <a href="https://ck121212195.github.io/Bitcoin-Run/" target="_blank" class="sister-link-btn">
-                        🏃‍♂️ Bitcoin Run
-                        <span>BTCラン・アクション</span>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- 右側：実況板 -->
-        <div class="chat-area">
-            <h2>実況掲示板</h2>
-            <div id="chat-box" class="chat-box"></div>
-
-            <div class="input-area">
-                <input type="text" id="user-name" placeholder="名前 (省略可: 名無しサトシ)" maxlength="15">
-
-                <select id="command-select">
-                    <option value="HODL">🛡️ HODL (ガチホ・防御)</option>
-                    <option value="FOMO">🚀 FOMO (イケイケ・買い煽り)</option>
-                    <option value="BUIDL">🔧 BUIDL (開発・技術)</option>
-                    <option value="SELL">📉 SELL (売却・恐怖)</option>
-                </select>
-
-                <!-- ③ 最大500文字対応＆伸縮可能なテキストエリア -->
-                <div class="textarea-container">
-                    <textarea id="user-msg" placeholder="コメントを入力（最大500文字・枠を引き伸ばせます）" maxlength="500" rows="4"></textarea>
-                    <div id="char-counter" class="char-counter">0 / 500</div>
-                </div>
-
-                <!-- ⚡ Boost オプション -->
-                <div class="boost-option">
-                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                        <input type="checkbox" id="boost-check">
-                        <span id="boost-label" class="lightning-text">
-                            ⚡ <strong>10 sats</strong> 投資して育成パワーを<strong>10倍</strong>にする
-                        </span>
-                    </label>
-
-                    <div id="sat-slider-area" style="display:none; margin-top:10px;">
-                        <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:4px;">
-                            <span>10 sats</span>
-                            <span id="sat-display" style="font-weight:bold;color:#e65100;">10 sats</span>
-                            <span>10,000 sats</span>
-                        </div>
-                        <input type="range" id="sat-amount" min="10" max="10000" step="10" value="10" style="width:100%;accent-color:#f7931a;">
-                        <p style="font-size:11px;color:#999;margin:4px 0 0;">※ 育成投資額 = コマンドパワー（例: 10sats 投資 ➡ 10pt）</p>
-                    </div>
-                </div>
-
-                <button id="send-btn" onclick="sendMessage()">書き込む ✍️</button>
-            </div>
-        </div>
+  <section class="hud">
+    <div class="pill wallet" title="ウォレット残高（ゲーム内の架空のsats）">
+      <span class="lbl">WALLET</span><span class="val"><span id="sats">0</span> <small>sats</small></span>
     </div>
-
-    <!-- ⚡ Lightning支払いモーダル -->
-    <div id="payment-modal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <h3>⚡ 育成投資（Lightning 決済）</h3>
-            <p id="invoice-amount-text" style="color:#e65100;font-weight:bold;"></p>
-            <p>このインボイスへ投資を完了させると、キャラクター育成への貢献が爆発的に反映されます！</p>
-            
-            <a id="wallet-link" href="#" class="wallet-btn" style="display:none;">⚡ ウォレットアプリを開く</a>
-
-            <div id="qrcode"></div>
-            <textarea id="invoice-text" rows="3" style="width:100%;font-size:11px;word-break:break-all;" readonly></textarea>
-            
-            <button onclick="copyInvoice()" style="margin-bottom:8px;background:#555;">📋 インボイスをコピー</button>
-            <p id="payment-status" style="font-weight:bold;color:#e65100;">投資承認待ち...</p>
-            <button onclick="closeModal()" style="background:#999;">閉じる</button>
-        </div>
+    <div class="pill pity" title="ハズレるほど溜まる。満タンで次は確定キャッチ！">
+      <span class="lbl">HODLゲージ</span>
+      <div class="gauge"><div class="gauge-fill" id="pityFill"></div></div>
     </div>
-
-    <!-- 🗺️ ⑤ 参照階層をルートの evolution_tree.jpg に修正したモーダル -->
-    <div id="tree-modal" class="modal" style="display:none;" onclick="closeTreeModal()">
-        <div class="image-modal-content" onclick="event.stopPropagation()">
-            <img src="evolution_tree.jpg" alt="進化ツリー" onerror="this.src='https://placehold.co/600x400/000/fff?text=Evolution+Tree+Image+Missing'">
-            <button class="close-btn" onclick="closeTreeModal()">閉じる</button>
-        </div>
+    <div class="pill block" title="プレイごとにブロックが進む。21ブロックごとにハルビング！">
+      <span class="lbl">NEXT HALVING</span><span class="val" id="halving">21</span>
     </div>
+  </section>
 
-    <script src="app.js"></script>
+  <div class="machine" id="machine">
+    <canvas id="game" width="480" height="640" aria-label="UFOキャッチャー画面"></canvas>
+    <div class="fever-badge" id="fever" hidden>🐂 BULL RUN <span id="feverLeft">3</span></div>
+  </div>
+
+  <section class="controls">
+    <button class="dir" id="leftBtn" aria-label="左へ">◀</button>
+    <button class="main" id="mainBtn">
+      <span class="main-top" id="mainTop">INSERT COIN</span>
+      <span class="main-sub" id="mainSub">100 sats</span>
+    </button>
+    <button class="dir" id="rightBtn" aria-label="右へ">▶</button>
+  </section>
+
+  <nav class="dock">
+    <button id="bagBtn">🎒 HODL<span class="badge" id="bagCount">0</span></button>
+    <button id="dexBtn">📖 図鑑<span class="badge" id="dexCount">0/11</span></button>
+    <button id="faucetBtn">🚰 Faucet</button>
+    <button id="soundBtn" aria-label="サウンド切替">🔊</button>
+  </nav>
+
+  <p class="howto">
+    <b>あそびかた</b>：COINで100 sats投入 → <kbd>◀</kbd><kbd>▶</kbd>（キーボードは ← →）でアームを動かして <b>DROP</b>（Space）！<br>
+    取れたぬいぐるみは<b>HODLバッグ</b>へ。相場は常に動くので、ガチホするか利確するかはあなた次第。<br>
+    ハズレても<b>HODLゲージ</b>が溜まり、満タンで確定キャッチ。21プレイごとの<b>ハルビング</b>でアームが強くなる！
+  </p>
+
+  <footer>
+    <p>※ ゲーム内のsatsは架空のポイントです。実際のお金・暗号資産は一切使いません／もらえません。ニュースはすべてフィクションです。</p>
+    <p class="v4v">⚡ Value for Value — 楽しかったら本物のsatsで応援を：<span class="ln">brashridge65@walletofsatoshi.com</span> <button id="copyLn" class="mini">コピー</button></p>
+  </footer>
+</div>
+
+<!-- Win modal -->
+<div class="modal" id="winModal" hidden>
+  <div class="card win-card" id="winCard">
+    <div class="rays" aria-hidden="true"></div>
+    <div class="new-badge" id="winNew" hidden>NEW!</div>
+    <p class="win-title" id="winTitle">GET!!</p>
+    <canvas id="winSprite" width="200" height="200"></canvas>
+    <p class="rarity" id="winRarity">COMMON</p>
+    <h2 id="winName">Bitcoin</h2>
+    <p class="desc" id="winDesc"></p>
+    <p class="price">いまの価値：<b id="winValue">0</b> sats</p>
+    <div class="row">
+      <button class="btn ghost" id="winSell">即売りで利確</button>
+      <button class="btn primary" id="winHodl">💎🙌 HODL!</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bag modal -->
+<div class="modal" id="bagModal" hidden>
+  <div class="card list-card">
+    <button class="close" data-close aria-label="閉じる">✕</button>
+    <h2>🎒 HODLバッグ</h2>
+    <p class="total">評価額合計：<b id="bagTotal">0</b> sats</p>
+    <div class="bag-list" id="bagList"></div>
+    <div class="row">
+      <button class="btn ghost" id="sellAll">全部売る</button>
+      <button class="btn primary" data-close>ガチホ続行</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dex modal -->
+<div class="modal" id="dexModal" hidden>
+  <div class="card list-card">
+    <button class="close" data-close aria-label="閉じる">✕</button>
+    <h2>📖 クリプトぬいぐるみ図鑑</h2>
+    <p class="total" id="dexStats"></p>
+    <div class="dex-grid" id="dexGrid"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" aria-live="polite"></div>
+<div class="banner" id="banner" hidden></div>
+
+<script src="game.js"></script>
 </body>
 </html>

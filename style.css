@@ -1,698 +1,259 @@
 :root {
-    /* ② スライダーつまみのサイズを動的に制御するCSS変数 */
-    --thumb-size: 16px;
+  --bg: #0b0820;
+  --bg2: #160f3a;
+  --ink: #f4f1ff;
+  --muted: #a99fd6;
+  --btc: #f7931a;
+  --pink: #ff4fd8;
+  --cyan: #2ef2ff;
+  --lime: #b6ff3b;
+  --gold: #ffd166;
+  --panel: rgba(255, 255, 255, .06);
+  --line: rgba(255, 255, 255, .14);
+  --r: 18px;
 }
 
+* { box-sizing: border-box; }
+html, body { margin: 0; }
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #1a1a1a;
-    color: #fff;
-    font-family: "ＭＳ Ｐゴシック", "MS Gothic", sans-serif;
-}
-
-.container {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* ─── 左ゲームエリア ─── */
-.game-area {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    border-right: 2px solid #333;
-    overflow-y: auto;
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #f7931a;
-}
-
-.header h1 {
-    margin: 0 0 5px 0;
-    font-size: 1.8em;
-}
-
-/* 📺 モニター画面を大迫力サイズに大型化 */
-.screen {
-    position: relative;
-    flex: 1;
-    min-height: 480px; /* 400pxから480pxへ拡張 */
-    border: 4px solid #f7931a;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #000;
-}
-
-#tradingview-widget,
-.tradingview-widget-container,
-#tv_chart {
-    width: 100%;
-    height: 100%;
-}
-
-#tradingview-widget {
-    opacity: 0.4;
-}
-
-/* ─── 🚀 美麗ホログラム・キャラクターコンテナ（超大型化） ─── */
-.character-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation: bounce 2s infinite;
-    pointer-events: none; /* 下層のTradingView操作を妨げない */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 10;
-}
-
-/* サイバーパンク風高精度モニターフレーム */
-.character-frame {
-    background: rgba(10, 15, 25, 0.85); /* 深い電子ダークブルー */
-    border: 3px solid #f7931a;
-    border-radius: 12px;
-    padding: 12px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 25px rgba(247, 147, 26, 0.5), inset 0 0 15px rgba(247, 147, 26, 0.3);
-    overflow: hidden;
-}
-
-/* 走査線（スキャンライン）エフェクト */
-.character-frame::before {
-    content: " ";
-    display: block;
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-    background-size: 100% 4px, 6px 100%;
-    z-index: 2;
-    pointer-events: none;
-}
-
-/* レーダー風回転リング（拡大に合わせた調整） */
-.holo-ring {
-    position: absolute;
-    width: 115%;
-    height: 115%;
-    border: 1px dashed rgba(247, 147, 26, 0.35);
-    border-radius: 50%;
-    animation: rotateRadar 20s linear infinite;
-    pointer-events: none;
-    z-index: 1;
-}
-
-@keyframes rotateRadar {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* メイン画像のサイズを340pxに超大型化 */
-.character-container img {
-    width: 340px; /* 280pxから340pxへ拡張 */
-    height: 340px;
-    object-fit: contain;
-    border-radius: 6px;
-    border: 1px solid rgba(247, 147, 26, 0.2);
-    image-rendering: pixelated; /* ドット絵をぼかさずくっきり映し出す設定 */
-    position: relative;
-    z-index: 3;
-}
-
-/* モニター下部のサイバーバッジ */
-.character-badge {
-    margin-top: 10px;
-    background: rgba(247, 147, 26, 0.15);
-    color: #f7931a;
-    border: 1px solid rgba(247, 147, 26, 0.4);
-    padding: 3px 12px;
-    font-size: 10px;
-    font-weight: bold;
-    border-radius: 10px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    box-shadow: 0 0 10px rgba(247, 147, 26, 0.15);
-    transition: all 0.3s ease;
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translate(-50%, -50%); }
-    50%       { transform: translate(-50%, -53%); }
-}
-
-.status-board {
-    margin-top: 20px;
-    background: #222;
-    padding: 15px;
-    border-radius: 5px;
-}
-
-/* ─── 🎮 姉妹サイト・ミニゲームボード（タイトルなし・本番フッター仕様） ─── */
-.sister-sites-board {
-    margin-top: 25px;
-    background: #1e1e1e;
-    border: 1px solid rgba(156, 39, 176, 0.25); /* ネオンパープルを少し落ち着かせた境界線 */
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 0 10px rgba(156, 39, 176, 0.05);
-}
-
-.sister-btn-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-}
-
-/* レスポンシブ：PC時はきれいな横並び3列 */
-@media screen and (min-width: 480px) {
-    .sister-btn-container {
-        grid-template-columns: 1fr 1fr 1fr;
-    }
-}
-
-.sister-link-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(156, 39, 176, 0.08);
-    border: 1px solid rgba(156, 39, 176, 0.25);
-    color: #e040fb !important;
-    padding: 12px 8px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 13px;
-    text-align: center;
-    transition: all 0.2s ease;
-}
-
-.sister-link-btn:hover {
-    background: rgba(156, 39, 176, 0.2);
-    border-color: #e040fb;
-    box-shadow: 0 0 10px rgba(156, 39, 176, 0.35);
-    transform: translateY(-2px);
-}
-
-.sister-link-btn span {
-    font-size: 10px;
-    color: #999;
-    font-weight: normal;
-    margin-top: 4px;
-}
-
-/* ─── 世代ステータス & 死亡回数 ─── */
-.status-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.status-title {
-    color: #f7931a;
-    font-weight: bold;
-    font-size: 1.3em;
-    margin: 0;
-}
-
-/* 美麗な X (旧Twitter) シェアボタン */
-.share-btn {
-    background: #000;
-    color: #fff;
-    border: 1px solid #333;
-    padding: 6px 12px;
-    font-size: 11px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.2s, border-color 0.2s;
-}
-
-.share-btn:hover {
-    background: #111;
-    border-color: #1da1f2; /* ホバー時にうっすら青く発光 */
-}
-
-.share-btn svg {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-.death-counter {
-    background: rgba(255, 82, 82, 0.15);
-    color: #ff5252;
-    border: 1px solid rgba(255, 82, 82, 0.3);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.progress-container {
-    margin-top: 10px;
-    background: #444;
-    border-radius: 5px;
-    height: 10px;
-    overflow: hidden;
-}
-
-#evolution-progress {
-    background: #f7931a;
-    width: 0%;
-    height: 100%;
-    transition: width 0.5s ease;
-}
-
-.progress-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #aaa;
-    margin-top: 5px;
-}
-
-/* ─── コマンド勢力図（動的メーター） ─── */
-.vote-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 15px 0;
-}
-
-.vote-bar-container {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.vote-label {
-    font-size: 14px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-}
-
-.vote-progress {
-    background: #444;
-    height: 12px;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.vote-fill {
-    width: 0%;
-    height: 100%;
-    transition: width 0.5s ease;
-}
-
-.hodl-fill { background: #f7931a; }
-.fomo-fill { background: #d32f2f; }
-.buidl-fill { background: #1976d2; }
-.sell-fill { background: #555555; }
-
-/* ─── 💀 滅亡リスクメーター ─── */
-.risk-board {
-    margin-top: 15px;
-    background: #331515;
-    border: 1px solid rgba(255, 82, 82, 0.3);
-    padding: 12px;
-    border-radius: 5px;
-}
-
-.risk-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    font-weight: bold;
-    color: #ff8a80;
-    margin-bottom: 5px;
-}
-
-.risk-progress {
-    background: #444;
-    height: 8px;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.risk-fill {
-    background: #ff5252;
-    width: 0%;
-    height: 100%;
-    transition: width 0.5s ease;
-}
-
-/* ─── 遊び方ガイド ─── */
-.rule-board {
-    margin-top: 20px;
-    background: #2b2b2b;
-    padding: 15px;
-    border-radius: 5px;
-    border-left: 4px solid #f7931a;
-}
-
-.rule-board h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #f7931a;
-    border-bottom: 1px solid #444;
-    padding-bottom: 5px;
-}
-
-.rule-content h4 {
-    margin: 15px 0 5px 0;
-    color: #fff;
-}
-
-.rule-content p {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #ddd;
-}
-
-.rule-cmds {
-    font-size: 14px;
-    line-height: 1.8;
-    background: #1a1a1a;
-    padding: 12px;
-    border-radius: 4px;
-}
-
-.highlight {
-    color: #ffea00;
-    font-weight: bold;
-}
-
-/* ─── 右チャットエリア ─── */
-.chat-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background-color: #efefef;
-    color: #000;
-    min-width: 350px;
-    overflow-y: auto; /* ★縦の低いノートPC等でもフォーム全体をスクロールして書き込めるように改善 */
-}
-
-.chat-area h2 {
-    margin-top: 0;
-    color: #c00;
-    font-size: 1.2em;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-}
-
-.chat-box {
-    flex: 1;
-    overflow-y: scroll;
-    padding: 10px;
-    background: #fff;
-    border: 1px solid #ccc;
-    margin-bottom: 15px;
-    min-height: 120px; /* ★ 200pxから120pxに可変。狭い画面でもログが自動で薄く縮み、書き込み欄を潰しません */
-}
-
-.chat-post {
-    margin-bottom: 10px;
-    font-size: 14px;
-    border-bottom: 1px dashed #eee;
-    padding-bottom: 5px;
-    word-break: break-all;
-}
-
-.chat-meta {
-    color: #008000;
-    font-weight: bold;
-    font-size: 12px;
-}
-
-/* アスキーアート(Mona/PGothic)完全同期化 */
-.chat-text {
-    margin-top: 4px;
-    font-family: "MS PGothic", "ＭＳ Ｐゴシック", "Mona", "Mona-sans", monospace, sans-serif;
-    font-size: 16px; /* アスキーアートの標準スケール */
-    line-height: 1.15; /* 縦のドット絵ラインが美しく繋がる極細行間 */
-    white-space: pre-wrap;
-    word-break: break-all;
-    overflow-wrap: break-word;
-}
-
-.cmd-badge {
-    background: #f7931a;
-    color: #fff;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 11px;
-    display: inline-block;
-}
-
-.boosted {
-    background: #ffea00;
-    color: #d32f2f;
-    font-weight: bold;
-    animation: flash 1s infinite alternate;
-}
-
-@keyframes flash {
-    from { opacity: 1; }
-    to   { opacity: 0.6; }
-}
-
-/* ─── 入力エリア ─── */
-.input-area {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.input-area input[type="text"],
-.input-area select {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-    width: 100%;
-}
-
-/* 500文字コメントをしっかり見渡せる調整可能textarea */
-.input-area textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    font-family: inherit;
-    box-sizing: border-box;
-    width: 100%;
-    min-height: 120px;
-    resize: vertical;
-    line-height: 1.5;
-}
-
-.textarea-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.char-counter {
-    text-align: right;
-    font-size: 11px;
-    color: #666;
-    margin-top: 2px;
-}
-
-.boost-option {
-    background: #ffe0b2;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ff9800;
-}
-
-.lightning-text {
-    font-size: 14px;
-    color: #e65100;
-}
-
-/* つまみ（◯）の大きさを動的に可変させるためのスライダースタイル設計 */
-#sat-amount {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    background: #444;
-    height: 8px;
-    border-radius: 4px;
-    outline: none;
-    margin: 25px 0; /* 大きくなるつまみを考慮して余白を設定 */
-    position: relative;
-}
-
-#sat-amount::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    background: #f7931a;
-    width: var(--thumb-size) !important;
-    height: var(--thumb-size) !important;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(247, 147, 26, 0.6);
-    transition: width 0.1s ease, height 0.1s ease; /* なめらかなサイズ可変化 */
-}
-
-#sat-amount::-moz-range-thumb {
-    background: #f7931a;
-    width: var(--thumb-size) !important;
-    height: var(--thumb-size) !important;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(247, 147, 26, 0.6);
-    transition: width 0.1s ease, height 0.1s ease;
-}
-
-button {
-    background-color: #f7931a;
-    color: white;
-    border: none;
-    padding: 12px;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 4px;
-    font-size: 16px;
-}
-button:hover    { background-color: #e68a00; }
-button:disabled { background-color: #aaa; cursor: not-allowed; }
-
-/* モーダル共通 */
+  background: radial-gradient(1200px 700px at 50% -10%, #3a1d7a 0%, var(--bg2) 40%, var(--bg) 75%);
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: "M PLUS Rounded 1c", system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+
+.bg-grid {
+  position: fixed; inset: auto 0 0 0; height: 45vh; pointer-events: none; z-index: 0;
+  background:
+    linear-gradient(transparent 0 96%, rgba(255, 79, 216, .35) 96%) 0 0 / 100% 38px,
+    linear-gradient(90deg, transparent 0 96%, rgba(46, 242, 255, .25) 96%) 0 0 / 38px 100%;
+  transform: perspective(300px) rotateX(60deg);
+  transform-origin: bottom;
+  mask-image: linear-gradient(transparent, #000 70%);
+  -webkit-mask-image: linear-gradient(transparent, #000 70%);
+  opacity: .5;
+}
+
+/* ---------- ticker ---------- */
+.ticker {
+  position: sticky; top: 0; z-index: 5;
+  background: #000; border-bottom: 1px solid #222;
+  overflow: hidden; white-space: nowrap;
+  font: 700 13px/28px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  height: 28px;
+}
+.ticker-track { display: inline-block; padding-left: 100%; animation: tick 45s linear infinite; }
+.ticker-track span { margin-right: 26px; }
+.ticker .up { color: #39ff88; }
+.ticker .down { color: #ff5470; }
+.ticker .news { color: var(--gold); }
+@keyframes tick { to { transform: translateX(-100%); } }
+
+.app {
+  position: relative; z-index: 1;
+  max-width: 520px; margin: 0 auto; padding: 10px 16px 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+
+/* ---------- marquee ---------- */
+.marquee {
+  position: relative; width: 100%;
+  text-align: center; padding: 14px 10px 10px;
+  border-radius: 22px 22px 10px 10px;
+  background: linear-gradient(180deg, #2a145e, #1a0d40);
+  border: 2px solid #5b3bd0;
+  box-shadow: 0 0 24px rgba(255, 79, 216, .35), inset 0 0 30px rgba(46, 242, 255, .12);
+}
+.marquee h1 {
+  margin: 6px 0 0;
+  font-family: "Dela Gothic One", "M PLUS Rounded 1c", sans-serif;
+  font-weight: 400;
+  font-size: clamp(20px, 6.2vw, 34px); letter-spacing: .02em; white-space: nowrap;
+  color: #fff;
+  text-shadow: 0 0 6px var(--pink), 0 0 18px var(--pink), 0 0 36px #ff2bd0;
+  animation: flicker 6s infinite;
+}
+.marquee h1 .b { color: var(--btc); text-shadow: 0 0 8px var(--btc), 0 0 24px #ff7a00; }
+.marquee .sub { margin: 2px 0 0; font-weight: 800; color: var(--cyan); text-shadow: 0 0 10px var(--cyan); letter-spacing: .3em; font-size: 12px; }
+@keyframes flicker { 0%, 92%, 96%, 100% { opacity: 1; } 94% { opacity: .55; } }
+.bulbs {
+  height: 10px; margin: 0 6px;
+  background: radial-gradient(circle, #fff6b0 0 3px, #ffb703 3.5px 4.5px, transparent 5px) 0 50% / 18px 10px repeat-x;
+  filter: drop-shadow(0 0 4px #ffb703);
+  animation: bulbs .5s steps(2) infinite;
+}
+@keyframes bulbs { 50% { background-position: 9px 50%; } }
+.marquee.party .bulbs { animation-duration: .12s; filter: drop-shadow(0 0 8px #ff4fd8) hue-rotate(90deg); }
+
+/* ---------- HUD ---------- */
+.hud { width: 100%; display: grid; grid-template-columns: 1.1fr 1.2fr .9fr; gap: 8px; }
+.pill {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+  padding: 6px 10px; display: flex; flex-direction: column; justify-content: center; min-width: 0;
+}
+.pill .lbl { font-size: 10px; color: var(--muted); letter-spacing: .08em; font-weight: 800; white-space: nowrap; }
+.pill .val { font: 800 18px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pill .val small { font-size: 11px; color: var(--muted); }
+.wallet .val.bump { animation: bump .5s; }
+@keyframes bump { 30% { transform: scale(1.18); color: #fff; } }
+.gauge { height: 12px; border-radius: 99px; background: rgba(0, 0, 0, .45); overflow: hidden; margin-top: 5px; border: 1px solid var(--line); }
+.gauge-fill { height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--pink)); transition: width .4s; }
+.gauge-fill.full { background: linear-gradient(90deg, var(--gold), var(--btc), var(--gold)); background-size: 200% 100%; animation: shine 1s linear infinite; }
+@keyframes shine { to { background-position: -200% 0; } }
+
+/* ---------- machine ---------- */
+.machine {
+  position: relative;
+  padding: 10px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #ff4fd8, #7b2ff7 40%, #2ef2ff);
+  box-shadow: 0 0 30px rgba(123, 47, 247, .55), 0 18px 40px rgba(0, 0, 0, .5);
+}
+.machine.fever { animation: rainbow 1.2s linear infinite; }
+@keyframes rainbow { to { filter: hue-rotate(360deg); } }
+.machine.shake { animation: mshake .4s; }
+@keyframes mshake { 20% { transform: translate(-4px, 2px) rotate(-.6deg); } 40% { transform: translate(4px, -2px) rotate(.6deg); } 60% { transform: translate(-3px, 1px); } 80% { transform: translate(2px, -1px); } }
+#game {
+  display: block;
+  width: min(calc(100vw - 52px), 440px, calc((100dvh - 380px) * .75));
+  min-width: 240px;
+  aspect-ratio: 3 / 4; height: auto;
+  border-radius: 8px;
+  background: #120a2e;
+  touch-action: none;
+}
+.fever-badge {
+  position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(90deg, #ff3d3d, #ffb703); color: #2b0a00;
+  font-weight: 800; padding: 4px 12px; border-radius: 99px; font-size: 13px;
+  box-shadow: 0 0 16px #ff7a00; animation: pulse .8s infinite alternate; pointer-events: none;
+}
+@keyframes pulse { to { transform: translateX(-50%) scale(1.08); } }
+
+/* ---------- controls ---------- */
+.controls { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 12px; width: 100%; max-width: 460px; align-items: center; }
+.dir {
+  height: 66px; border-radius: 50%; aspect-ratio: 1; justify-self: center;
+  border: 0; font-size: 26px;
+  background: radial-gradient(circle at 35% 30%, #6ef7ff, #1597b8 60%, #0b5a72);
+  box-shadow: 0 6px 0 #073848, 0 0 18px rgba(46, 242, 255, .5);
+  color: #003040;
+}
+.dir:active, .dir.on { transform: translateY(4px); box-shadow: 0 2px 0 #073848, 0 0 24px rgba(46, 242, 255, .9); }
+.main {
+  height: 78px; border-radius: 40px; border: 0;
+  background: radial-gradient(circle at 40% 25%, #ffe08a, #ff9f1c 55%, #d45d00);
+  box-shadow: 0 7px 0 #8a3a00, 0 0 26px rgba(247, 147, 26, .7);
+  color: #3a1500; display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.main:active { transform: translateY(5px); box-shadow: 0 2px 0 #8a3a00, 0 0 30px rgba(247, 147, 26, 1); }
+.main.drop { background: radial-gradient(circle at 40% 25%, #ff9ad5, #ff2b8a 55%, #b0005a); box-shadow: 0 7px 0 #6a0036, 0 0 26px rgba(255, 43, 138, .8); color: #fff; animation: breathe 1s infinite alternate; }
+.main.busy { filter: grayscale(.7) brightness(.7); }
+.main.poor { background: radial-gradient(circle at 40% 25%, #c9c2e8, #7e74ad 55%, #4b4378); box-shadow: 0 7px 0 #2a2450; color: #fff; }
+@keyframes breathe { to { box-shadow: 0 7px 0 #6a0036, 0 0 40px rgba(255, 43, 138, 1); } }
+.main-top { font-family: "Dela Gothic One", sans-serif; font-size: 22px; line-height: 1; }
+.main-sub { font-size: 12px; font-weight: 800; opacity: .85; margin-top: 3px; }
+
+.dock { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; width: 100%; }
+.dock button {
+  position: relative; padding: 10px 6px; border-radius: 14px;
+  background: var(--panel); border: 1px solid var(--line); font-weight: 800; font-size: 14px; white-space: nowrap;
+}
+.dock button:hover { background: rgba(255, 255, 255, .12); }
+.dock button:disabled { opacity: .45; cursor: default; }
+.badge { position: absolute; top: -7px; right: -4px; background: var(--pink); color: #fff; font-size: 11px; border-radius: 99px; padding: 1px 6px; }
+#faucetBtn.ready { border-color: var(--lime); box-shadow: 0 0 14px rgba(182, 255, 59, .6); animation: breathe2 1s infinite alternate; }
+@keyframes breathe2 { to { box-shadow: 0 0 24px rgba(182, 255, 59, 1); } }
+
+.howto { font-size: 12.5px; line-height: 1.8; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; margin: 4px 0 0; }
+.howto b { color: var(--ink); }
+kbd { display: inline-block; border: 1px solid var(--line); border-bottom-width: 3px; border-radius: 5px; padding: 0 5px; font-size: 11px; margin: 0 1px; color: var(--ink); }
+footer { font-size: 11.5px; color: var(--muted); text-align: center; line-height: 1.7; }
+footer .ln { color: var(--gold); word-break: break-all; }
+.mini { font-size: 11px; padding: 1px 8px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); }
+
+/* ---------- modals ---------- */
 .modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+  position: fixed; inset: 0; z-index: 20;
+  background: rgba(5, 2, 20, .72); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  display: grid; place-items: center; padding: 16px;
 }
-
-.modal-content {
-    background: #fff;
-    color: #000;
-    padding: 24px;
-    border-radius: 12px;
-    text-align: center;
-    max-width: 340px;
-    width: 90%;
+.modal[hidden] { display: none; }
+.card {
+  position: relative; width: min(100%, 400px); max-height: calc(100dvh - 32px); overflow: auto;
+  background: linear-gradient(180deg, #23165a, #140c34);
+  border: 1px solid #5b3bd0; border-radius: 22px; padding: 22px 18px 18px;
+  box-shadow: 0 0 40px rgba(123, 47, 247, .6);
+  animation: pop .45s cubic-bezier(.2, 1.6, .4, 1);
 }
+@keyframes pop { from { transform: scale(.5); opacity: 0; } }
+.card h2 { margin: 4px 0 6px; font-size: 22px; }
+.close { position: absolute; top: 10px; right: 12px; background: none; border: 0; font-size: 20px; color: var(--muted); }
+.row { display: flex; gap: 10px; margin-top: 14px; }
+.btn { flex: 1; padding: 12px; border-radius: 14px; border: 0; font-weight: 800; font-size: 15px; }
+.btn.primary { background: linear-gradient(180deg, #ffcf5a, var(--btc)); color: #3a1500; box-shadow: 0 4px 0 #8a3a00; }
+.btn.ghost { background: var(--panel); border: 1px solid var(--line); }
+.btn:active { transform: translateY(2px); }
 
-/* 画像用モーダル専用 */
-.image-modal-content {
-    background: transparent;
-    max-width: 95%;
-    text-align: center;
+.win-card { text-align: center; overflow: hidden; }
+.win-card > *:not(.rays) { position: relative; }
+.rays {
+  position: absolute; left: 50%; top: 130px; width: 700px; height: 700px; margin: -350px 0 0 -350px;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 209, 102, .16) 0 10deg, transparent 10deg 20deg);
+  animation: spin 12s linear infinite; pointer-events: none;
 }
+@keyframes spin { to { transform: rotate(360deg); } }
+.win-title { margin: 0; font-family: "Dela Gothic One", sans-serif; font-size: 34px; color: var(--gold); text-shadow: 0 0 14px #ff7a00; }
+.win-card.rug .win-title { color: #ff5470; text-shadow: 0 0 14px #ff0033; }
+#winSprite { width: 150px; height: 150px; animation: float 1.6s ease-in-out infinite alternate; }
+@keyframes float { to { transform: translateY(-8px) rotate(4deg); } }
+.rarity { margin: 0; font-weight: 800; letter-spacing: .25em; font-size: 13px; }
+.desc { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 6px 0; }
+.price { margin: 6px 0 0; }
+.price b { color: var(--gold); font-size: 20px; }
+.new-badge { position: absolute !important; top: 14px; left: 14px; background: var(--pink); color: #fff; font-weight: 800; padding: 3px 10px; border-radius: 8px; transform: rotate(-10deg); box-shadow: 0 0 14px var(--pink); }
 
-.image-modal-content img {
-    max-width: 100%;
-    max-height: 80vh;
-    border-radius: 10px;
-    object-fit: contain;
+.total { color: var(--muted); margin: 0 0 10px; }
+.total b { color: var(--gold); font-size: 18px; }
+.bag-list { display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow: auto; }
+.bag-item { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 6px 8px; }
+.bag-item canvas { width: 44px; height: 44px; }
+.bag-item .nm { font-weight: 800; font-size: 14px; }
+.bag-item .px { font-size: 12px; color: var(--muted); }
+.bag-item .px .up { color: #39ff88; }
+.bag-item .px .down { color: #ff5470; }
+.bag-item button { padding: 7px 12px; border-radius: 10px; border: 0; background: linear-gradient(180deg, #ffcf5a, var(--btc)); color: #3a1500; font-weight: 800; }
+.empty { color: var(--muted); text-align: center; padding: 20px 0; }
+.dex-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.dex-cell { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 4px; text-align: center; font-size: 11.5px; }
+.dex-cell canvas { width: 64px; height: 64px; display: block; margin: 0 auto 4px; }
+.dex-cell.locked canvas { filter: brightness(0) opacity(.45); }
+.dex-cell .nm { font-weight: 800; }
+.dex-cell .ct { color: var(--muted); }
+
+.toast {
+  position: fixed; left: 50%; top: 36px; transform: translate(-50%, -160%);
+  z-index: 30; background: rgba(20, 12, 52, .95); border: 1px solid #5b3bd0; border-radius: 14px;
+  padding: 10px 16px; font-weight: 800; font-size: 14px; max-width: calc(100vw - 32px); text-align: center;
+  transition: transform .35s cubic-bezier(.2, 1.4, .4, 1); box-shadow: 0 0 20px rgba(123, 47, 247, .6);
 }
-
-.close-btn {
-    display: block;
-    margin: 15px auto 0;
-    background: #fff;
-    color: #000;
-    width: 200px;
+.toast.show { transform: translate(-50%, 0); }
+.banner {
+  position: fixed; left: 0; right: 0; top: 40%; z-index: 25; text-align: center; pointer-events: none;
+  font-family: "Dela Gothic One", sans-serif; font-size: clamp(28px, 9vw, 52px); color: #fff;
+  text-shadow: 0 0 10px var(--btc), 0 0 30px #ff2b00, 0 4px 0 #8a3a00;
+  animation: bannerIn 2.2s forwards;
 }
+.banner small { display: block; font-family: "M PLUS Rounded 1c", sans-serif; font-weight: 800; font-size: 16px; text-shadow: 0 0 8px #000; }
+@keyframes bannerIn { 0% { transform: scale(3); opacity: 0; } 15% { transform: scale(1); opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(-40px); opacity: 0; } }
 
-/* ツリー表示ボタン */
-.tree-btn {
-    width: 100%;
-    background-color: #2196F3;
-    margin-top: 15px;
-}
-.tree-btn:hover { background-color: #1976D2; }
-
-#qrcode {
-    margin: 16px auto;
-    width: 200px;
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-sizing: border-box;
-}
-
-#invoice-text {
-    width: 100%;
-    margin-bottom: 8px;
-    font-size: 11px;
-    word-break: break-all;
-    resize: none;
-    box-sizing: border-box;
-}
-
-.wallet-btn {
-    display: inline-block;
-    background-color: #8e24aa;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    margin: 10px 0;
-    transition: 0.2s;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-}
-.wallet-btn:hover { background-color: #6a1b9a; }
-
-/* スマホ用レスポンシブ (スマホ時はメインが上、掲示板が下に並びます) */
-@media screen and (max-width: 768px) {
-    .container {
-        flex-direction: column; /* メイン(上)、チャット(下)に並び順を適正化 */
-        height: auto;
-        overflow: visible;
-    }
-    .game-area {
-        border-right: none;
-        border-bottom: 4px solid #f7931a; /* 境界線を下部に変更 */
-        overflow-y: visible;
-    }
-    .screen {
-        height: 40vh;
-    }
-    .character-container img {
-        width: 180px; /* スマホ画面用に少し調整 */
-        height: 180px;
-    }
-    .chat-area {
-        min-width: 100%;
-        height: 70vh;
-        border-bottom: 4px solid #f7931a;
-    }
+@media (max-width: 380px) {
+  .pill .val { font-size: 15px; }
+  .dock button { font-size: 12px; }
+  .dir { height: 58px; }
+  .main { height: 70px; }
 }
