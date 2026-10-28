@@ -3,119 +3,137 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>SATOSHI CATCHER ₿ クリプトUFOキャッチャー</title>
-<meta name="description" content="ビットコインやクリプトのぬいぐるみを狙うブラウザUFOキャッチャー。HODLするか利確するかはあなた次第。">
-<meta name="theme-color" content="#0b0820">
-<meta property="og:title" content="SATOSHI CATCHER ₿ クリプトUFOキャッチャー">
-<meta property="og:description" content="₿ Ξ ◎ Ð … クリプトぬいぐるみをつかみ取れ！">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23f7931a'/%3E%3Ctext x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E%E2%82%BF%3C/text%3E%3C/svg%3E">
+<title>Satoshi Claw — 手描きクリプトUFOキャッチャー</title>
+<meta name="description" content="手描き風アイソメトリックのビットコイン／クリプトUFOキャッチャー。ぬいぐるみをつかんで、HODLか利確か。">
+<meta name="theme-color" content="#eeeae2">
+<meta property="og:title" content="Satoshi Claw — 手描きクリプトUFOキャッチャー">
+<meta property="og:description" content="₿ Ξ ◎ Ð … クリプトぬいぐるみをつかみ取れ。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='%23f2a2b8' stroke='%232a221e' stroke-width='6'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%232a221e' font-family='monospace' font-weight='bold'%3E%E2%82%BF%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=M+PLUS+Rounded+1c:wght@500;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=M+PLUS+1+Code:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="bg-grid" aria-hidden="true"></div>
 
 <div class="ticker" aria-label="マーケット"><div class="ticker-track" id="ticker"></div></div>
 
-<div class="app">
-  <header class="marquee" id="marquee">
-    <div class="bulbs top" aria-hidden="true"></div>
-    <h1><span class="b">₿</span> SATOSHI CATCHER</h1>
-    <p class="sub">クリプト UFOキャッチャー</p>
-  </header>
+<main class="page">
+  <section class="figure" id="figure">
+    <div class="fig-left">
+      <p class="caption">Fig. 21 — <b>Satoshi Claw</b></p>
+      <div class="pill-col">
+        <button class="pill" id="coinBtn">Insert coin <small>100 sats</small></button>
+        <button class="pill" id="takeBtn">Take the prize <span class="dot" id="trayDot" hidden></span></button>
+        <button class="pill" id="resetBtn">Start over</button>
+      </div>
+      <div class="pad" id="pad">
+        <div class="dpad">
+          <button class="key up" data-dir="up" aria-label="奥へ">▲</button>
+          <button class="key left" data-dir="left" aria-label="左へ">◀</button>
+          <span class="key mid" id="padMid">○</span>
+          <button class="key right" data-dir="right" aria-label="右へ">▶</button>
+          <button class="key down" data-dir="down" aria-label="手前へ">▼</button>
+        </div>
+        <button class="drop" id="dropBtn"><b>DROP</b><small>SPACE</small></button>
+      </div>
+      <p class="timer" id="timer">&nbsp;</p>
+    </div>
 
-  <section class="hud">
-    <div class="pill wallet" title="ウォレット残高（ゲーム内の架空のsats）">
-      <span class="lbl">WALLET</span><span class="val"><span id="sats">0</span> <small>sats</small></span>
+    <div class="stage" id="stage">
+      <canvas id="game" aria-label="UFOキャッチャーの図"></canvas>
+      <div class="zoom">
+        <button id="zoomOut" aria-label="縮小">−</button>
+        <span id="zoomVal">100%</span>
+        <button id="zoomIn" aria-label="拡大">+</button>
+      </div>
     </div>
-    <div class="pill pity" title="ハズレるほど溜まる。満タンで次は確定キャッチ！">
-      <span class="lbl">HODLゲージ</span>
-      <div class="gauge"><div class="gauge-fill" id="pityFill"></div></div>
+
+    <div class="fig-right">
+      <div class="pill-row">
+        <button class="pill toggle" id="seeBtn" aria-pressed="false">See-through</button>
+        <button class="pill toggle" id="labelBtn" aria-pressed="false">Labels</button>
+      </div>
+      <dl class="stats">
+        <dt>SATS</dt><dd id="sats">0</dd>
+        <dt>PRIZES WON</dt><dd id="won">0</dd>
+        <dt>HODL GAUGE</dt><dd class="gauge"><span id="pity"></span></dd>
+        <dt>NEXT HALVING</dt><dd class="small" id="halving">21</dd>
+      </dl>
+      <p class="fever" id="fever" hidden>BULL RUN ×<span id="feverLeft">3</span></p>
     </div>
-    <div class="pill block" title="プレイごとにブロックが進む。21ブロックごとにハルビング！">
-      <span class="lbl">NEXT HALVING</span><span class="val" id="halving">21</span>
+
+    <div class="fig-bottom">
+      <label class="ctl">
+        <span class="ctl-lbl">HAND-DRAWN WOBBLE</span>
+        <input type="range" id="wobble" min="0" max="100" value="45">
+      </label>
+      <div class="ctl">
+        <span class="ctl-lbl">COLOUR</span>
+        <div class="swatches" id="swatches"></div>
+      </div>
+      <div class="ctl">
+        <span class="ctl-lbl">VIEW</span>
+        <div class="pill-row">
+          <button class="pill" id="frontBtn">Front view</button>
+          <button class="pill toggle" id="spinBtn" aria-pressed="false">Turntable</button>
+        </div>
+      </div>
     </div>
+    <p class="made">SATOSHI CLAW · HAND-DRAWN EDITION <button class="mute" id="soundBtn" aria-label="サウンド切替">SOUND ON</button></p>
   </section>
 
-  <div class="machine" id="machine">
-    <canvas id="game" width="480" height="640" aria-label="UFOキャッチャー画面"></canvas>
-    <div class="fever-badge" id="fever" hidden>🐂 BULL RUN <span id="feverLeft">3</span></div>
-  </div>
-
-  <section class="controls">
-    <button class="dir" id="leftBtn" aria-label="左へ">◀</button>
-    <button class="main" id="mainBtn">
-      <span class="main-top" id="mainTop">INSERT COIN</span>
-      <span class="main-sub" id="mainSub">100 sats</span>
-    </button>
-    <button class="dir" id="rightBtn" aria-label="右へ">▶</button>
+  <section class="sheet" id="shelfSec">
+    <div class="sheet-head">
+      <p class="caption">Fig. 22 — <b>HODL shelf</b> <span class="muted" id="dexStat"></span></p>
+      <p class="muted" id="shelfTotal"></p>
+    </div>
+    <div class="shelf" id="shelf"></div>
   </section>
 
-  <nav class="dock">
-    <button id="bagBtn">🎒 HODL<span class="badge" id="bagCount">0</span></button>
-    <button id="dexBtn">📖 図鑑<span class="badge" id="dexCount">0/11</span></button>
-    <button id="faucetBtn">🚰 Faucet</button>
-    <button id="soundBtn" aria-label="サウンド切替">🔊</button>
-  </nav>
-
-  <p class="howto">
-    <b>あそびかた</b>：COINで100 sats投入 → <kbd>◀</kbd><kbd>▶</kbd>（キーボードは ← →）でアームを動かして <b>DROP</b>（Space）！<br>
-    取れたぬいぐるみは<b>HODLバッグ</b>へ。相場は常に動くので、ガチホするか利確するかはあなた次第。<br>
-    ハズレても<b>HODLゲージ</b>が溜まり、満タンで確定キャッチ。21プレイごとの<b>ハルビング</b>でアームが強くなる！
-  </p>
+  <section class="sheet two">
+    <div class="mine">
+      <p class="caption">Fig. 23 — <b>Proof of Work</b></p>
+      <p class="muted">satsが尽きたら手で採掘。クリックするたびにハッシュを計算し、ブロックを見つけると <b>+100 sats</b>。</p>
+      <button class="pill big" id="mineBtn">⛏ Hash!</button>
+      <div class="bar"><span id="mineBar"></span></div>
+      <code class="hash" id="mineHash">0000000000000000…</code>
+    </div>
+    <div class="howto">
+      <p class="caption">How to play</p>
+      <ol>
+        <li><b>Insert coin</b>（100 sats）でスタート。</li>
+        <li><kbd>▲▼◀▶</kbd> または矢印キー／WASDで、アームを前後左右に動かす（20秒）。</li>
+        <li><b>DROP</b>（Space）でアームが降りてつかむ。景品口に落ちたらGET！</li>
+        <li><b>Take the prize</b> で取り出し。<b>HODL</b>して棚に飾るか、相場で<b>利確</b>するか。</li>
+        <li>ハズレると <b>HODL GAUGE</b> が溜まり、満タンで確定キャッチ。21プレイごとの<b>ハルビング</b>で3回アーム強化。</li>
+      </ol>
+    </div>
+  </section>
 
   <footer>
-    <p>※ ゲーム内のsatsは架空のポイントです。実際のお金・暗号資産は一切使いません／もらえません。ニュースはすべてフィクションです。</p>
-    <p class="v4v">⚡ Value for Value — 楽しかったら本物のsatsで応援を：<span class="ln">brashridge65@walletofsatoshi.com</span> <button id="copyLn" class="mini">コピー</button></p>
+    <p>※ ゲーム内のsatsは架空のポイントです。実際のお金・暗号資産は一切使いません／もらえません。ティッカーのニュースはすべてフィクションです。</p>
+    <p>⚡ Value for Value — 楽しかったら本物のsatsで応援を：<span class="ln">brashridge65@walletofsatoshi.com</span> <button class="mini" id="copyLn">copy</button></p>
   </footer>
-</div>
+</main>
 
-<!-- Win modal -->
 <div class="modal" id="winModal" hidden>
-  <div class="card win-card" id="winCard">
-    <div class="rays" aria-hidden="true"></div>
-    <div class="new-badge" id="winNew" hidden>NEW!</div>
-    <p class="win-title" id="winTitle">GET!!</p>
-    <canvas id="winSprite" width="200" height="200"></canvas>
-    <p class="rarity" id="winRarity">COMMON</p>
-    <h2 id="winName">Bitcoin</h2>
-    <p class="desc" id="winDesc"></p>
-    <p class="price">いまの価値：<b id="winValue">0</b> sats</p>
+  <div class="card" id="winCard">
+    <p class="caption" id="winFig">Fig. — GET!</p>
+    <span class="new" id="winNew" hidden>NEW</span>
+    <canvas id="winIcon" width="240" height="240"></canvas>
+    <p class="rarity" id="winRarity"></p>
+    <h2 id="winName"></h2>
+    <p class="muted desc" id="winDesc"></p>
+    <p class="price">market <b id="winPrice">0</b> sats</p>
     <div class="row">
-      <button class="btn ghost" id="winSell">即売りで利確</button>
-      <button class="btn primary" id="winHodl">💎🙌 HODL!</button>
+      <button class="pill" id="winSell">Sell</button>
+      <button class="pill solid" id="winHodl">HODL 💎🙌</button>
     </div>
-  </div>
-</div>
-
-<!-- Bag modal -->
-<div class="modal" id="bagModal" hidden>
-  <div class="card list-card">
-    <button class="close" data-close aria-label="閉じる">✕</button>
-    <h2>🎒 HODLバッグ</h2>
-    <p class="total">評価額合計：<b id="bagTotal">0</b> sats</p>
-    <div class="bag-list" id="bagList"></div>
-    <div class="row">
-      <button class="btn ghost" id="sellAll">全部売る</button>
-      <button class="btn primary" data-close>ガチホ続行</button>
-    </div>
-  </div>
-</div>
-
-<!-- Dex modal -->
-<div class="modal" id="dexModal" hidden>
-  <div class="card list-card">
-    <button class="close" data-close aria-label="閉じる">✕</button>
-    <h2>📖 クリプトぬいぐるみ図鑑</h2>
-    <p class="total" id="dexStats"></p>
-    <div class="dex-grid" id="dexGrid"></div>
   </div>
 </div>
 
 <div class="toast" id="toast" aria-live="polite"></div>
-<div class="banner" id="banner" hidden></div>
 
 <script src="game.js"></script>
 </body>
